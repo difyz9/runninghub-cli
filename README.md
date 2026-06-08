@@ -4,16 +4,40 @@ Command-line and agent-facing tools for RunningHub workflows and AI Apps.
 
 `runninghub-cli` is a thin CLI built on top of [`runninghub-sdk`](https://pypi.org/project/runninghub-sdk/). It is designed for humans, scripts, and agents such as Hermes. Every command returns stable JSON on stdout.
 
-## Install
+## Distribution Model
+
+`runninghub-cli` is intentionally **GitHub-first** for now. The stable public dependency is `runninghub-sdk` on PyPI; this CLI is a fast-moving agent workflow tool that Hermes can clone, inspect, and update directly.
+
+Keep `pyproject.toml` because it provides local editable installation and command entry points. Publishing this package to PyPI can wait until the command contract is stable.
+
+## Install From Git
 
 ```bash
-pip install runninghub-cli
+git clone https://github.com/difyz9/runninghub-cli.git
+cd runninghub-cli
+./scripts/bootstrap.sh
 ```
 
-For local development:
+If your API key is in another `.env` file, bootstrap and verify in one go:
 
 ```bash
+./scripts/bootstrap.sh --doctor-env /absolute/path/to/.env
+```
+
+Manual install:
+
+```bash
+git clone https://github.com/difyz9/runninghub-cli.git
+cd runninghub-cli
+pip install "runninghub-sdk>=1.1.5" "typer>=0.9.0"
 pip install -e .
+```
+
+No package publication is required. After editable install, both commands are available:
+
+```bash
+runninghub --help
+runhub --help
 ```
 
 ## Auth
@@ -33,7 +57,7 @@ runninghub doctor --api-key your_api_key
 You can also load a `.env` file:
 
 ```bash
-runninghub doctor --env-file ./backend/.env
+runninghub doctor --env-file /path/to/.env
 ```
 
 ## Commands
@@ -50,6 +74,17 @@ runninghub run <id> --type webapp --node-overrides overrides.json
 ```
 
 `runhub` is also installed as a short alias.
+
+## Without Installing The CLI
+
+For one-off use, Hermes can run from a clone without installing the entry point:
+
+```bash
+pip install "runninghub-sdk>=1.1.5" "typer>=0.9.0"
+PYTHONPATH=src python -m runninghub_cli.main doctor
+```
+
+Editable install is still preferred because it gives Hermes stable `runninghub` and `runhub` commands.
 
 ## Node Overrides
 
@@ -92,4 +127,3 @@ Recommended agent flow:
 4. Build `node_overrides`
 5. `runninghub submit` or `runninghub run`
 6. If the task fails, inspect `error_type`, `error`, and `failed_reason`, then retry with a minimal payload change.
-
