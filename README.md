@@ -60,24 +60,70 @@ You can also load a `.env` file:
 runninghub doctor --env-file /path/to/.env
 ```
 
-## Commands
+## Manual Command Tutorial
+
+`runhub` is also installed as a short alias for `runninghub`.
+
+**Available commands:**
+
+| Command | Purpose |
+|---|---|
+| `runninghub doctor` | Check SDK, API key, and queue access. |
+| `runninghub detect <id>` | Detect whether an ID is a workflow or webapp/AI App. |
+| `runninghub inspect <id> --type <type>` | Inspect node and field structure. |
+| `runninghub submit` / `status` / `wait-download` | Submit, poll, then download in separate steps. |
+| `runninghub run` | Submit, wait, and download in one command. |
+| `runninghub upload <file> --kind <kind>` | Upload image, video, audio, or general file inputs. |
+| `runninghub self-update` | Update this editable Git checkout to a tagged release. |
+
+Manual workflow:
 
 ```bash
 runninghub doctor
 runninghub detect <workflow_or_webapp_id>
 runninghub inspect <id> --type workflow
 runninghub inspect <id> --type webapp
+```
+
+Create an `overrides.json` file after inspecting the node IDs and field names:
+
+```json
+[
+  {"nodeId":"43","fieldName":"text","fieldValue":"A cinematic coffee shop scene"}
+]
+```
+
+For local media inputs, put `@upload:` directly in `fieldValue`. The CLI uploads the file before submission and replaces it with the RunningHub `fileName`:
+
+```json
+[
+  {"nodeId":"167","fieldName":"image","fieldValue":"@upload:./model.jpg"},
+  {"nodeId":"52","fieldName":"video","fieldValue":"@upload:./dance.mp4"}
+]
+```
+
+Run everything in one step:
+
+```bash
+runninghub run <id> --type webapp --node-overrides overrides.json
+```
+
+Or run long tasks step by step:
+
+```bash
 runninghub submit <id> --type workflow --node-overrides overrides.json
 runninghub status <task_id>
 runninghub wait-download <id> <task_id>
-runninghub run <id> --type webapp --node-overrides overrides.json
+```
+
+Useful maintenance commands:
+
+```bash
 runninghub upload ./input.png --kind image
 runninghub upload ./input.mp4 --kind video
 runninghub self-update --dry-run
 runninghub self-update
 ```
-
-`runhub` is also installed as a short alias.
 
 ## Without Installing The CLI
 
