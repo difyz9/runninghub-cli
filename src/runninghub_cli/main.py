@@ -92,7 +92,7 @@ def submit(
         None,
         "--node-overrides",
         "-n",
-        help="JSON array, or path to a JSON file containing node_overrides",
+        help="JSON array, or path to a JSON file containing node_overrides; fieldValue supports @upload:PATH",
     ),
     instance_type: str = typer.Option("default", "--instance-type", help="RunningHub instance type"),
     use_personal_queue: bool = typer.Option(False, "--personal-queue", help="Use personal queue for workflows"),
@@ -163,7 +163,7 @@ def run_cmd(
         None,
         "--node-overrides",
         "-n",
-        help="JSON array, or path to a JSON file containing node_overrides",
+        help="JSON array, or path to a JSON file containing node_overrides; fieldValue supports @upload:PATH",
     ),
     output_dir: Optional[Path] = typer.Option(None, "--output-dir", help="Directory for downloaded outputs"),
     poll_interval: float = typer.Option(15, "--poll-interval", help="Polling interval in seconds"),
@@ -187,6 +187,42 @@ def run_cmd(
             timeout=timeout,
             instance_type=instance_type,
             use_personal_queue=use_personal_queue,
+        )
+        emit({"data": data})
+    except Exception as exc:
+        fail(exc)
+
+
+@app.command()
+def upload(
+    file: Path = typer.Argument(..., help="Local image/video/audio/file path to upload"),
+    kind: str = typer.Option("file", "--kind", "-k", help="image | video | audio | file"),
+    api_key: Optional[str] = common_api_key_option(),
+    env_file: Optional[Path] = common_env_file_option(),
+):
+    """Upload a local file to RunningHub media storage."""
+    try:
+        emit({"data": service.upload(file, kind=kind, api_key=api_key, env_file=env_file)})
+    except Exception as exc:
+        fail(exc)
+
+
+@app.command("self-update")
+def self_update_cmd(
+    repo_dir: Optional[Path] = typer.Option(None, "--repo-dir", help="runninghub-cli git checkout; defaults to this install"),
+    repo_url: str = typer.Option(service.DEFAULT_REPO_URL, "--repo-url", help="GitHub repository URL used for tag discovery"),
+    tag: Optional[str] = typer.Option(None, "--tag", help="Specific tag to install; defaults to latest remote tag"),
+    remote: str = typer.Option("origin", "--remote", help="Git remote name to fetch tags from"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Show target tag without changing files"),
+):
+    """Update this git checkout to the latest GitHub tag and reinstall editable CLI."""
+    try:
+        data = service.self_update(
+            repo_dir=repo_dir,
+            repo_url=repo_url,
+            tag=tag,
+            remote=remote,
+            dry_run=dry_run,
         )
         emit({"data": data})
     except Exception as exc:

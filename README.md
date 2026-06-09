@@ -71,6 +71,10 @@ runninghub submit <id> --type workflow --node-overrides overrides.json
 runninghub status <task_id>
 runninghub wait-download <id> <task_id>
 runninghub run <id> --type webapp --node-overrides overrides.json
+runninghub upload ./input.png --kind image
+runninghub upload ./input.mp4 --kind video
+runninghub self-update --dry-run
+runninghub self-update
 ```
 
 `runhub` is also installed as a short alias.
@@ -86,6 +90,82 @@ PYTHONPATH=src python -m runninghub_cli.main doctor
 
 Editable install is still preferred because it gives Hermes stable `runninghub` and `runhub` commands.
 
+## Upload Media
+
+Use `upload` when a workflow or AI App requires an input media file. The command reuses `runninghub-sdk` upload APIs and returns `fileName` plus `downloadUrl`.
+
+```bash
+runninghub upload ./input.png --kind image
+runninghub upload ./input.mp4 --kind video
+runninghub upload ./input.wav --kind audio
+runninghub upload ./input.bin --kind file
+```
+
+For image uploads, the CLI calls SDK `upload_image()`. For video/audio/general files, it calls SDK `upload_file()`.
+
+Typical agent flow:
+
+```bash
+runninghub upload ./input.png --kind image
+```
+
+For AI Apps/webapps, use the returned `fileName` as the relevant media `fieldValue` inside `node_overrides`:
+
+```json
+[
+  {"nodeId":"167","fieldName":"image","fieldValue":"226dd3950e650b9cf540bad4145d1e47d22a4e4c8885e66095979c2b292e2e90.jpg"},
+  {"nodeId":"52","fieldName":"video","fieldValue":"57012cfc3d5c779ca7d8ba06c6a743cc9837f5e947cf4f06bac55f02de27bfb1.mp4"}
+]
+```
+
+Use `downloadUrl` only when an inspected workflow field explicitly asks for a URL.
+
+You can also let `submit` or `run` upload media automatically by using an upload directive in `fieldValue`:
+
+```json
+[
+  {"nodeId":"167","fieldName":"image","fieldValue":"@upload:./model.jpg"},
+  {"nodeId":"52","fieldName":"video","fieldValue":"@upload:./dance.mp4"}
+]
+```
+
+`@upload:` uploads the file and replaces the value with `fileName`. Use `@upload-url:` only for fields that explicitly require `downloadUrl`.
+
+## Self Update
+
+Because this CLI is GitHub-first, updates happen by fetching Git tags from the repository and reinstalling the editable checkout.
+
+Check the latest tag without changing files:
+
+```bash
+runninghub self-update --dry-run
+```
+
+Update to the latest tag:
+
+```bash
+runninghub self-update
+```
+
+This requires the GitHub repository to have semantic version tags such as `v0.1.0`. Before the first tag exists, use normal git workflow:
+
+```bash
+git pull
+python -m pip install -e .
+```
+
+Install a specific tag:
+
+```bash
+runninghub self-update --tag v0.1.0
+```
+
+The command expects to run from an editable git checkout. By default it uses:
+
+```text
+https://github.com/difyz9/runninghub-cli.git
+```
+
 ## Node Overrides
 
 Node overrides use the standard RunningHub SDK format:
@@ -97,6 +177,18 @@ Node overrides use the standard RunningHub SDK format:
 ```
 
 You can pass overrides as an inline JSON string or as a file path.
+
+When converting a RunningHub AI App curl payload, take each `nodeInfoList` item and keep only the editable SDK fields:
+
+```json
+{
+  "nodeId": "167",
+  "fieldName": "image",
+  "fieldValue": "uploaded-file-name.jpg"
+}
+```
+
+Descriptions are useful for humans and agents, but they are not required in `node_overrides`.
 
 ## Agent Contract
 
