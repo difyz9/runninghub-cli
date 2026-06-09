@@ -129,6 +129,19 @@ def status(
         fail(exc)
 
 
+@app.command("task-detail")
+def task_detail_cmd(
+    task_id: str = typer.Argument(..., help="RunningHub task_id"),
+    api_key: Optional[str] = common_api_key_option(),
+    env_file: Optional[Path] = common_env_file_option(),
+):
+    """Query task status, outputs, and webhook detail for failure analysis."""
+    try:
+        emit({"data": service.task_detail(task_id, api_key=api_key, env_file=env_file)})
+    except Exception as exc:
+        fail(exc)
+
+
 @app.command("wait-download")
 def wait_download_cmd(
     identifier: str = typer.Argument(..., help="RunningHub workflow ID or AI App ID"),

@@ -73,6 +73,7 @@ runninghub doctor --env-file /path/to/.env
 | `runninghub inspect <id> --type <type>` | Inspect node and field structure. |
 | `runninghub submit` / `status` / `wait-download` | Submit, poll, then download in separate steps. |
 | `runninghub run` | Submit, wait, and download in one command. |
+| `runninghub task-detail <task_id>` | Fetch status, outputs, and webhook detail for failure analysis. |
 | `runninghub upload <file> --kind <kind>` | Upload image, video, audio, or general file inputs. |
 | `runninghub self-update` | Update this editable Git checkout to a tagged release. |
 
@@ -113,8 +114,17 @@ Or run long tasks step by step:
 ```bash
 runninghub submit <id> --type workflow --node-overrides overrides.json
 runninghub status <task_id>
+runninghub task-detail <task_id>
 runninghub wait-download <id> <task_id>
 ```
+
+If a workflow or webapp fails, inspect the JSON error first. `run` and `wait-download` include `task_id`, `failed_reason`, and best-effort `task_detail` when the SDK exposes it. If you only have a task ID, run:
+
+```bash
+runninghub task-detail <task_id>
+```
+
+Use the returned status, outputs, webhook callback data, and detail errors to adjust only the smallest necessary part of `overrides.json`, then retry.
 
 Useful maintenance commands:
 
@@ -264,4 +274,4 @@ Recommended agent flow:
 3. `runninghub inspect <id> --type <type>`
 4. Build `node_overrides`
 5. `runninghub submit` or `runninghub run`
-6. If the task fails, inspect `error_type`, `error`, and `failed_reason`, then retry with a minimal payload change.
+6. If the task fails, inspect `error_type`, `error`, `task_id`, `failed_reason`, and `task_detail`; if needed run `runninghub task-detail <task_id>`, then retry with a minimal payload change.

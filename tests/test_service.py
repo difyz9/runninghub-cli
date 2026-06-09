@@ -1,4 +1,5 @@
 import json
+from dataclasses import dataclass
 
 from runninghub_cli import service
 
@@ -17,6 +18,37 @@ class FakeClient:
 
     def upload_file(self, path):
         return FakeUploadedFile()
+
+
+@dataclass
+class FakeWebhookDetail:
+    task_id: str
+    callback_status: str
+    callback_response: str
+
+
+class FakeDetailClient:
+    def query_v2(self, task_id):
+        return {
+            "task_id": task_id,
+            "status": "FAILED",
+            "error_code": "805",
+            "error_message": "工作流运行失败",
+            "failed_reason": {"node_id": "99", "exception_message": "bad prompt"},
+        }
+
+    def get_status(self, task_id):
+        return "FAILED"
+
+    def get_outputs(self, task_id):
+        return [{"node_id": "99", "file_url": "https://example.test/error.txt"}]
+
+    def get_webhook_detail(self, task_id):
+        return FakeWebhookDetail(
+            task_id=task_id,
+            callback_status="FAILED",
+            callback_response="node 99 failed",
+        )
 
 
 def test_parse_overrides_inline_json():
@@ -97,3 +129,24 @@ def test_process_upload_overrides_supports_upload_url_prefix(tmp_path):
 def test_infer_upload_kind_falls_back_to_suffix(tmp_path):
     audio = tmp_path / "voice.wav"
     assert service.infer_upload_kind({"fieldName": "source"}, audio) == "audio"
+
+
+def test_task_detail_with_client_collects_failure_context():
+    detail = service.task_detail_with_client(FakeDetailClient(), "task-1")
+
+    assert detail["task_id"] == "task-1"
+    assert detail["status"] == "FAILED"
+    assert detail["error_code"] == "805"
+    assert detail["failed_reason"] == {"node_id": "99", "exception_message": "bad prompt"}
+    assert detail["query_v2"]["error_message"] == "工作流运行失败"
+    assert detail["outputs"] == [{"node_id": "99", "file_url": "https://example.test/error.txt"}]
+    assert detail["webhook_detail"]["callback_response"] == "node 99 failed"
+
+
+def test_error_payload_includes_task_detail_attribute():
+    exc = RuntimeError("failed")
+    exc.task_detail = {"task_id": "task-1", "status": "FAILED"}
+
+    payload = service.error_payload(exc)
+
+    assert payload["task_detail"] == {"task_id": "task-1", "status": "FAILED"}

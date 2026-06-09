@@ -73,6 +73,7 @@ For long tasks, submit first:
 ```bash
 runninghub submit <id> --type workflow --node-overrides overrides.json
 runninghub status <task_id>
+runninghub task-detail <task_id>
 runninghub wait-download <id> <task_id>
 ```
 
@@ -374,8 +375,15 @@ All commands return JSON on stdout. On failure, parse:
 - `code`
 - `task_id`
 - `failed_reason`
+- `task_detail`
 
-If a field is invalid, re-run `runninghub inspect` and choose a valid `fieldName`. If a task fails after submission, change only the minimum necessary payload field and retry.
+If `run` or `wait-download` fails after submission, first inspect the returned `task_id`, `failed_reason`, and `task_detail`. If the error JSON does not include enough context but has a task ID, run:
+
+```bash
+runninghub task-detail <task_id>
+```
+
+Use `task_detail.status`, `task_detail.outputs`, `task_detail.webhook_detail`, and `task_detail.detail_errors` to infer the likely failing node or parameter. If a field is invalid, re-run `runninghub inspect` and choose a valid `fieldName`. If a task fails during generation, change only the minimum necessary payload field and retry.
 
 ## Version Update
 

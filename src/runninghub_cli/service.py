@@ -383,6 +383,45 @@ def status(task_id: str, api_key: str | None = None, env_file: str | Path | None
     return {"task_id": task_id, "status": task_status.value}
 
 
+def task_detail_with_client(client: RunningHubClient, task_id: str) -> dict[str, Any]:
+    detail: dict[str, Any] = {"task_id": task_id, "detail_errors": {}}
+
+    try:
+        query_v2_result = to_plain(client.query_v2(task_id))
+        detail["query_v2"] = query_v2_result
+        if isinstance(query_v2_result, dict):
+            detail["status"] = query_v2_result.get("status")
+            detail["error_code"] = query_v2_result.get("error_code")
+            detail["error_message"] = query_v2_result.get("error_message")
+            detail["failed_reason"] = query_v2_result.get("failed_reason")
+    except Exception as exc:
+        detail["detail_errors"]["query_v2"] = str(exc)
+
+    try:
+        detail.setdefault("status", to_plain(client.get_status(task_id)))
+    except Exception as exc:
+        detail["detail_errors"]["status"] = str(exc)
+
+    try:
+        detail["outputs"] = to_plain(client.get_outputs(task_id))
+    except Exception as exc:
+        detail["detail_errors"]["outputs"] = str(exc)
+
+    try:
+        detail["webhook_detail"] = to_plain(client.get_webhook_detail(task_id))
+    except Exception as exc:
+        detail["detail_errors"]["webhook_detail"] = str(exc)
+
+    if not detail["detail_errors"]:
+        detail.pop("detail_errors")
+    return detail
+
+
+def task_detail(task_id: str, api_key: str | None = None, env_file: str | Path | None = None) -> dict[str, Any]:
+    with create_client(api_key, env_file) as client:
+        return task_detail_with_client(client, task_id)
+
+
 def wait_download(
     identifier: str,
     task_id: str,
@@ -395,11 +434,15 @@ def wait_download(
 ) -> dict[str, Any]:
     out_dir = Path(output_dir) if output_dir else DEFAULT_OUTPUT_ROOT / identifier / task_id
     with create_client(api_key, env_file) as client:
-        outputs = client.wait_for_completion(
-            task_id,
-            poll_interval=poll_interval,
-            timeout=timeout,
-        )
+        try:
+            outputs = client.wait_for_completion(
+                task_id,
+                poll_interval=poll_interval,
+                timeout=timeout,
+            )
+        except (TaskError, TimeoutError) as exc:
+            setattr(exc, "task_detail", task_detail_with_client(client, task_id))
+            raise
         paths = client.download_outputs(outputs, out_dir)
 
     files = [
@@ -591,4 +634,7 @@ def error_payload(exc: Exception) -> dict[str, Any]:
     if isinstance(exc, TimeoutError):
         payload["task_id"] = getattr(exc, "task_id", None)
         payload["timeout"] = getattr(exc, "timeout", None)
+    task_detail = getattr(exc, "task_detail", None)
+    if task_detail:
+        payload["task_detail"] = task_detail
     return payload
