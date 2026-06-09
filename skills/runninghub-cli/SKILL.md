@@ -383,7 +383,16 @@ If `run` or `wait-download` fails after submission, first inspect the returned `
 runninghub task-detail <task_id>
 ```
 
-Use `task_detail.status`, `task_detail.outputs`, `task_detail.webhook_detail`, and `task_detail.detail_errors` to infer the likely failing node or parameter. If a field is invalid, re-run `runninghub inspect` and choose a valid `fieldName`. If a task fails during generation, change only the minimum necessary payload field and retry.
+Use `task_detail.status`, `task_detail.error_code`, `task_detail.error_message`, `task_detail.failed_reason`, `task_detail.query_v2`, `task_detail.outputs`, `task_detail.webhook_detail`, and `task_detail.detail_errors` to infer the likely failing node or parameter.
+
+Retry policy for Hermes:
+
+1. Attempt 1: fix the most concrete issue from the failure data. Examples: replace an invalid `fieldName`, remove/adjust the node named in `failed_reason.node_id`, lower unsafe resolution/duration, or rewrite blocked prompts using safer neutral wording.
+2. Attempt 2: if the same workflow still fails, simplify the payload to only required user-facing inputs and preserve more defaults. Re-run `inspect` before changing node IDs or field names.
+3. Attempt 3: if the failure looks content-related, rewrite the prompt more conservatively; if it looks parameter-related, reduce only one parameter class at a time, such as duration, frame count, resolution, steps, or cfg.
+4. After 3 failed attempts for the same user request and target ID, stop retrying. Tell the user the task still failed, include the latest `task_id`, `error_code`, `error_message`, `failed_reason.node_id`, `failed_reason.node_name`, and `failed_reason.exception_message`, and ask the user to specify the exact intended change, acceptable prompt/content constraints, or which node/parameter should be adjusted next.
+
+If a field is invalid, re-run `runninghub inspect` and choose a valid `fieldName`. If a task fails during generation, change only the minimum necessary payload field per retry.
 
 ## Version Update
 
