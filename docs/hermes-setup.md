@@ -55,6 +55,7 @@ runninghub doctor
 runninghub detect <id>
 runninghub inspect <id> --type webapp
 runninghub run <id> --type webapp --node-overrides overrides.json
+runninghub run <id> --type webapp --access-password "$APP_ACCESS_PASSWORD" --node-overrides overrides.json
 runninghub upload /absolute/path/input.png --kind image
 runninghub upload /absolute/path/input.mp4 --kind video
 ```
@@ -100,3 +101,5 @@ Hermes prompt rule for media nodes:
 ```text
 If a RunningHub AI App node has fieldName=image, video, audio, or file and the user provides a local file, set that node's fieldValue to @upload:/absolute/path/to/file. The CLI uploads it before submission and replaces it with fileName. Preserve non-media node values from the user's payload. Write the final array as node_overrides and run the app with `runninghub run <app_id> --type webapp --node-overrides <file>`.
 ```
+
+If the AI App page is encrypted, use `--access-password "$APP_ACCESS_PASSWORD"` on `submit` or `run`. If `APP_ACCESS_PASSWORD` is not set, pause and ask the user to set it in their shell or private environment before submitting. Do not write real app passwords into README files, skills, case files, overrides, tests, logs, or committed examples.

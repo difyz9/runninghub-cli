@@ -109,6 +109,13 @@ Run everything in one step:
 runninghub run <id> --type webapp --node-overrides overrides.json
 ```
 
+For encrypted AI Apps/webapps, keep the password out of files and pass it through a private environment variable:
+
+```bash
+export APP_ACCESS_PASSWORD='<app_password>'
+runninghub run <id> --type webapp --access-password "$APP_ACCESS_PASSWORD" --node-overrides overrides.json
+```
+
 Or run long tasks step by step:
 
 ```bash

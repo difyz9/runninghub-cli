@@ -68,6 +68,14 @@ For a quick end-to-end validation:
 runninghub run <id> --type webapp --node-overrides overrides.json
 ```
 
+For encrypted AI Apps/webapps, include the access password through a private environment variable:
+
+```bash
+runninghub run <id> --type webapp --access-password "$APP_ACCESS_PASSWORD" --node-overrides overrides.json
+```
+
+If an encrypted app needs a password and `APP_ACCESS_PASSWORD` is missing, ask the user to set it in their shell or private environment before submitting. Do not request, print, store, or commit the real password in docs, skills, case files, overrides, tests, or logs.
+
 For long tasks, submit first:
 
 ```bash
@@ -354,6 +362,14 @@ Run with `--type webapp`.
 
 Use when the app requires matching image/video aspect ratio and exposes width, height, duration, image, and video nodes.
 
+Known posture migration app lines with the same payload shape. If the app is encrypted, use `--access-password "$APP_ACCESS_PASSWORD"`; if the variable is missing, ask the user to set it privately before submitting.
+
+| Line | App ID | Notes |
+|---|---|---|
+| A | `2046575818536652802` | Standard line. |
+| B | `2046896962057801729` | Same function; use to avoid peak failures. |
+| Plus | `2047005172739608578` | More stable and higher cost. |
+
 ```json
 [
   {"nodeId":"255","fieldName":"value","fieldValue":"10"},
@@ -365,6 +381,12 @@ Use when the app requires matching image/video aspect ratio and exposes width, h
 ```
 
 Keep image and video aspect ratio consistent. For vertical dance/selfie content use 720×1280; for walking landscape use 1280×720; for 4:3 walking use 1280×960.
+
+Run these encrypted AI Apps with:
+
+```bash
+runninghub run <app_id> --type webapp --access-password "$APP_ACCESS_PASSWORD" --node-overrides overrides.json
+```
 
 ## Failure Handling
 

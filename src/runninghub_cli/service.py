@@ -342,6 +342,7 @@ def submit(
     env_file: str | Path | None = None,
     instance_type: str = "default",
     use_personal_queue: bool = False,
+    access_password: str | None = None,
 ) -> dict[str, Any]:
     target_type = normalize_type(type_)
     node_overrides = overrides or []
@@ -351,10 +352,13 @@ def submit(
         modifier = build_modifier(node_overrides)
 
         if target_type == "webapp":
+            ai_app_options: dict[str, Any] = {"instance_type": instance_type}
+            if access_password:
+                ai_app_options["access_password"] = access_password
             task = client.run_ai_app_with_modifier(
                 webapp_id=identifier,
                 modifier=modifier,
-                instance_type=instance_type,
+                **ai_app_options,
             )
         else:
             task = client.run_with_modifier(
@@ -374,6 +378,7 @@ def submit(
         "prompt_tips": task.prompt_tips,
         "node_overrides": node_overrides,
         "uploads": uploads,
+        "access_password_used": bool(access_password) if target_type == "webapp" else False,
     }
 
 
@@ -477,6 +482,7 @@ def run(
     timeout: float = 1800,
     instance_type: str = "default",
     use_personal_queue: bool = False,
+    access_password: str | None = None,
 ) -> dict[str, Any]:
     submitted = submit(
         identifier,
@@ -486,6 +492,7 @@ def run(
         env_file=env_file,
         instance_type=instance_type,
         use_personal_queue=use_personal_queue,
+        access_password=access_password,
     )
     downloaded = wait_download(
         identifier,

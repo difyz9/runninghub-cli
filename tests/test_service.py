@@ -51,6 +51,38 @@ class FakeDetailClient:
         )
 
 
+class FakeTaskStatus:
+    value = "QUEUED"
+
+
+@dataclass
+class FakeTask:
+    task_id: str = "task-1"
+    task_status: FakeTaskStatus = FakeTaskStatus()
+    client_id: str = "client-1"
+    prompt_tips: str = ""
+
+
+class FakeSubmitClient:
+    def __init__(self):
+        self.ai_app_options = None
+        self.workflow_options = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, tb):
+        return False
+
+    def run_ai_app_with_modifier(self, webapp_id, modifier, **options):
+        self.ai_app_options = options
+        return FakeTask()
+
+    def run_with_modifier(self, workflow_id, modifier, **options):
+        self.workflow_options = options
+        return FakeTask()
+
+
 def test_parse_overrides_inline_json():
     overrides = service.parse_overrides(
         '[{"nodeId":"43","fieldName":"text","fieldValue":"hello"}]'
@@ -150,3 +182,28 @@ def test_error_payload_includes_task_detail_attribute():
     payload = service.error_payload(exc)
 
     assert payload["task_detail"] == {"task_id": "task-1", "status": "FAILED"}
+
+
+def test_submit_passes_access_password_to_webapp(monkeypatch):
+    fake_client = FakeSubmitClient()
+    monkeypatch.setattr(service, "create_client", lambda api_key=None, env_file=None: fake_client)
+
+    result = service.submit(
+        "2046575818536652802",
+        "webapp",
+        [],
+        access_password="test-password",
+    )
+
+    assert fake_client.ai_app_options["access_password"] == "test-password"
+    assert result["access_password_used"] is True
+
+
+def test_submit_does_not_mark_access_password_for_workflow(monkeypatch):
+    fake_client = FakeSubmitClient()
+    monkeypatch.setattr(service, "create_client", lambda api_key=None, env_file=None: fake_client)
+
+    result = service.submit("workflow-1", "workflow", [], access_password="ignored")
+
+    assert "access_password" not in fake_client.workflow_options
+    assert result["access_password_used"] is False

@@ -172,9 +172,17 @@ Use for one-person image AI App calls. Run with `--type webapp`.
 ]
 ```
 
-## AI App: Image + Video Garment Dance `2046575818536652802`
+## AI App: Image + Video Garment Dance / Posture Migration
 
-Use when the app requires matching image/video aspect ratio and exposes width, height, duration, image, and video nodes. Run with `--type webapp`.
+Use when the app requires matching image/video aspect ratio and exposes width, height, duration, image, and video nodes. Run with `--type webapp` and pass the app password with `--access-password "$APP_ACCESS_PASSWORD"` if the app is encrypted. If the variable is missing, ask the user to set it privately before submitting.
+
+Known equivalent app lines:
+
+| Line | App ID | Notes |
+|---|---|---|
+| A | `2046575818536652802` | Standard line. |
+| B | `2046896962057801729` | Same function; use to avoid peak failures. |
+| Plus | `2047005172739608578` | More stable and higher cost. |
 
 ```json
 [
@@ -187,3 +195,10 @@ Use when the app requires matching image/video aspect ratio and exposes width, h
 ```
 
 Keep image and video aspect ratio consistent. For vertical dance/selfie content use 720x1280; for walking landscape use 1280x720; for 4:3 walking use 1280x960.
+
+Example command:
+
+```bash
+export APP_ACCESS_PASSWORD='<app_password>'
+runninghub run 2046575818536652802 --type webapp --access-password "$APP_ACCESS_PASSWORD" --node-overrides overrides.json
+```

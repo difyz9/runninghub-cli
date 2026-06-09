@@ -96,6 +96,7 @@ def submit(
     ),
     instance_type: str = typer.Option("default", "--instance-type", help="RunningHub instance type"),
     use_personal_queue: bool = typer.Option(False, "--personal-queue", help="Use personal queue for workflows"),
+    access_password: Optional[str] = typer.Option(None, "--access-password", help="Access password for encrypted AI Apps/webapps"),
     api_key: Optional[str] = common_api_key_option(),
     env_file: Optional[Path] = common_env_file_option(),
 ):
@@ -110,6 +111,7 @@ def submit(
             env_file=env_file,
             instance_type=instance_type,
             use_personal_queue=use_personal_queue,
+            access_password=access_password,
         )
         emit({"data": data})
     except Exception as exc:
@@ -183,6 +185,7 @@ def run_cmd(
     timeout: float = typer.Option(1800, "--timeout", help="Timeout in seconds"),
     instance_type: str = typer.Option("default", "--instance-type", help="RunningHub instance type"),
     use_personal_queue: bool = typer.Option(False, "--personal-queue", help="Use personal queue for workflows"),
+    access_password: Optional[str] = typer.Option(None, "--access-password", help="Access password for encrypted AI Apps/webapps"),
     api_key: Optional[str] = common_api_key_option(),
     env_file: Optional[Path] = common_env_file_option(),
 ):
@@ -200,6 +203,7 @@ def run_cmd(
             timeout=timeout,
             instance_type=instance_type,
             use_personal_queue=use_personal_queue,
+            access_password=access_password,
         )
         emit({"data": data})
     except Exception as exc:
