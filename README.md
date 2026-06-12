@@ -4,6 +4,16 @@ Command-line and agent-facing tools for RunningHub workflows and AI Apps.
 
 `runninghub-cli` is a thin CLI built on top of [`runninghub-sdk`](https://pypi.org/project/runninghub-sdk/). It is designed for humans, scripts, and agents such as Hermes. Every command returns stable JSON on stdout.
 
+## Features
+
+- ✅ **Submit, poll, download** — end-to-end workflow/webapp execution
+- ✅ **Auto-upload media** — `@upload:` prefix in fieldValue uploads files automatically
+- ✅ **Task debugging** — detailed failure analysis with `task-detail`
+- ✅ **Marketplace discovery** — search, inspect, auto-test portal templates & AI Apps (`discover` subcommand)
+- ✅ **Hermes Skill export** — auto-generate `SKILL.md` from tested workflows (`discover export`)
+- ✅ **Agent-friendly JSON** — all commands return structured JSON on stdout
+- ✅ **Self-update** — git tag-based update mechanism
+
 ## Distribution Model
 
 `runninghub-cli` is intentionally **GitHub-first** for now. The stable public dependency is `runninghub-sdk` on PyPI; this CLI is a fast-moving agent workflow tool that Hermes can clone, inspect, and update directly.
@@ -60,24 +70,37 @@ You can also load a `.env` file:
 runninghub doctor --env-file /path/to/.env
 ```
 
-## Manual Command Tutorial
+---
 
-`runhub` is also installed as a short alias for `runninghub`.
+## Command Reference
 
-**Available commands:**
+### Core Commands
 
 | Command | Purpose |
-|---|---|
+|---------|---------|
 | `runninghub doctor` | Check SDK, API key, and queue access. |
 | `runninghub detect <id>` | Detect whether an ID is a workflow or webapp/AI App. |
 | `runninghub inspect <id> --type <type>` | Inspect node and field structure. |
-| `runninghub submit` / `status` / `wait-download` | Submit, poll, then download in separate steps. |
+| `runninghub submit` | Submit a task and return immediately with task_id. |
+| `runninghub status <task_id>` | Query task status. |
+| `runninghub wait-download` | Wait for completion and download outputs. |
 | `runninghub run` | Submit, wait, and download in one command. |
 | `runninghub task-detail <task_id>` | Fetch status, outputs, and webhook detail for failure analysis. |
 | `runninghub upload <file> --kind <kind>` | Upload image, video, audio, or general file inputs. |
 | `runninghub self-update` | Update this editable Git checkout to a tagged release. |
 
-Manual workflow:
+### Discover Commands (Marketplace + Auto-test + Export)
+
+| Command | Purpose |
+|---------|---------|
+| `runninghub discover search` | Search the RunningHub marketplace for workflows and AI Apps. |
+| `runninghub discover inspect <id>` | Deep-inspect a marketplace workflow or AI App structure. |
+| `runninghub discover test <id>` | Auto-test: detect type → build inputs → submit → wait → verify. |
+| `runninghub discover export <id>` | Test and export as a Hermes Agent `SKILL.md` file. |
+
+---
+
+## Quickstart: Core Workflow
 
 ```bash
 runninghub doctor
@@ -142,16 +165,123 @@ runninghub self-update --dry-run
 runninghub self-update
 ```
 
-## Without Installing The CLI
+---
 
-For one-off use, Hermes can run from a clone without installing the entry point:
+## Discover: Marketplace, Auto-test & Export
+
+The `discover` command group lets you browse the RunningHub marketplace, automatically test workflows, and export them as Hermes Agent skills — all without leaving the terminal.
+
+### 1. Search the Marketplace
+
+Search portal templates (workflows) and AI Apps by keyword:
 
 ```bash
-pip install "runninghub-sdk>=1.1.5" "typer>=0.9.0"
-PYTHONPATH=src python -m runninghub_cli.main doctor
+# Search workflows
+runninghub discover search --keyword "LTX" --type workflow --size 10
+
+# Search AI Apps
+runninghub discover search --keyword "视频" --type webapp --size 10
+
+# Search both
+runninghub discover search --keyword "换脸" --type both --size 5
 ```
 
-Editable install is still preferred because it gives Hermes stable `runninghub` and `runhub` commands.
+Optional filters:
+- `--sort RECOMMEND|NEWEST|POPULAR` — sort order (default: RECOMMEND)
+- `--page 2` — pagination
+- `--size 30` — results per page
+
+Response includes: name, description, tags, use count, like count, collect count, owner info, covers/previews.
+
+### 2. Inspect a Market Item
+
+Deep-inspect any workflow or AI App to see its node structure:
+
+```bash
+runninghub discover inspect <workflow_or_webapp_id>
+```
+
+For webapps, returns the full `nodeInfoList` (editable nodes with their defaults, types, descriptions).
+
+For workflows, returns the `byType` summary of all node classes and the editable field list.
+
+### 3. Auto-test a Workflow
+
+`discover test` automatically:
+1. Detects whether the ID is a workflow or AI App
+2. Inspects the node structure
+3. Generates smart test inputs (detects prompt/text nodes, uses defaults for others)
+4. Submits to RunningHub
+5. Polls until completion
+6. Reports elapsed time and output count
+
+```bash
+# With a custom test prompt
+runninghub discover test <id> --prompt "a cinematic sunset" --timeout 600
+
+# Default behavior (auto-generates prompt)
+runninghub discover test <id> --timeout 300
+```
+
+Output (multi-line JSON for progress tracking):
+```json
+{"ok": true, "phase": "detect", "type": "workflow"}
+{"ok": true, "phase": "generate", "overrides": [...]}
+{"ok": true, "phase": "result", "test": {
+  "ok": true, "taskId": "...", "duration": 45.2, "outputCount": 1, ...}}
+```
+
+### 4. Export as Hermes Agent Skill
+
+`discover export` tests a workflow, then generates a standalone `SKILL.md` file ready for `~/.hermes/skills/`:
+
+```bash
+# Full pipeline: test → export (recommended)
+runninghub discover export <id> \
+  --name my_awesome_skill \
+  --description "Generates awesome videos from text prompts" \
+  --prompt "test prompt" \
+  --timeout 600 \
+  --output-dir ./exported-skills
+
+# Export without testing (for known-good workflows)
+runninghub discover export <id> --no-test --output-dir ./skills
+```
+
+The generated `SKILL.md` contains:
+- YAML frontmatter (`name`, `runninghubId`, `runninghubType`)
+- Parameter descriptions
+- Verified request payload (if tested successfully)
+- Ready-to-run `runninghub-cli` command
+- Node mapping details
+
+To use on another machine:
+```bash
+cp exported-skills/*.md ~/.hermes/skills/
+```
+
+Hermes loads them automatically on the next session.
+
+### End-to-End Discovery Pipeline
+
+```bash
+# 1. Find relevant workflows
+runninghub discover search --keyword "动漫" --type workflow --size 5
+
+# 2. Inspect a promising one
+runninghub discover inspect 2037071836214730753
+
+# 3. Test and export as a Hermes skill
+runninghub discover export 2037071836214730753 \
+  --name txt2img_anime \
+  --prompt "a cute anime girl, studio ghibli style" \
+  --output-dir ./skills
+
+# 4. Load into Hermes
+cp ./skills/txt2img_anime.md ~/.hermes/skills/
+```
+
+---
 
 ## Upload Media
 
@@ -194,6 +324,8 @@ You can also let `submit` or `run` upload media automatically by using an upload
 
 `@upload:` uploads the file and replaces the value with `fileName`. Use `@upload-url:` only for fields that explicitly require `downloadUrl`.
 
+---
+
 ## Self Update
 
 Because this CLI is GitHub-first, updates happen by fetching Git tags from the repository and reinstalling the editable checkout.
@@ -229,6 +361,8 @@ The command expects to run from an editable git checkout. By default it uses:
 https://github.com/difyz9/runninghub-cli.git
 ```
 
+---
+
 ## Node Overrides
 
 Node overrides use the standard RunningHub SDK format:
@@ -253,6 +387,21 @@ When converting a RunningHub AI App curl payload, take each `nodeInfoList` item 
 
 Descriptions are useful for humans and agents, but they are not required in `node_overrides`.
 
+---
+
+## Without Installing The CLI
+
+For one-off use, Hermes can run from a clone without installing the entry point:
+
+```bash
+pip install "runninghub-sdk>=1.1.5" "typer>=0.9.0"
+PYTHONPATH=src python -m runninghub_cli.main doctor
+```
+
+Editable install is still preferred because it gives Hermes stable `runninghub` and `runhub` commands.
+
+---
+
 ## Agent Contract
 
 All commands write JSON to stdout:
@@ -274,11 +423,19 @@ Failures also return JSON and exit non-zero:
 }
 ```
 
-Recommended agent flow:
+### Recommended Agent Workflow
 
+#### For known workflows
 1. `runninghub doctor`
 2. `runninghub detect <id>`
 3. `runninghub inspect <id> --type <type>`
 4. Build `node_overrides`
 5. `runninghub submit` or `runninghub run`
 6. If the task fails, inspect `error_type`, `error`, `task_id`, `failed_reason`, and `task_detail`; if needed run `runninghub task-detail <task_id>`, then retry with a minimal payload change.
+
+#### For discovering new workflows
+1. `runninghub discover search --keyword "<user intent>" --type workflow`
+2. `runninghub discover inspect <id>` (for each promising result)
+3. `runninghub discover test <id> --prompt "<test prompt>"` (run a quick test)
+4. `runninghub discover export <id> --name <skill_name> --output-dir ./skills` (export successful ones)
+5. `cp ./skills/*.md ~/.hermes/skills/` (load into Hermes)

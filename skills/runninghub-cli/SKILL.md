@@ -40,6 +40,56 @@ If the API key lives in another project, pass its env file:
 runninghub doctor --env-file /absolute/path/to/.env
 ```
 
+## Marketplace Discovery
+
+When the user wants to find new workflows or AI Apps — or you need to explore what's available on RunningHub — use these commands:
+
+### Search the marketplace
+
+```bash
+# Search for workflows by keyword
+runninghub discover search --keyword "storyboard" --type workflow --size 10
+
+# Search for AI Apps
+runninghub discover search --keyword "video" --type webapp --size 10
+
+# Search both types
+runninghub discover search --keyword "anime" --type both --size 5
+```
+
+Optional: `--sort RECOMMEND|NEWEST|POPULAR`, `--page N`, `--size N`
+
+### Inspect a discovered item
+
+```bash
+runninghub discover inspect <workflow_or_webapp_id>
+```
+
+For **AI Apps**: returns node names, field names, field types, descriptions, and default values — everything needed to build a payload.
+
+For **workflows**: returns the class-type breakdown (e.g. `CLIPTextEncode`, `KSampler`, `LoadImage`) and the editable fields per node.
+
+### Auto-test before using
+
+```bash
+runninghub discover test <id> --prompt "a test prompt" --timeout 600
+```
+
+This automatically:
+1. Detects workflow vs AI App
+2. Inspects node structure
+3. Generates smart test inputs (detects prompt/text/image nodes)
+4. Submits and waits for completion
+5. Reports duration and output info
+
+### Export as a persistent Hermes Skill
+
+```bash
+runninghub discover export <id> --name my_skill --prompt "test" --output-dir ./skills
+```
+
+On success, generates a `SKILL.md` file with verified payload. Copy it to `~/.hermes/skills/` for permanent access.
+
 ## Detect Type
 
 ```bash

@@ -58,6 +58,12 @@ runninghub run <id> --type webapp --node-overrides overrides.json
 runninghub run <id> --type webapp --access-password "$APP_ACCESS_PASSWORD" --node-overrides overrides.json
 runninghub upload /absolute/path/input.png --kind image
 runninghub upload /absolute/path/input.mp4 --kind video
+
+# Discover, test, and export marketplace workflows as Hermes skills
+runninghub discover search --keyword "video" --type workflow --size 5
+runninghub discover inspect <id>
+runninghub discover test <id> --prompt "test" --timeout 300
+runninghub discover export <id> --name my_skill --prompt "test" --output-dir ./skills
 ```
 
 For long tasks:
