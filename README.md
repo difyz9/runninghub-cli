@@ -93,7 +93,7 @@ runninghub doctor --env-file /path/to/.env
 
 | Command | Purpose |
 |---------|---------|
-| `runninghub discover search` | Search the RunningHub marketplace for workflows and AI Apps. |
+| `runninghub discover search` | Search the marketplace (table output by default, `--format json` for agents). |
 | `runninghub discover inspect <id>` | Deep-inspect a marketplace workflow or AI App structure. |
 | `runninghub discover test <id>` | Auto-test: detect type → build inputs → submit → wait → verify. |
 | `runninghub discover export <id>` | Test and export as a Hermes Agent `SKILL.md` file. |
@@ -173,25 +173,47 @@ The `discover` command group lets you browse the RunningHub marketplace, automat
 
 ### 1. Search the Marketplace
 
-Search portal templates (workflows) and AI Apps by keyword:
+Search portal templates (workflows) and AI Apps by keyword. Results are displayed as a **human-readable table** by default, with JSON also available for programmatic use.
 
 ```bash
-# Search workflows
+# Search workflows (default: table view)
 runninghub discover search --keyword "LTX" --type workflow --size 10
 
 # Search AI Apps
-runninghub discover search --keyword "视频" --type webapp --size 10
+runninghub discover search --keyword "video" --type webapp --size 10
 
 # Search both
-runninghub discover search --keyword "换脸" --type both --size 5
+runninghub discover search --keyword "anime" --type both --size 5
+
+# JSON output for agents/scripts
+runninghub discover search --keyword "style transfer" --type workflow --size 3 --format json
 ```
 
 Optional filters:
 - `--sort RECOMMEND|NEWEST|POPULAR` — sort order (default: RECOMMEND)
 - `--page 2` — pagination
 - `--size 30` — results per page
+- `--format table|json` — output format (default: `table` for humans)
 
-Response includes: name, description, tags, use count, like count, collect count, owner info, covers/previews.
+Table output example:
+
+```
+====================================================================================================
+  📦 工作流 (Workflows) — 共 1234 条匹配  (共 5 条)
+====================================================================================================
+  ID                     名称                               使用       收藏     发布           作者
+  ────────────────────── ──────────────────────────────── ──────── ────── ──────────── ────────────────
+  1895719152445751298    FLUX Redux+ACE++ 换脸工作流          0        0      2025-03-01   设计师学Ai
+                         📝 使用方法：1. 上传脸部参考图和模特背景效果图2...
+                         🏷️  角色一致性  换脸  图生图
+                         🔗 https://www.runninghub.cn/workflow/1895719152445751298
+  1833762927504683010    【风格迁移换装 换脸】人像摄影                0        0      2024-09-19   Kohou
+                         📝 工作流名称：【风格迁移换装 换脸】人像摄影...
+                         🏷️  换脸  模特产品展示
+                         🔗 https://www.runninghub.cn/workflow/1833762927504683010
+```
+
+Each row shows: ID, name, usage count, favorites, publish date, author, description, tags, and a clickable web link.
 
 ### 2. Inspect a Market Item
 

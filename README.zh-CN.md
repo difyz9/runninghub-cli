@@ -99,7 +99,7 @@ runninghub doctor --env-file /path/to/.env
 
 | 命令 | 用途 |
 |------|------|
-| `runninghub discover search` | 搜索 RunningHub 市集的工作流和 AI App |
+| `runninghub discover search` | 搜索市集（默认表格输出，`--format json` 给 Agent 用） |
 | `runninghub discover inspect <id>` | 深度查看市集项目结构 |
 | `runninghub discover test <id>` | 自动测试：检测类型→构建参数→提交→等待→验证 |
 | `runninghub discover export <id>` | 测试通过后导出为 Hermes 可直接加载的 `SKILL.md` |
@@ -169,8 +169,10 @@ runninghub run <id> --type webapp --access-password "$APP_ACCESS_PASSWORD" --nod
 
 ### 1. 搜索市集
 
+按关键词搜索工作流和 AI App。默认输出**人可读的表格**，也支持 JSON 格式给脚本/Agent 使用。
+
 ```bash
-# 搜索工作流
+# 搜索工作流（默认表格视图）
 runninghub discover search --keyword "换脸" --type workflow --size 10
 
 # 搜索 AI App
@@ -178,14 +180,36 @@ runninghub discover search --keyword "视频" --type webapp --size 10
 
 # 同时搜索两种类型
 runninghub discover search --keyword "动漫" --type both --size 5
+
+# JSON 输出（Agent/脚本用）
+runninghub discover search --keyword "换脸" --type workflow --size 3 --format json
 ```
 
 可选参数：
 - `--sort RECOMMEND|NEWEST|POPULAR` — 排序方式（默认：推荐）
 - `--page 2` — 分页
 - `--size 30` — 每页条数
+- `--format table|json` — 输出格式（默认 `table`，给人看的）
 
-返回结果包含：名称、描述、标签、使用次数、点赞数、收藏数、作者信息、封面预览。
+表格输出示例：
+
+```
+====================================================================================================
+  📦 工作流 (Workflows) — 共 1234 条匹配  (共 5 条)
+====================================================================================================
+  ID                     名称                               使用       收藏     发布           作者
+  ────────────────────── ──────────────────────────────── ──────── ────── ──────────── ────────────────
+  1895719152445751298    FLUX Redux+ACE++ 换脸工作流          0        0      2025-03-01   设计师学Ai
+                         📝 使用方法：1. 上传脸部参考图和模特背景效果图2...
+                         🏷️  角色一致性  换脸  图生图
+                         🔗 https://www.runninghub.cn/workflow/1895719152445751298
+  1833762927504683010    【风格迁移换装 换脸】人像摄影                0        0      2024-09-19   Kohou
+                         📝 工作流名称：【风格迁移换装 换脸】人像摄影...
+                         🏷️  换脸  模特产品展示
+                         🔗 https://www.runninghub.cn/workflow/1833762927504683010
+```
+
+每条结果包含：ID、名称、使用次数、收藏数、发布日期、作者、简介、标签、可点击的网页链接。
 
 ### 2. 查看详情
 

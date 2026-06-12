@@ -262,15 +262,16 @@ discover_app = typer.Typer(
 
 @discover_app.command("search")
 def discover_search(
-    keyword: str = typer.Option("", "--keyword", "-k", help="Search keyword"),
+    keyword: str = typer.Option("", "--keyword", "-k", help="搜索关键词"),
     type_filter: str = typer.Option("workflow", "--type", "-t", help="workflow | webapp | both"),
-    page: int = typer.Option(1, "--page", "-p", help="Page number"),
-    size: int = typer.Option(20, "--size", "-s", help="Results per page"),
+    page: int = typer.Option(1, "--page", "-p", help="页码"),
+    size: int = typer.Option(20, "--size", "-s", help="每页条数"),
     sort: str = typer.Option("RECOMMEND", "--sort", help="RECOMMEND | NEWEST | POPULAR"),
+    output_format: str = typer.Option("table", "--format", "-f", help="table | json"),
     api_key: Optional[str] = common_api_key_option(),
     env_file: Optional[Path] = common_env_file_option(),
 ):
-    """Search RunningHub marketplace for workflows and AI Apps."""
+    """搜索 RunningHub 市集中的工作流和 AI App。"""
     from .discover import search_portal, search_webapps
 
     try:
@@ -282,7 +283,91 @@ def discover_search(
         if type_filter in ("webapp", "both"):
             results["webapps"] = search_webapps(client, keyword=keyword, page=page, size=size, sort=sort)
 
-        emit({"data": results})
+        if output_format == "json":
+            emit({"data": results})
+            return
+
+        # ── Table format ────────────────────────────────────────
+        def fmt_number(n: Any) -> str:
+            try:
+                v = int(str(n))
+                if v >= 10000:
+                    return f"{v/10000:.1f}w"
+                return str(v)
+            except (ValueError, TypeError):
+                return "0"
+
+        def fmt_time(ts: str) -> str:
+            """2026-05-11T18:42:21.000+00:00 -> 2026-05-11"""
+            if ts and len(ts) >= 10:
+                return ts[:10]
+            return ""
+
+        def print_table(records: list[dict], label: str, id_field: str = "id"):
+            if not records:
+                return
+            print(f"\n{'='*100}")
+            print(f"  {label}  (共 {len(records)} 条)")
+            print(f"{'='*100}")
+
+            # Header
+            print(f"  {'ID':<22} {'名称':<32} {'使用':<8} {'收藏':<6} {'发布':<12} {'作者':<16}")
+            print(f"  {'─'*22} {'─'*32} {'─'*8} {'─'*6} {'─'*12} {'─'*16}")
+
+            for r in records:
+                rid = str(r.get(id_field, ""))
+                name = (r.get("name") or "")[:30]
+                stats = r.get("statisticsInfo") or {}
+                use_cnt = fmt_number(stats.get("useCount", 0))
+                fav_cnt = fmt_number(stats.get("collectCount", 0))
+                pub = fmt_time(r.get("publishTime") or r.get("publish_time", ""))
+                owner = r.get("owner") or {}
+                author = (owner.get("name") or "")[:14]
+
+                link = f"https://www.runninghub.cn/workflow/{rid}" if id_field == "id" else ""
+
+                print(f"  {rid:<22} {name:<32} {use_cnt:<8} {fav_cnt:<6} {pub:<12} {author:<16}")
+                # Description line
+                desc = (r.get("desc") or "")[:90]
+                if desc:
+                    print(f"  {'':22} 📝 {desc}")
+                # Tags line
+                tags_list = [t.get("name", "") for t in (r.get("tags") or [])]
+                if tags_list:
+                    tags_str = "  ".join(tags_list[:4])
+                    print(f"  {'':22} 🏷️  {tags_str}")
+                if link:
+                    print(f"  {'':22} 🔗 {link}")
+                print()
+
+        # Print workflows
+        wf_records = (results.get("workflows") or {}).get("records") or []
+        if type_filter in ("workflow", "both") and wf_records:
+            total = (results.get("workflows") or {}).get("total", 0)
+            print_table(wf_records, f"📦 工作流 (Workflows) — 共 {total} 条匹配")
+
+        # Print webapps
+        wa_records = (results.get("webapps") or {}).get("records") or []
+        if type_filter in ("webapp", "both") and wa_records:
+            total = (results.get("webapps") or {}).get("total", 0)
+            # Webapp records have different structure, print basic info
+            print(f"\n{'='*100}")
+            print(f"  🧩 AI 应用 (Webapps) — 共 {total} 条匹配")
+            print(f"{'='*100}")
+            for r in wa_records:
+                rid = str(r.get("id", ""))
+                name = (r.get("name") or "")[:40]
+                desc = (r.get("desc") or "")[:80]
+                print(f"\n  🆔 {rid}")
+                print(f"  📛 {name}")
+                if desc:
+                    print(f"  📝 {desc}")
+
+        if not wf_records and not wa_records:
+            print("⚠️  没有找到匹配的结果")
+
+        print()
+
     except Exception as exc:
         fail(exc)
 
