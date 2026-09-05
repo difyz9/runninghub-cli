@@ -1,0 +1,204 @@
+{
+  "template_name": "加速版-MiniMax H3｜图文一键生视频",
+  "runninghub_id": "2084968440439336962",
+  "workflow_id": "2084935567606894593",
+  "type": "ai-app",
+  "group_name": "txt2video",
+  "tags": [
+    "ai-app",
+    "文生视频",
+    "图生视频",
+    "MiniMax H3",
+    "txt2video",
+    "img2video"
+  ],
+  "workflow_type": "txt2video",
+  "prompt_template": "",
+  "overall_score": 9.0,
+  "tested_at": "2026-09-02T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "plus",
+    "accessPassword": "",
+    "webappId": "2084968440439336962",
+    "nodeInfoList": [
+      {
+        "nodeId": "139",
+        "fieldName": "image",
+        "fieldValue": "None",
+        "fieldType": "image",
+        "description": "首帧图（不传图是文生）",
+        "required": false,
+        "llmHint": "可选。首帧图上传路径或 URL，使用 @upload: 前缀。不传则走纯文生视频。",
+        "example": "None"
+      },
+      {
+        "nodeId": "206",
+        "fieldName": "image",
+        "fieldValue": "None",
+        "fieldType": "image",
+        "description": "尾帧图（不传图是文生）",
+        "required": false,
+        "llmHint": "可选。尾帧图上传路径或 URL。不传则走纯文生视频（图生视频通常只需要首帧图）。",
+        "example": "None"
+      },
+      {
+        "nodeId": "225",
+        "fieldName": "select",
+        "fieldValue": "2",
+        "fieldType": "switch",
+        "description": "分辨率：2=720P，1=480P",
+        "required": false,
+        "llmHint": "720P 质量更高，推荐默认 2。",
+        "example": "2",
+        "range": "1=480P, 2=720P"
+      },
+      {
+        "nodeId": "205",
+        "fieldName": "select",
+        "fieldValue": "11",
+        "fieldType": "switch",
+        "description": "时长（秒）：fastIndex 1-11 对应 5s-15s",
+        "required": false,
+        "llmHint": "取值 1-11，分别对应 5 到 15 秒。例如 1=5s, 6=10s, 11=15s。",
+        "example": "6",
+        "range": "1=5s, 2=6s, 3=7s, 4=8s, 5=9s, 6=10s, 7=11s, 8=12s, 9=13s, 10=14s, 11=15s"
+      },
+      {
+        "nodeId": "115",
+        "fieldName": "aspect_ratio",
+        "fieldValue": "16:9 (Widescreen)",
+        "fieldType": "list",
+        "description": "设置比例",
+        "required": false,
+        "llmHint": "可选值：1:1 (Square), 2:3 (Portrait Photo), 3:2 (Photo), 3:4 (Portrait Standard), 4:3 (Standard), 9:16 (Portrait Widescreen), 16:9 (Widescreen), 21:9 (Ultrawide)。横屏视频推荐 16:9 (Widescreen)。",
+        "example": "16:9 (Widescreen)",
+        "range": "1:1, 2:3, 3:2, 3:4, 4:3, 9:16, 16:9, 21:9"
+      },
+      {
+        "nodeId": "134",
+        "fieldName": "prompt",
+        "fieldValue": "镜头缓慢匀速向前平移推进，黏土搭建林间林荫小路，满地黏土落叶，两旁蓬松黏土大树，一辆精致欧式复古小轿车缓慢平稳行驶，车身线条圆润优雅，车轮缓慢转动，微风带动黏土落叶轻轻飘飞，阳光穿透树叶形成柔光光斑，镜头从林间全景慢慢拉近至车身侧身特写，低饱和莫兰迪配色，氛围静谧唯美，行驶动态舒缓柔和，黏土质感细腻高级",
+        "fieldType": "string",
+        "description": "输入文本（提示词）",
+        "required": true,
+        "llmHint": "文生视频的提示词。建议描述镜头运动、主体、动作、光线、色彩风格与质感。中文效果最好。",
+        "example": "镜头缓慢匀速向前平移推进，..."
+      }
+    ]
+  },
+  "description": "加速版-MiniMax H3｜图文一键生视频：文生视频（不传首尾帧图）或图生视频（传首帧/尾帧图），支持分辨率、时长、比例调节。",
+  "outputType": "video",
+  "outputCount": "1",
+  "quality": "verified",
+  "call_guide": {
+    "method": "python -m scripts.runner --exec --mode ai-app --id 2084968440439336962 --nodes '<JSON>'",
+    "mode": "ai-app",
+    "identifier": "2084968440439336962",
+    "required": [
+      {
+        "arg": "134:prompt=<提示词>",
+        "label": "输入文本",
+        "hint": "文生视频提示词，中文描述镜头/主体/动作/光线/风格。"
+      }
+    ],
+    "optional": [
+      {
+        "arg": "139:image=@upload:<首帧图>",
+        "label": "首帧图（图生视频）",
+        "hint": "不传则文生视频。"
+      },
+      {
+        "arg": "206:image=@upload:<尾帧图>",
+        "label": "尾帧图（首尾帧过渡）",
+        "hint": "不传则文生视频。"
+      },
+      {
+        "arg": "225:select=<2|1>",
+        "label": "分辨率",
+        "hint": "2=720P（默认），1=480P。"
+      },
+      {
+        "arg": "205:select=<1-11>",
+        "label": "时长",
+        "hint": "1=5s ... 11=15s。"
+      },
+      {
+        "arg": "115:aspect_ratio=<比例>",
+        "label": "比例",
+        "hint": "如 16:9 (Widescreen)。"
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "文生视频（默认）",
+      "command": "python -m scripts.runner --exec --mode ai-app --id 2084968440439336962 --nodes '[{\"nodeId\":\"134\",\"fieldName\":\"prompt\",\"fieldValue\":\"一只橘猫在阳光下的窗台上伸懒腰，柔光，温馨治愈\"}]'",
+      "description": "只传 prompt，走纯文生视频"
+    },
+    {
+      "title": "图生视频",
+      "command": "python -m scripts.runner --exec --mode ai-app --id 2084968440439336962 --nodes '[{\"nodeId\":\"139\",\"fieldName\":\"image\",\"fieldValue\":\"@upload:./first.png\"},{\"nodeId\":\"134\",\"fieldName\":\"prompt\",\"fieldValue\":\"镜头缓慢推进\"}]'",
+      "description": "传首帧图 + prompt，走图生视频"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "首帧图",
+      "type": "image",
+      "required": false,
+      "nodeId": "139",
+      "fieldName": "image"
+    },
+    {
+      "label": "尾帧图",
+      "type": "image",
+      "required": false,
+      "nodeId": "206",
+      "fieldName": "image"
+    },
+    {
+      "label": "分辨率",
+      "type": "switch",
+      "required": false,
+      "nodeId": "225",
+      "fieldName": "select"
+    },
+    {
+      "label": "时长",
+      "type": "switch",
+      "required": false,
+      "nodeId": "205",
+      "fieldName": "select"
+    },
+    {
+      "label": "比例",
+      "type": "list",
+      "required": false,
+      "nodeId": "115",
+      "fieldName": "aspect_ratio"
+    },
+    {
+      "label": "提示词",
+      "type": "string",
+      "required": true,
+      "nodeId": "134",
+      "fieldName": "prompt"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "生成的视频",
+      "type": "video",
+      "count": 1,
+      "description": "MiniMax H3 生成的视频"
+    }
+  ],
+  "tips": [
+    "文生视频：不传首尾帧图即可，只传 prompt",
+    "提示词建议写清镜头运动、主体、动作、光线、色彩风格与质感",
+    "分辨率 720P 质量更高；时长 1-11 对应 5-15 秒",
+    "平均运行约 8-9 分钟，注意超时设置"
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "template_name": "SeedVR2 图生图",
+  "runninghub_id": "2059461117663076353",
+  "type": "workflow",
+  "group_name": "图生图",
+  "tags": [
+    "workflow",
+    "verified",
+    "图生图"
+  ],
+  "workflow_type": "img2img",
+  "prompt_template": "一只猫",
+  "overall_score": 10.0,
+  "tested_at": "2026-06-15T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "workflowId": "2059461117663076353",
+    "nodeInfoList": [
+      {
+        "nodeId": "65",
+        "fieldName": "image",
+        "fieldValue": "@upload:./input.png",
+        "fieldType": "image",
+        "description": "输入图片",
+        "required": true,
+        "llmHint": "用户提供的输入图片路径，使用 @upload: 前缀。",
+        "example": "@upload:./input.png"
+      },
+      {
+        "nodeId": "66",
+        "fieldName": "prompt",
+        "fieldValue": "一只猫",
+        "fieldType": "string",
+        "description": "图片描述/处理提示词",
+        "required": true,
+        "llmHint": "用中文描述对图片的处理要求。例：\"一只猫\"、\"把我变成赛博朋克风格\"",
+        "example": "一只猫"
+      }
+    ]
+  },
+  "description": "基于 SeedVR2 的图生图处理工作流",
+  "outputType": "image",
+  "outputCount": "2",
+  "quality": "verified",
+  "call_guide": {
+    "method": "runninghub run <ID> --type workflow --file '65:image=<输入图片>' --node '66:prompt=<描述> [--quality verified]",
+    "mode": "workflow",
+    "identifier": "2059461117663076353",
+    "required": [
+      {
+        "arg": "--file '65:image=<输入图片>'",
+        "label": "输入图片",
+        "hint": "需要处理和修改的原图。支持 @upload: 或 URL。"
+      },
+      {
+        "arg": "--node '66:prompt=<图片描述>'",
+        "label": "处理提示词",
+        "hint": "描述想要的处理效果。例：'将背景换成樱花树，保持人物不变'"
+      }
+    ],
+    "optional": []
+  },
+  "examples": [
+    {
+      "title": "图生图",
+      "command": "runninghub run 2059461117663076353 --type workflow --file '65:image=./input.png' --node '66:prompt=将背景换成海边日落，保持人物不变，暖色调'",
+      "description": "基于输入图片进行图生图处理"
+    },
+    {
+      "title": "风格转换",
+      "command": "runninghub run 2059461117663076353 --type workflow --file '65:image=./photo.jpg' --node '66:prompt=转换为水墨画风格，黑白灰为主，留白构图'",
+      "description": "转换图片风格"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "输入图片",
+      "type": "image",
+      "required": true,
+      "nodeId": "65",
+      "fieldName": "image"
+    },
+    {
+      "label": "处理提示词",
+      "type": "text",
+      "required": true,
+      "nodeId": "66",
+      "fieldName": "prompt"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "处理结果",
+      "type": "image",
+      "count": 1,
+      "description": "SeedVR2 处理后的图片"
+    }
+  ],
+  "tips": [
+    "提示词需要明确说明要修改什么、保持什么",
+    "支持中文提示词"
+  ]
+}

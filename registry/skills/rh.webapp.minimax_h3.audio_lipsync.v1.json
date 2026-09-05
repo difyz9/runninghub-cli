@@ -1,0 +1,69 @@
+{
+  "name": "rh.webapp.minimax_h3.audio_lipsync.v1",
+  "version": "1.0.0",
+  "description": "Audio-driven MiniMax H3 digital human speaking and singing lip-sync video webapp.",
+  "resource": {
+    "id": "2085189427940384769",
+    "type": "webapp"
+  },
+  "runtime": {
+    "defaultInstanceType": "standard",
+    "defaultTimeout": 1800,
+    "defaultPollInterval": 15
+  },
+  "inputs": {
+    "required": [
+      {
+        "name": "image_path",
+        "type": "image",
+        "description": "Local portrait image for the digital human"
+      },
+      {
+        "name": "audio_path",
+        "type": "audio",
+        "description": "Local speech or singing audio file"
+      }
+    ],
+    "optional": [
+      {
+        "name": "prompt_text",
+        "type": "string",
+        "default": "<image0>角色在深情的唱歌。",
+        "description": "Action or singing prompt; use <image0> to reference the uploaded image"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "param": "image_path",
+      "nodeId": "209",
+      "fieldName": "image",
+      "valueMode": "upload"
+    },
+    {
+      "param": "audio_path",
+      "nodeId": "215",
+      "fieldName": "audio",
+      "valueMode": "upload"
+    },
+    {
+      "param": "prompt_text",
+      "nodeId": "214",
+      "fieldName": "value",
+      "valueMode": "literal"
+    }
+  ],
+  "outputs": {
+    "minFiles": 1,
+    "expectedSuffixes": [".mp4"]
+  },
+  "verification": {
+    "lastTaskId": "2091677294841262082",
+    "lastStatus": "SUCCESS",
+    "lastInstanceType": "standard",
+    "lastOutputDir": "outputs/test_2085189427940384769_standard",
+    "lastOutput": "outputs/test_2085189427940384769_standard/r-h3-org-aijuxi_00001_p82-audio_maped_1787530082.mp4",
+    "lastTaskCostTime": "384",
+    "lastConsumeCoins": "77"
+  }
+}

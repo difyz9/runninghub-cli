@@ -1,0 +1,173 @@
+{
+  "template_name": "首尾帧过渡 (Wan 2.2)",
+  "runninghub_id": "2011275998205054977",
+  "type": "workflow",
+  "group_name": "其他",
+  "tags": [
+    "workflow",
+    "experimental",
+    "其他"
+  ],
+  "workflow_type": "first2last",
+  "prompt_template": "",
+  "overall_score": 5.0,
+  "tested_at": "2026-06-15T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "workflowId": "2011275998205054977",
+    "nodeInfoList": [
+      {
+        "nodeId": "43",
+        "fieldName": "image",
+        "fieldType": "image",
+        "description": "起始帧图片",
+        "required": true,
+        "llmHint": "用户提供的起始图片路径，使用 @upload: 前缀上传。",
+        "example": "@upload:./start_frame.png"
+      },
+      {
+        "nodeId": "44",
+        "fieldName": "image",
+        "fieldType": "image",
+        "description": "结束帧图片",
+        "required": true,
+        "llmHint": "用户提供的结束图片路径，使用 @upload: 前缀上传。",
+        "example": "@upload:./end_frame.png"
+      },
+      {
+        "nodeId": "30",
+        "fieldName": "positive_prompt",
+        "fieldValue": "smooth transition, seamless",
+        "fieldType": "string",
+        "description": "正向提示词",
+        "required": false,
+        "default": "smooth transition, seamless",
+        "llmHint": "描述期望的过渡效果。默认用 \"smooth transition, seamless\"。",
+        "example": "smooth transition, seamless, cinematic camera movement"
+      },
+      {
+        "nodeId": "27",
+        "fieldName": "seed",
+        "fieldType": "int",
+        "description": "随机种子（高噪采样器）",
+        "required": false,
+        "llmHint": "与 node 28 的 seed 同步设置或同时省略。",
+        "example": 42
+      },
+      {
+        "nodeId": "28",
+        "fieldName": "seed",
+        "fieldType": "int",
+        "description": "随机种子（低噪采样器）",
+        "required": false,
+        "llmHint": "与 node 27 的 seed 同步设置或同时省略。",
+        "example": 42
+      }
+    ]
+  },
+  "description": "从起始帧到结束帧生成过渡视频，Wan 2.2 模型（结构已定义，未完整测试）",
+  "outputType": "video",
+  "outputCount": "1",
+  "quality": "experimental",
+  "call_guide": {
+    "method": "runninghub run <ID> --type workflow --file '43:image=<起始帧>' --file '44:image=<结束帧>' [--node '30:positive_prompt=<提示词>']",
+    "mode": "workflow",
+    "identifier": "2011275998205054977",
+    "required": [
+      {
+        "arg": "--file '43:image=<起始帧>'",
+        "label": "起始帧图片",
+        "hint": "视频的起始画面。"
+      },
+      {
+        "arg": "--file '44:image=<结束帧>'",
+        "label": "结束帧图片",
+        "hint": "视频的结束画面。"
+      }
+    ],
+    "optional": [
+      {
+        "arg": "--node '30:positive_prompt=<提示词>'",
+        "label": "正向提示词",
+        "default": "空",
+        "hint": "描述过渡过程的提示词"
+      },
+      {
+        "arg": "--node '27:seed=<数字>'",
+        "label": "种子(高噪)",
+        "default": "随机",
+        "hint": "高噪采样器的随机种子"
+      },
+      {
+        "arg": "--node '28:seed=<数字>'",
+        "label": "种子(低噪)",
+        "default": "随机",
+        "hint": "低噪采样器的随机种子"
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "基本过渡",
+      "command": "runninghub run 2011275998205054977 --type workflow --file '43:image=./start.png' --file '44:image=./end.png'",
+      "description": "从起始帧自然过渡到结束帧"
+    },
+    {
+      "title": "带提示词过渡",
+      "command": "runninghub run 2011275998205054977 --type workflow --file '43:image=./scene1.jpg' --file '44:image=./scene2.jpg' --node '30:positive_prompt=smooth transition, cinematic'",
+      "description": "带提示词引导过渡方向"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "起始帧图片",
+      "type": "image",
+      "required": true,
+      "nodeId": "43",
+      "fieldName": "image"
+    },
+    {
+      "label": "结束帧图片",
+      "type": "image",
+      "required": true,
+      "nodeId": "44",
+      "fieldName": "image"
+    },
+    {
+      "label": "正向提示词",
+      "type": "text",
+      "required": false,
+      "nodeId": "30",
+      "fieldName": "positive_prompt"
+    },
+    {
+      "label": "随机种子(高噪)",
+      "type": "int",
+      "required": false,
+      "nodeId": "27",
+      "fieldName": "seed"
+    },
+    {
+      "label": "随机种子(低噪)",
+      "type": "int",
+      "required": false,
+      "nodeId": "28",
+      "fieldName": "seed"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "过渡视频",
+      "type": "video",
+      "count": 1,
+      "description": "Wan 2.2 首尾帧过渡生成的视频"
+    }
+  ],
+  "tips": [
+    "起始帧和结束帧风格/主题应有关联，过渡更自然",
+    "两个种子都固定可以复现相同结果"
+  ]
+}

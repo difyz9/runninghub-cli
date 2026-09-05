@@ -1,0 +1,102 @@
+{
+  "name": "rh.webapp.dhuman.minimax_h3.v1",
+  "version": "1.0.0",
+  "description": "MiniMax H3 digital human video generation webapp. Uses a portrait image and speech/action prompt to generate a presenter video.",
+  "resource": {
+    "id": "2084829861046214657",
+    "type": "webapp"
+  },
+  "runtime": {
+    "defaultInstanceType": "default",
+    "defaultTimeout": 1800,
+    "defaultPollInterval": 15
+  },
+  "inputs": {
+    "required": [
+      {
+        "name": "image_path",
+        "type": "image",
+        "description": "Local portrait image for the digital human"
+      }
+    ],
+    "optional": [
+      {
+        "name": "prompt_text",
+        "type": "string",
+        "default": "图1的人物在干净的演播室中面对镜头，自然清晰地说话，表情和动作协调。",
+        "description": "Speech, expression, and action prompt"
+      },
+      {
+        "name": "width",
+        "type": "int",
+        "default": 1280,
+        "description": "Output width"
+      },
+      {
+        "name": "height",
+        "type": "int",
+        "default": 720,
+        "description": "Output height"
+      },
+      {
+        "name": "start_time",
+        "type": "int",
+        "default": 4,
+        "description": "Generation start time in seconds"
+      },
+      {
+        "name": "end_time",
+        "type": "int",
+        "default": 10,
+        "description": "Generation end time in seconds"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "param": "image_path",
+      "nodeId": "25",
+      "fieldName": "image",
+      "valueMode": "upload"
+    },
+    {
+      "param": "prompt_text",
+      "nodeId": "46",
+      "fieldName": "text",
+      "valueMode": "literal"
+    },
+    {
+      "param": "width",
+      "nodeId": "47",
+      "fieldName": "value",
+      "valueMode": "literal"
+    },
+    {
+      "param": "height",
+      "nodeId": "48",
+      "fieldName": "value",
+      "valueMode": "literal"
+    },
+    {
+      "param": "start_time",
+      "nodeId": "51",
+      "fieldName": "value",
+      "valueMode": "literal"
+    },
+    {
+      "param": "end_time",
+      "nodeId": "52",
+      "fieldName": "value",
+      "valueMode": "literal"
+    }
+  ],
+  "outputs": {
+    "minFiles": 1,
+    "expectedSuffixes": [".mp4"]
+  },
+  "verification": {
+    "lastTaskId": "2091665735662399490",
+    "lastStatus": "SUCCESS",
+    "lastOutputDir": "outputs/test_2084829861046214657_default"
+  }
+}

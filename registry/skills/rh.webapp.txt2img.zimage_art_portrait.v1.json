@@ -1,0 +1,41 @@
+{
+  "name": "rh.webapp.txt2img.zimage_art_portrait.v1",
+  "version": "1.0.0",
+  "description": "Z-image 4K art portrait photography webapp. Single text prompt. Default style is Rembrandt-lit dreamy film photography; rewriting the prompt can produce character three-view (front/side/back) sheets.",
+  "resource": {
+    "id": "2081554936466329602",
+    "type": "webapp"
+  },
+  "runtime": {
+    "defaultInstanceType": "default",
+    "defaultTimeout": 1800,
+    "defaultPollInterval": 15
+  },
+  "inputs": {
+    "required": [
+      {
+        "name": "prompt_text",
+        "type": "string",
+        "description": "Full text prompt. Replaces the default art-portrait style. For a three-view character sheet, explicitly request 三视图/正面/侧面/背面/并排/白底."
+      }
+    ],
+    "optional": []
+  },
+  "mapping": [
+    {
+      "param": "prompt_text",
+      "nodeId": "53",
+      "fieldName": "text",
+      "valueMode": "literal"
+    }
+  ],
+  "outputs": {
+    "minFiles": 1,
+    "expectedSuffixes": [".png"],
+    "downloadPolicy": "keep_smallest"
+  },
+  "verification": {
+    "lastStatus": "SUCCESS",
+    "lastOutputDir": "outputs/2081554936466329602_test"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "rh.webapp.motion_transfer.wan22.v1",
+  "version": "1.0.0",
+  "description": "WAN2.2 action transfer webapp. Uses a reference image and a motion video to generate action transfer outputs.",
+  "resource": {
+    "id": "2087776618822594562",
+    "type": "webapp"
+  },
+  "runtime": {
+    "defaultInstanceType": "plus",
+    "defaultTimeout": 1800,
+    "defaultPollInterval": 15
+  },
+  "inputs": {
+    "required": [
+      {
+        "name": "reference_image_path",
+        "type": "image",
+        "description": "Local image path used as reference identity/style"
+      },
+      {
+        "name": "motion_video_path",
+        "type": "video",
+        "description": "Local video path used as motion source"
+      }
+    ],
+    "optional": []
+  },
+  "mapping": [
+    {
+      "param": "reference_image_path",
+      "nodeId": "57",
+      "fieldName": "image",
+      "valueMode": "upload"
+    },
+    {
+      "param": "motion_video_path",
+      "nodeId": "63",
+      "fieldName": "video",
+      "valueMode": "upload"
+    }
+  ],
+  "outputs": {
+    "minFiles": 1,
+    "expectedSuffixes": [".mp4"]
+  },
+  "verification": {
+    "lastTaskId": "2088921158509625345",
+    "lastStatus": "SUCCESS",
+    "lastOutputDir": "outputs/test_2087776618822594562_plus"
+  }
+}

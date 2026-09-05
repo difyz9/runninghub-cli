@@ -3,22 +3,16 @@
 from __future__ import annotations
 
 import json
-import os
-import re
-import sys
-import textwrap
 import time
-from dataclasses import asdict, is_dataclass
+from dataclasses import is_dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Any
 
 from runninghub_sdk import (
-    RunningHubClient,
     PortalTemplateListRequest,
-    PortalTemplateListResponse,
+    RunningHubClient,
     WebappListRequest,
-    WebappListResponse,
     modify_nodes,
 )
 from runninghub_sdk.exceptions import RunningHubError, TimeoutError
@@ -122,6 +116,7 @@ def inspect_item(client: RunningHubClient, identifier: str) -> dict[str, Any]:
                 "fieldName": n.field_name,
                 "fieldValue": n.field_value,
                 "fieldType": n.field_type,
+                "fieldData": n.field_data,
                 "description": n.description,
             }
             for n in demo.node_info_list

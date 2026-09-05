@@ -4,18 +4,27 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "runninghub-cli"
-version = "0.1.0"
-description = "Command-line and agent-facing tools for RunningHub workflows and AI Apps"
+version = "0.2.6"
+description = "RunningHub SDK + CLI + Hermes Agent Skill — workflow orchestration, media generation pipelines, and AI agent integration"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
-    { name = "RunningHub CLI" }
+    { name = "RunningHub" }
 ]
-keywords = ["runninghub", "comfyui", "cli", "agent", "workflow"]
+keywords = ["runninghub", "comfyui", "cli", "agent", "workflow", "media", "image", "video"]
+
 dependencies = [
-    "runninghub-sdk>=1.1.5",
+    "runninghub-sdk>=1.1.9",
     "typer>=0.9.0",
+    "httpx>=0.25.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.5.0",
 ]
 
 [project.scripts]
@@ -23,6 +32,53 @@ runninghub = "runninghub_cli.main:app"
 runhub = "runninghub_cli.main:app"
 
 [tool.setuptools.packages.find]
-where = ["src"]
-include = ["runninghub_cli*"]
+where = ["src", "."]
+include = ["runninghub_cli*", "scripts*"]
 
+# ── Ruff: fast Python linter & formatter ─────────────────────
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "YTT",  # flake8-2020
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+    "RUF",  # ruff-specific
+]
+ignore = [
+    "E501",   # line-too-long (handled by formatter)
+    "B904",   # raise-without-from-inside-except (too noisy for now)
+    "RUF001", # ambiguous-characters (Chinese punctuation is intentional)
+    "RUF002", # ambiguous-characters in docstrings
+    "RUF003", # ambiguous-characters in comments
+]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/*.py" = ["UP006", "UP007", "UP035"]  # allow old-style annotations in scripts/
+"src/runninghub_cli/main.py" = ["B008"]        # typer requires calls in arg defaults
+"src/runninghub_cli/commands/*.py" = ["B008"]  # same for command groups
+"tests/*.py" = ["B018", "S101"]                # allow bare asserts in tests
+"__init__.py" = ["F401"]                        # allow unused imports in __init__
+
+# ── pytest ───────────────────────────────────────────────────
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+minversion = "8.0"
+log_cli_level = "WARNING"
+
+# ── mypy: optional static type checking ──────────────────────
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+check_untyped_defs = false

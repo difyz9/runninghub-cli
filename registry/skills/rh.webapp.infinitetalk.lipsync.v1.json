@@ -1,0 +1,53 @@
+{
+  "name": "rh.webapp.infinitetalk.lipsync.v1",
+  "version": "1.0.0",
+  "description": "InfiniTetalk emotional talking-head lip-sync video webapp. Uses a portrait image and audio to generate a digital human video.",
+  "resource": {
+    "id": "2080554801468887041",
+    "type": "webapp"
+  },
+  "runtime": {
+    "defaultInstanceType": "plus",
+    "defaultTimeout": 1800,
+    "defaultPollInterval": 15
+  },
+  "inputs": {
+    "required": [
+      {
+        "name": "image_path",
+        "type": "image",
+        "description": "Local portrait image for the digital human"
+      },
+      {
+        "name": "audio_path",
+        "type": "audio",
+        "description": "Local speech or voice audio file for lip sync"
+      }
+    ],
+    "optional": []
+  },
+  "mapping": [
+    {
+      "param": "image_path",
+      "nodeId": "180",
+      "fieldName": "image",
+      "valueMode": "upload"
+    },
+    {
+      "param": "audio_path",
+      "nodeId": "6",
+      "fieldName": "audio",
+      "valueMode": "upload"
+    }
+  ],
+  "outputs": {
+    "minFiles": 1,
+    "expectedSuffixes": [".mp4"]
+  },
+  "verification": {
+    "lastTaskId": "2091669893480148994",
+    "lastStatus": "RUNNING",
+    "lastInstanceType": "plus",
+    "lastOutputDir": "outputs/test_2080554801468887041_plus"
+  }
+}

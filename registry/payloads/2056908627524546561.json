@@ -1,0 +1,84 @@
+{
+  "template_name": "Flux 多参考图风格融合",
+  "runninghub_id": "2056908627524546561",
+  "type": "workflow",
+  "group_name": "style_fusion",
+  "tags": [
+    "workflow",
+    "verified",
+    "style_fusion"
+  ],
+  "workflow_type": "img2img",
+  "prompt_template": "",
+  "overall_score": 10.0,
+  "tested_at": "2026-06-15T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "workflowId": "2056908627524546561",
+    "nodeInfoList": [
+      {
+        "nodeId": "171",
+        "fieldName": "image",
+        "fieldValue": "@upload:./style_ref.png",
+        "fieldType": "image",
+        "description": "参考图片",
+        "required": true,
+        "llmHint": "风格参考图片，使用 @upload: 上传。",
+        "example": "@upload:./style_ref.png"
+      }
+    ]
+  },
+  "description": "基于 Flux 模型的多种参考图风格融合生成",
+  "outputType": "image",
+  "outputCount": "12",
+  "quality": "verified",
+  "call_guide": {
+    "method": "runninghub run <ID> --type workflow --file '171:image=<参考图>'",
+    "mode": "workflow",
+    "identifier": "2056908627524546561",
+    "required": [
+      {
+        "arg": "--file '171:image=<参考图片>'",
+        "label": "参考图片",
+        "hint": "想融合其风格或元素的参考图。支持 @upload: 或 URL。"
+      }
+    ],
+    "optional": []
+  },
+  "examples": [
+    {
+      "title": "风格融合",
+      "command": "runninghub run 2056908627524546561 --type workflow --file '171:image=./style_ref.jpg'",
+      "description": "上传参考图，Flux 模型融合风格生成新图"
+    },
+    {
+      "title": "人物+风格",
+      "command": "runninghub run 2056908627524546561 --type workflow --file '171:image=@upload:./character.png'",
+      "description": "将人物图片与 Flux 风格融合"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "参考图片",
+      "type": "image",
+      "required": true,
+      "nodeId": "171",
+      "fieldName": "image"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "融合结果",
+      "type": "image",
+      "count": 1,
+      "description": "Flux 多参考图风格融合生成的图片"
+    }
+  ],
+  "tips": [
+    "提供高质量、风格鲜明的参考图效果最好",
+    "可以是人物、风景、画作等任意风格参考"
+  ]
+}

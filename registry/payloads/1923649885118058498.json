@@ -1,0 +1,84 @@
+{
+  "template_name": "Wan I2V 通用视频生成",
+  "runninghub_id": "1923649885118058498",
+  "type": "workflow",
+  "group_name": "其他",
+  "tags": [
+    "workflow",
+    "unstable",
+    "其他"
+  ],
+  "workflow_type": "img2vid",
+  "prompt_template": "一只猫在草地上玩耍",
+  "overall_score": 5.0,
+  "tested_at": "2026-06-15T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "workflowId": "1923649885118058498",
+    "nodeInfoList": [
+      {
+        "nodeId": "73",
+        "fieldName": "positive",
+        "fieldType": "string",
+        "description": "正向提示词",
+        "required": true,
+        "llmHint": "用中文描述视频场景和动作。",
+        "example": "一只猫在草地上玩耍"
+      }
+    ]
+  },
+  "description": "基于 Wan 模型的通用图片生成视频（部分测试未通过）",
+  "outputType": "video",
+  "outputCount": "1",
+  "quality": "unstable",
+  "call_guide": {
+    "method": "runninghub run <ID> --type workflow --node '73:positive=<英文提示词>'",
+    "mode": "workflow",
+    "identifier": "1923649885118058498",
+    "required": [
+      {
+        "arg": "--node '73:positive=<英文提示词>'",
+        "label": "正向提示词",
+        "hint": "英文描述画面内容。例如：'a majestic wolf standing on a cliff, aurora borealis, cinematic lighting, 8K'"
+      }
+    ],
+    "optional": []
+  },
+  "examples": [
+    {
+      "title": "文生视频",
+      "command": "runninghub run 1923649885118058498 --type workflow --node '73:positive=a cinematic scene of a futuristic city, neon lights, flying cars, volumetric lighting, 8K'",
+      "description": "用英文正向提示词生成视频"
+    },
+    {
+      "title": "风景视频",
+      "command": "runninghub run 1923649885118058498 --type workflow --node '73:positive=a serene mountain lake at sunset, misty clouds, golden light reflection, cinematic, 4K'",
+      "description": "优美风景视频生成"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "正向提示词",
+      "type": "text",
+      "required": true,
+      "nodeId": "73",
+      "fieldName": "positive"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "生成视频",
+      "type": "video",
+      "count": 1,
+      "description": "由 Wan I2V 生成的通用视频"
+    }
+  ],
+  "tips": [
+    "提示词必须用英文",
+    "建议在提示词中加入 'cinematic', '4K', 'high quality' 等画质词",
+    "Wan I2V 对动态场景效果较好"
+  ]
+}

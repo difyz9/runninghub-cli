@@ -1,0 +1,89 @@
+{
+  "fields": {
+    "name": "接口名称",
+    "resource_id": "资源ID",
+    "resource_type": "接口类型",
+    "instance_type": "运行模式",
+    "inputs": "输入参数",
+    "status": "联调状态",
+    "script_files": "独立脚本",
+    "artifact_files": "联调产物"
+  },
+  "interfaces": [
+    {
+      "name": "Krea2 photoreal 4K 文生图",
+      "resource_id": "2082295063975120897",
+      "resource_type": "webapp",
+      "instance_type": "default",
+      "inputs": "64.text: prompt_text",
+      "status": "SUCCESS",
+      "script_files": ["../scripts/standalone_skills/rh.webapp.txt2img.krea2_photoreal.v1.py"],
+      "artifact_files": ["../outputs/test_2082295063975120897_default/ComfyUI_00001_fqink_1786926085.png"]
+    },
+    {
+      "name": "MiniMax H3 数字人",
+      "resource_id": "2084829861046214657",
+      "resource_type": "webapp",
+      "instance_type": "default",
+      "inputs": "25.image + 46.text + 47/48.value + 51/52.value",
+      "status": "SUCCESS",
+      "script_files": ["../scripts/standalone_skills/rh.webapp.dhuman.minimax_h3.v1.py"],
+      "artifact_files": ["../outputs/test_2084829959834660866_default/ComfyUI_00001_ftoud_1786886071.png"]
+    },
+    {
+      "name": "InfiniTetalk 对口型",
+      "resource_id": "2080554801468887041",
+      "resource_type": "webapp",
+      "instance_type": "plus",
+      "inputs": "180.image + 6.audio",
+      "status": "SUCCESS",
+      "script_files": ["../scripts/standalone_skills/rh.webapp.infinitetalk.lipsync.v1.py"],
+        "artifact_files": [
+        "../outputs/test_2088378137674604546_default/audio_minimax_music3_00001_ecxqx_1786887767.mp3"
+      ]
+    },
+    {
+      "name": "数字人表情调节",
+      "resource_id": "2081607154108289025",
+      "resource_type": "webapp",
+      "instance_type": "standard",
+      "inputs": "167.image + 390.text + 285/291/292.value",
+      "status": "SUCCESS",
+      "script_files": ["../scripts/standalone_skills/rh.webapp.expression.dhuman.v1.py"],
+      "artifact_files": ["../outputs/test_2081607154108289025_standard/qq_00001_p80-audio_parjz_1787529065.mp4"]
+    },
+    {
+      "name": "音频驱动 MiniMax H3 对口型",
+      "resource_id": "2085189427940384769",
+      "resource_type": "webapp",
+      "instance_type": "standard",
+      "inputs": "209.image + 215.audio + 214.value",
+      "status": "SUCCESS",
+      "script_files": ["../scripts/standalone_skills/rh.webapp.minimax_h3.audio_lipsync.v1.py"],
+      "artifact_files": [
+        "../outputs/test_2085189427940384769_standard/r-h3-org-aijuxi_00001_p82-audio_maped_1787530082.mp4",
+        "../outputs/test_2088378137674604546_default/audio_minimax_music3_00001_ecxqx_1786887767.mp3"
+      ]
+    },
+    {
+      "name": "Z-image 4K 艺术人像摄影（支持三视图）",
+      "resource_id": "2081554936466329602",
+      "resource_type": "webapp",
+      "instance_type": "default",
+      "inputs": "53.text: prompt_text",
+      "status": "SUCCESS",
+      "script_files": ["../scripts/standalone_skills/rh.webapp.txt2img.zimage_art_portrait.v1.py"],
+      "artifact_files": ["../outputs/zimage_dedup_test/rh.webapp.txt2img.zimage_art_portrait.v1_outputs_20260825_080918/ComfyUI_00001_uqkpd_1787616598.png"]
+    },
+    {
+      "name": "MiniMax H3 FL2VA 开源版图生视频",
+      "resource_id": "2089409319493263361",
+      "resource_type": "webapp",
+      "instance_type": "default",
+      "inputs": "4.image + 7.prompt",
+      "status": "SUCCESS",
+      "script_files": ["../scripts/standalone_skills/rh.webapp.img2vid.minimax_h3_fl2va_oss.v1.py"],
+      "artifact_files": ["../outputs/img2vid_skill_test/rh.webapp.img2vid.minimax_h3_fl2va_oss.v1_outputs_20260825_081404/fl2va_first_frame_00001_ppdbk_1787617017.mp4"]
+    }
+  ]
+}

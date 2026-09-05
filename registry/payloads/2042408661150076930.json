@@ -1,0 +1,84 @@
+{
+  "template_name": "Z-Image 文生图 AI 应用",
+  "runninghub_id": "2042408661150076930",
+  "type": "ai-app",
+  "group_name": "portrait",
+  "tags": [
+    "ai-app",
+    "verified",
+    "portrait"
+  ],
+  "workflow_type": "txt2img",
+  "prompt_template": "a beautiful woman in traditional Chinese dress, cherry blossom tree, highly detailed, 8K",
+  "overall_score": 10.0,
+  "tested_at": "2026-06-15T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "webappId": "2042408661150076930",
+    "nodeInfoList": [
+      {
+        "nodeId": "163",
+        "fieldName": "text",
+        "fieldValue": "a beautiful woman in traditional Chinese dress, cherry blossom tree, highly detailed, 8K",
+        "fieldType": "string",
+        "description": "正向提示词",
+        "required": true,
+        "llmHint": "用英文编写详细图片描述，包含画质词和风格。",
+        "example": "a beautiful woman in traditional Chinese dress, cherry blossom tree, highly detailed, 8K"
+      }
+    ]
+  },
+  "description": "Z-Image 文生图 AI 应用，通用图片生成，节点 163.text=prompt",
+  "outputType": "image",
+  "outputCount": "1",
+  "quality": "verified",
+  "call_guide": {
+    "method": "runninghub run <ID> --type webapp --node '163:text=<提示词>'",
+    "mode": "webapp",
+    "identifier": "2042408661150076930",
+    "required": [
+      {
+        "arg": "--node '163:text=<提示词>'",
+        "label": "正向提示词",
+        "hint": "描述画面内容的提示词，支持中文。例：'一个穿汉服的女孩在樱花树下'"
+      }
+    ],
+    "optional": []
+  },
+  "examples": [
+    {
+      "title": "文生图",
+      "command": "runninghub run 2042408661150076930 --type webapp --node '163:text=一个穿汉服的女孩站在樱花树下，花瓣飘落，柔光'",
+      "description": "Z-Image 文生图"
+    },
+    {
+      "title": "英文提示词",
+      "command": "runninghub run 2042408661150076930 --type webapp --node '163:text=a cyberpunk city street at night, neon signs, rain, cinematic lighting'",
+      "description": "也支持英文提示词"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "正向提示词",
+      "type": "text",
+      "required": true,
+      "nodeId": "163",
+      "fieldName": "text"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "生成图片",
+      "type": "image",
+      "count": 1,
+      "description": "Z-Image 生成的图片"
+    }
+  ],
+  "tips": [
+    "支持中文提示词，比英文工作流更友好",
+    "建议描述主体+环境+光线+风格"
+  ]
+}

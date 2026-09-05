@@ -1,0 +1,161 @@
+{
+  "template_name": "豆包 Seedance 视频生成",
+  "runninghub_id": "2004066004755988481",
+  "type": "workflow",
+  "group_name": "文生视频",
+  "tags": [
+    "workflow",
+    "verified",
+    "文生视频"
+  ],
+  "workflow_type": "txt2vid",
+  "prompt_template": "一只可爱的橘猫在草地上打滚，阳光明媚",
+  "overall_score": 10.0,
+  "tested_at": "2026-06-15T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "workflowId": "2004066004755988481",
+    "nodeInfoList": [
+      {
+        "nodeId": "1",
+        "fieldName": "prompt",
+        "fieldValue": "一只可爱的橘猫在草地上打滚，阳光明媚",
+        "fieldType": "string",
+        "description": "视频描述提示词",
+        "required": true,
+        "llmHint": "用中文编写视频场景描述。例：\"一只可爱的橘猫在草地上打滚，阳光明媚\"",
+        "example": "一只可爱的橘猫在草地上打滚，阳光明媚"
+      },
+      {
+        "nodeId": "1",
+        "fieldName": "seed",
+        "fieldValue": 42,
+        "fieldType": "int",
+        "description": "随机种子",
+        "required": false,
+        "llmHint": "可选。固定种子可复现结果。",
+        "example": 42
+      },
+      {
+        "nodeId": "1",
+        "fieldName": "duration",
+        "fieldValue": 5,
+        "fieldType": "string",
+        "description": "视频时长（秒）",
+        "required": false,
+        "default": "5",
+        "llmHint": "默认5秒。",
+        "example": "5"
+      },
+      {
+        "nodeId": "1",
+        "fieldName": "aspect_ratio",
+        "fieldValue": "16:9",
+        "fieldType": "string",
+        "description": "画面比例",
+        "required": false,
+        "default": "16:9",
+        "llmHint": "常见值：\"16:9\"（横屏）、\"9:16\"（竖屏）、\"1:1\"（正方形）",
+        "example": "16:9"
+      }
+    ]
+  },
+  "description": "Doubao/Seedance 文生视频工作流，2节点（RH_Doubao_Seedance + SaveVideo）",
+  "outputType": "video",
+  "outputCount": "1",
+  "quality": "verified",
+  "call_guide": {
+    "method": "runninghub run <ID> --type workflow --node '1:prompt=<描述>' [--node '1:duration=<秒>'] [--node '1:aspect_ratio=<比例>']",
+    "mode": "workflow",
+    "identifier": "2004066004755988481",
+    "required": [
+      {
+        "arg": "--node '1:prompt=<视频描述>'",
+        "label": "视频描述提示词",
+        "hint": "用英文或中文描述视频画面内容。例：'a cinematic city flythrough at night, neon lights'"
+      }
+    ],
+    "optional": [
+      {
+        "arg": "--node '1:seed=<数字>'",
+        "label": "随机种子",
+        "default": "随机",
+        "hint": "固定种子可复现相同结果，不传则随机"
+      },
+      {
+        "arg": "--node '1:duration=<秒>'",
+        "label": "视频时长",
+        "default": "5",
+        "hint": "生成视频的长度，单位秒，范围1-10"
+      },
+      {
+        "arg": "--node '1:aspect_ratio=<比例>'",
+        "label": "画面比例",
+        "default": "16:9",
+        "hint": "如 16:9, 9:16, 1:1"
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "文生视频",
+      "command": "runninghub run 2004066004755988481 --type workflow --node '1:prompt=a cinematic city flythrough at night, neon lights, rain, volumetric lighting'",
+      "description": "用描述文本生成视频"
+    },
+    {
+      "title": "指定时长",
+      "command": "runninghub run 2004066004755988481 --type workflow --node '1:prompt=a cat playing in sunny garden' --node '1:duration=8'",
+      "description": "8秒视频"
+    },
+    {
+      "title": "竖屏视频",
+      "command": "runninghub run 2004066004755988481 --type workflow --node '1:prompt=a girl dancing' --node '1:aspect_ratio=9:16'",
+      "description": "抖音/小红书竖屏比例"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "视频描述",
+      "type": "text",
+      "required": true,
+      "nodeId": "1",
+      "fieldName": "prompt"
+    },
+    {
+      "label": "随机种子",
+      "type": "int",
+      "required": false,
+      "nodeId": "1",
+      "fieldName": "seed"
+    },
+    {
+      "label": "视频时长",
+      "type": "int",
+      "required": false,
+      "nodeId": "1",
+      "fieldName": "duration"
+    },
+    {
+      "label": "画面比例",
+      "type": "string",
+      "required": false,
+      "nodeId": "1",
+      "fieldName": "aspect_ratio"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "生成视频",
+      "type": "video",
+      "count": 1,
+      "description": "豆包 Seedance 生成的文生视频结果"
+    }
+  ],
+  "tips": [
+    "提示词中可以用 'cinematic', 'slow motion', 'epic' 等质量词增强效果",
+    "9:16竖屏适合短视频平台，16:9适合宽屏"
+  ]
+}

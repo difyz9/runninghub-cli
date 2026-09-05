@@ -1,0 +1,264 @@
+{
+  "template_name": "文生图 (Popular Aesthetics)",
+  "runninghub_id": "2037071836214730753",
+  "type": "workflow",
+  "group_name": "文生图",
+  "tags": [
+    "workflow",
+    "verified",
+    "文生图"
+  ],
+  "workflow_type": "txt2img",
+  "prompt_template": "a cinematic sunset over the ocean, highly detailed, volumetric lighting, 8K",
+  "overall_score": 10.0,
+  "tested_at": "2026-06-15T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "workflowId": "2037071836214730753",
+    "nodeInfoList": [
+      {
+        "nodeId": "57",
+        "fieldName": "text",
+        "fieldValue": "a cinematic sunset over the ocean, highly detailed, volumetric lighting, 8K",
+        "fieldType": "string",
+        "description": "正向提示词",
+        "required": true,
+        "default": "",
+        "llmHint": "用英文编写。将用户的简短描述扩展为详细prompt，包含：主体、环境、动作、光线、构图、画质词。例：\"a cinematic sunset over the ocean, highly detailed, volumetric lighting, 8K\"",
+        "example": "a majestic white wolf standing on a rocky cliff, glowing blue eyes, aurora borealis in the sky, epic fantasy, highly detailed, 8K"
+      },
+      {
+        "nodeId": "51",
+        "fieldName": "steps",
+        "fieldValue": 25,
+        "fieldType": "int",
+        "description": "采样步数",
+        "required": false,
+        "default": "25",
+        "range": "15-50",
+        "llmHint": "默认25。值越高细节越多但越慢。快速预览用20，高质量用30。",
+        "example": 25
+      },
+      {
+        "nodeId": "51",
+        "fieldName": "cfg",
+        "fieldValue": 7.0,
+        "fieldType": "float",
+        "description": "CFG 引导强度",
+        "required": false,
+        "default": "7.0",
+        "range": "1.0-20.0",
+        "llmHint": "默认7.0。值越高越严格按照提示词但可能过饱和，值越低越有创意但可能偏离。",
+        "example": 7.0
+      },
+      {
+        "nodeId": "39",
+        "fieldName": "width",
+        "fieldValue": 1024,
+        "fieldType": "int",
+        "description": "图片宽度",
+        "required": false,
+        "default": "1024",
+        "llmHint": "默认1024。常见尺寸：1024x1024（正方形）、1216x832（横屏）、832x1216（竖屏）。根据用户描述的场景类型推测：风景用横屏，人像用竖屏，不指定用默认。",
+        "example": 1024
+      },
+      {
+        "nodeId": "39",
+        "fieldName": "height",
+        "fieldValue": 1024,
+        "fieldType": "int",
+        "description": "图片高度",
+        "required": false,
+        "default": "1024",
+        "llmHint": "配合width使用。默认1024。",
+        "example": 1024
+      },
+      {
+        "nodeId": "43",
+        "fieldName": "text",
+        "fieldValue": "",
+        "fieldType": "string",
+        "description": "负向提示词",
+        "required": false,
+        "default": "",
+        "llmHint": "可选。描述不希望出现的元素，用中文或英文逗号分隔。例：\"blurry, low quality, distorted hands, extra limbs\"",
+        "example": "低质量，模糊，错误透视，人物崩坏，手部异常，额外肢体"
+      },
+      {
+        "nodeId": "51",
+        "fieldName": "seed",
+        "fieldValue": "随机",
+        "fieldType": "int",
+        "description": "随机种子",
+        "required": false,
+        "default": "随机",
+        "llmHint": "可选。固定种子可复现相同结果。用户未指定时可不传此字段。",
+        "example": 42
+      },
+      {
+        "nodeId": "39",
+        "fieldName": "batch_size",
+        "fieldValue": "1",
+        "fieldType": "int",
+        "description": "生成数量",
+        "required": false,
+        "default": "1",
+        "llmHint": "默认1。用户想要多张不同结果时设置>1。",
+        "example": 1,
+        "range": "1-4"
+      }
+    ]
+  },
+  "description": "基于 Popular Aesthetics 工作流的文本生成图片，通用 T2I 主工作流",
+  "outputType": "image",
+  "outputCount": "1 ~ N (由 batch_size 决定)",
+  "quality": "verified",
+  "call_guide": {
+    "method": "runninghub run <ID> --type workflow --node '57:text=<英文提示词>' [--node '51:seed=<种子>'] [options]",
+    "mode": "workflow",
+    "identifier": "2037071836214730753",
+    "required": [
+      {
+        "arg": "--node '57:text=<英文提示词>'",
+        "label": "正向提示词",
+        "hint": "英文描述画面内容。例如：'a majestic white wolf, glowing blue eyes, aurora borealis, highly detailed, 8K'"
+      }
+    ],
+    "optional": [
+      {
+        "arg": "--node '43:text=<负向提示词>'",
+        "label": "负向提示词",
+        "default": "空",
+        "hint": "不想出现在图中的内容，用英文。例：'ugly, blurry, low quality'"
+      },
+      {
+        "arg": "--node '51:steps=<步数>'",
+        "label": "采样步数",
+        "default": "25",
+        "hint": "范围15-50，步数越高细节越丰富但耗时增加"
+      },
+      {
+        "arg": "--node '51:cfg=<强度>'",
+        "label": "CFG 引导强度",
+        "default": "7.0",
+        "hint": "范围1.0-20.0，值越高越贴近提示词但可能过度"
+      },
+      {
+        "arg": "--node '39:width=<像素>'",
+        "label": "图片宽度",
+        "default": "1024",
+        "hint": "生成的图片宽度"
+      },
+      {
+        "arg": "--node '39:height=<像素>'",
+        "label": "图片高度",
+        "default": "1024",
+        "hint": "生成的图片高度"
+      },
+      {
+        "arg": "--node '51:seed=<数字>'",
+        "label": "随机种子",
+        "default": "随机",
+        "hint": "固定种子可复现同一张图"
+      },
+      {
+        "arg": "--node '39:batch_size=<数量>'",
+        "label": "生成数量",
+        "default": "1",
+        "hint": "一次生成几张图，范围1-4"
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "文生图",
+      "command": "runninghub run 2037071836214730753 --type workflow --node '57:text=a majestic wolf on a cliff, aurora borealis, cinematic lighting, highly detailed, 8K'",
+      "description": "基础文生图"
+    },
+    {
+      "title": "指定尺寸和种子",
+      "command": "runninghub run 2037071836214730753 --type workflow --node '57:text=a serene Japanese garden in autumn, red maple leaves, koi pond, soft sunlight, highly detailed' --node '39:width=1920' --node '39:height=1080' --node '51:seed=42'",
+      "description": "横版壁纸尺寸，固定种子"
+    },
+    {
+      "title": "批量生成",
+      "command": "runninghub run 2037071836214730753 --type workflow --node '57:text=a cute corgi puppy, soft fur, warm lighting' --node '39:batch_size=4'",
+      "description": "一次生成4张不同变体"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "正向提示词",
+      "type": "text",
+      "required": true,
+      "nodeId": "57",
+      "fieldName": "text"
+    },
+    {
+      "label": "负向提示词",
+      "type": "text",
+      "required": false,
+      "nodeId": "43",
+      "fieldName": "text"
+    },
+    {
+      "label": "采样步数",
+      "type": "int",
+      "required": false,
+      "nodeId": "51",
+      "fieldName": "steps"
+    },
+    {
+      "label": "CFG 强度",
+      "type": "float",
+      "required": false,
+      "nodeId": "51",
+      "fieldName": "cfg"
+    },
+    {
+      "label": "图片宽度",
+      "type": "int",
+      "required": false,
+      "nodeId": "39",
+      "fieldName": "width"
+    },
+    {
+      "label": "图片高度",
+      "type": "int",
+      "required": false,
+      "nodeId": "39",
+      "fieldName": "height"
+    },
+    {
+      "label": "随机种子",
+      "type": "int",
+      "required": false,
+      "nodeId": "51",
+      "fieldName": "seed"
+    },
+    {
+      "label": "生成数量",
+      "type": "int",
+      "required": false,
+      "nodeId": "39",
+      "fieldName": "batch_size"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "生成图片",
+      "type": "image",
+      "count": "1-4",
+      "description": "根据 batch_size 生成的图片文件"
+    }
+  ],
+  "tips": [
+    "提示词必须用英文",
+    "建议包含主体+环境+光线+画质词四个要素",
+    "推荐格式: '主体描述, 环境背景, 光线风格, 构图, 画质词'",
+    "可以先跑小图(512x512)测试提示词效果"
+  ]
+}

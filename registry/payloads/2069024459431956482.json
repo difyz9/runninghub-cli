@@ -1,0 +1,243 @@
+{
+  "template_name": "LTX2.3 动漫数字人特制版",
+  "runninghub_id": "2069024459431956482",
+  "type": "ai-app",
+  "group_name": "img2vid",
+  "tags": ["ai-app", "verified", "img2vid", "digital-human", "anime", "lip-sync"],
+  "workflow_type": "img2vid",
+  "overall_score": 10.0,
+  "tested_at": "2026-07-01T00:00:00",
+
+  "description": "上传动漫角色图片+音频，生成带口型同步的动漫数字人唱歌/说话视频。支持自定义提示词、帧率、画面比例。",
+
+  "call_guide": {
+    "method": "runninghub run <ID> --type webapp --file '474:image=<角色图>' --file '332:audio=<音频>' [--node '473:value=<提示词>'] [options]",
+    "mode": "webapp",
+    "identifier": "2069024459431956482",
+    "required": [
+      {
+        "arg": "--file '474:image=<角色图片路径>'",
+        "label": "角色图片",
+        "hint": "动漫角色的参考图片（半身/头像最佳），将以此角色的形象生成口型同步视频。支持 @upload: 上传或 URL。"
+      },
+      {
+        "arg": "--file '332:audio=<音频文件路径>'",
+        "label": "音频文件",
+        "hint": "角色要说/唱的音频（MP3/MP4等格式），视频将与此音频同步口型。支持 @upload: 或 URL。"
+      }
+    ],
+    "optional": [
+      {
+        "arg": "--node '473:value=<提示词>'",
+        "label": "提示词",
+        "default": "动漫少女在唱歌，全程固定镜头。",
+        "hint": "描述画面内容和角色动作。中文即可。例如：'动漫少年在说话，表情丰富，眼神看向镜头'"
+      },
+      {
+        "arg": "--node '468:value=<帧率>'",
+        "label": "帧率",
+        "default": "24",
+        "hint": "输出视频帧率，默认24fps，可设为30以获得更流畅的视频"
+      },
+      {
+        "arg": "--node '465:value=<true|false>'",
+        "label": "使用上传图片比例",
+        "default": "true",
+        "options_map": {"true": "使用上传图片的宽高比", "false": "使用下方自定义比例"},
+        "hint": "是否使用上传图片的原始比例。设为false可自定义画面比例。"
+      },
+      {
+        "arg": "--node '466:aspect_ratio=<比例>'",
+        "label": "自定义比例",
+        "default": "9:16 (Portrait Widescreen)",
+        "condition": "当 465:value=false 时生效",
+        "options_map": {
+          "1:1 (Square)": "1:1 方形",
+          "2:3 (Portrait Photo)": "2:3 人像照片",
+          "3:2 (Photo)": "3:2 照片",
+          "3:4 (Portrait Standard)": "3:4 人像标准",
+          "4:3 (Standard)": "4:3 标准",
+          "9:16 (Portrait Widescreen)": "9:16 竖屏宽屏",
+          "16:9 (Widescreen)": "16:9 宽屏",
+          "21:9 (Ultrawide)": "21:9 超宽屏"
+        },
+        "hint": "自定义输出比例，仅在'使用上传图片比例'设为false时生效"
+      },
+      {
+        "arg": "--node '547:value=<秒>'",
+        "label": "音频开始时间",
+        "default": "0",
+        "hint": "从音频的什么位置开始截取（秒）。0表示从开头开始。"
+      },
+      {
+        "arg": "--node '548:value=<秒>'",
+        "label": "音频截取时长",
+        "default": "20",
+        "hint": "截取音频的前多少秒用于生成视频。默认20秒，最长建议不超过30秒。"
+      }
+    ]
+  },
+
+  "examples": [
+    {
+      "title": "动漫角色唱歌 — 自动比例",
+      "command": "runninghub run 2069024459431956482 --type webapp --file '474:image=./character.png' --file '332:audio=./song.mp3'",
+      "description": "上传角色图和歌曲，自动使用图片比例生成口型同步唱歌视频"
+    },
+    {
+      "title": "自定义提示词 + 宽屏比例",
+      "command": "runninghub run 2069024459431956482 --type webapp --file '474:image=./anime_girl.png' --file '332:audio=./voice.mp3' --node '473:value=动漫少女在微笑着说话，偶尔眨眼睛，表情自然' --node '465:value=false' --node '466:aspect_ratio=16:9 (Widescreen)'",
+      "description": "自定义角色动作描述，使用16:9宽屏比例输出"
+    },
+    {
+      "title": "截取音频片段 + 30fps",
+      "command": "runninghub run 2069024459431956482 --type webapp --file '474:image=./character.jpg' --file '332:audio=./long_audio.mp3' --node '547:value=10' --node '548:value=15' --node '468:value=30'",
+      "description": "从音频第10秒开始截取15秒，30fps输出更流畅"
+    }
+  ],
+
+  "inputs": [
+    {"label": "角色图片", "type": "image", "required": true, "nodeId": "474", "fieldName": "image"},
+    {"label": "音频文件", "type": "audio", "required": true, "nodeId": "332", "fieldName": "audio"},
+    {"label": "提示词", "type": "text", "required": false, "nodeId": "473", "fieldName": "value"},
+    {"label": "帧率", "type": "int", "required": false, "nodeId": "468", "fieldName": "value"},
+    {"label": "使用上传图片比例", "type": "boolean", "required": false, "nodeId": "465", "fieldName": "value"},
+    {"label": "自定义比例", "type": "list", "required": false, "nodeId": "466", "fieldName": "aspect_ratio", "depends": {"nodeId": "465", "value": "false"}},
+    {"label": "音频开始时间", "type": "float", "required": false, "nodeId": "547", "fieldName": "value"},
+    {"label": "音频截取时长", "type": "float", "required": false, "nodeId": "548", "fieldName": "value"}
+  ],
+
+  "outputs": [
+    {"label": "数字人视频", "type": "video", "count": 1, "description": "带口型同步的动漫数字人视频，MP4格式"}
+  ],
+
+  "tips": [
+    "角色图片建议用半身或头像特写，正脸或微侧脸效果最佳",
+    "音频时长建议控制在30秒以内，过长可能增加耗时和失败率",
+    "提示词描述角色表情和动作，有助于生成更自然的画面",
+    "如果音频是长文件，用 547/548 截取需要的片段",
+    "默认使用图片比例（9:16竖屏），如需横屏请设置 465:value=false + 466 选择比例"
+  ],
+
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "webappId": "2069024459431956482",
+    "nodeInfoList": [
+      {
+        "nodeId": "332",
+        "fieldName": "audio",
+        "fieldValue": "@upload:./audio.mp3",
+        "fieldType": "AUDIO",
+        "description": "上传音频",
+        "descriptionEn": "Upload audio",
+        "required": true,
+        "llmHint": "用户提供的音频文件路径，使用 @upload: 前缀上传。音频将作为角色的语音/歌声。用户未提供时必须询问。",
+        "example": "@upload:./song.mp3"
+      },
+      {
+        "nodeId": "547",
+        "fieldName": "value",
+        "fieldValue": "0",
+        "fieldType": "FLOAT",
+        "description": "音频开始时间（秒）",
+        "descriptionEn": "Audio start time (seconds)",
+        "required": false,
+        "default": "0",
+        "llmHint": "从音频的什么位置开始截取，单位秒。默认0表示从开头开始。用户有特定起止要求时调整。",
+        "example": "10"
+      },
+      {
+        "nodeId": "548",
+        "fieldName": "value",
+        "fieldValue": "20.000000000000004",
+        "fieldType": "FLOAT",
+        "description": "音频截取多少时间（秒）",
+        "descriptionEn": "How many seconds of audio to extract?",
+        "required": false,
+        "default": "20",
+        "llmHint": "截取音频的前多少秒用于生成视频。默认20秒。用户明确要求视频时长时设置此值。",
+        "example": "15"
+      },
+      {
+        "nodeId": "474",
+        "fieldName": "image",
+        "fieldValue": "@upload:./character.png",
+        "fieldType": "IMAGE",
+        "description": "上传图片（角色参考图）",
+        "descriptionEn": "Upload image (character reference)",
+        "required": true,
+        "llmHint": "用户提供的动漫角色图片路径，使用 @upload: 前缀上传。图片将作为数字人的形象。用户未提供时必须询问。建议用半身或头像。",
+        "example": "@upload:./anime_girl.png"
+      },
+      {
+        "nodeId": "468",
+        "fieldName": "value",
+        "fieldValue": "24",
+        "fieldType": "INT",
+        "description": "帧率",
+        "descriptionEn": "Frame rate",
+        "required": false,
+        "default": "24",
+        "llmHint": "输出视频帧率。默认24fps，用户有流畅度要求时可设为30。",
+        "example": "30"
+      },
+      {
+        "nodeId": "473",
+        "fieldName": "value",
+        "fieldValue": "动漫少女在唱歌，全程固定镜头。",
+        "fieldType": "STRING",
+        "description": "提示词",
+        "descriptionEn": "Prompt",
+        "required": false,
+        "default": "动漫少女在唱歌，全程固定镜头。",
+        "multiline": true,
+        "llmHint": "描述画面内容和角色动作的提示词，中文即可。控制角色表情、动作、镜头运动等。如果用户描述了角色行为（如'表情丰富地说话'），在此填入。",
+        "example": "动漫少女在微笑着说话，偶尔眨眼睛，表情温柔自然"
+      },
+      {
+        "nodeId": "465",
+        "fieldName": "value",
+        "fieldValue": "true",
+        "fieldType": "BOOLEAN",
+        "description": "使用上传的图片的比例",
+        "descriptionEn": "Use the ratio of the uploaded image",
+        "required": false,
+        "default": "true",
+        "options": [
+          {"value": "true", "label": "是", "labelEn": "Yes", "description": "使用上传图片的原始宽高比"},
+          {"value": "false", "label": "否", "labelEn": "No", "description": "使用下方自定义比例"}
+        ],
+        "llmHint": "是否使用上传图片的原始比例。默认为true。如果用户想要特定画面比例（如16:9宽屏），设为false并设置下方比例。",
+        "example": "false"
+      },
+      {
+        "nodeId": "466",
+        "fieldName": "aspect_ratio",
+        "fieldValue": "9:16 (Portrait Widescreen)",
+        "fieldType": "LIST",
+        "description": "自定义比例",
+        "descriptionEn": "Custom ratio",
+        "required": false,
+        "default": "9:16 (Portrait Widescreen)",
+        "options": [
+          {"value": "1:1 (Square)", "label": "1:1 方形"},
+          {"value": "2:3 (Portrait Photo)", "label": "2:3 人像"},
+          {"value": "3:2 (Photo)", "label": "3:2 照片"},
+          {"value": "3:4 (Portrait Standard)", "label": "3:4 人像"},
+          {"value": "4:3 (Standard)", "label": "4:3 标准"},
+          {"value": "9:16 (Portrait Widescreen)", "label": "9:16 竖屏", "description": "抖音/小红书竖屏比例（默认）"},
+          {"value": "16:9 (Widescreen)", "label": "16:9 宽屏"},
+          {"value": "21:9 (Ultrawide)", "label": "21:9 超宽屏"}
+        ],
+        "llmHint": "自定义输出画面比例。仅当节点465设为false时生效。9:16适合抖音竖屏，16:9适合B站/YouTube宽屏。",
+        "example": "16:9 (Widescreen)"
+      }
+    ]
+  },
+  "outputType": "video",
+  "outputCount": "1",
+  "quality": "verified"
+}

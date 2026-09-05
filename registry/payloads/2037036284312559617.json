@@ -1,0 +1,155 @@
+{
+  "template_name": "图生视频 (Seedance 2.0)",
+  "runninghub_id": "2037036284312559617",
+  "type": "workflow",
+  "group_name": "其他",
+  "tags": [
+    "workflow",
+    "experimental",
+    "其他"
+  ],
+  "workflow_type": "txt2vid",
+  "prompt_template": "",
+  "overall_score": 5.0,
+  "tested_at": "2026-06-15T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "workflowId": "2037036284312559617",
+    "nodeInfoList": [
+      {
+        "nodeId": "2",
+        "fieldName": "image",
+        "fieldType": "image",
+        "description": "输入图片（起始帧）",
+        "required": true,
+        "llmHint": "用户提供的图片路径，使用 @upload: 前缀上传。如用户未提供图片则询问。",
+        "example": "@upload:./scene.png"
+      },
+      {
+        "nodeId": "1",
+        "fieldName": "prompt",
+        "fieldValue": "",
+        "fieldType": "string",
+        "description": "动作描述提示词",
+        "required": false,
+        "default": "",
+        "llmHint": "用英文描述画面中应有的运动。例：\"camera slowly panning right, gentle waves, cinematic lighting\"。用户未提供时可智能生成或跳过。",
+        "example": "camera slowly panning right, ocean waves gently rolling, cinematic lighting, 4K"
+      },
+      {
+        "nodeId": "1",
+        "fieldName": "duration",
+        "fieldValue": "5",
+        "fieldType": "string",
+        "description": "视频时长（秒）",
+        "required": false,
+        "default": "5",
+        "llmHint": "默认5秒。用户明确要求时长时设置。",
+        "example": "5",
+        "range": "1-10"
+      },
+      {
+        "nodeId": "1",
+        "fieldName": "seed",
+        "fieldType": "int",
+        "description": "随机种子",
+        "required": false,
+        "llmHint": "可选。固定种子可复现结果。",
+        "example": 42
+      }
+    ]
+  },
+  "description": "基于 Seedance 2.0 的图片生成视频（结构已定义，未完整测试）",
+  "outputType": "video",
+  "outputCount": "1",
+  "quality": "experimental",
+  "call_guide": {
+    "method": "runninghub run <ID> --type workflow --file '2:image=<起始帧>' [--node '1:prompt=<动作描述>'] [--node '1:duration=<秒>']",
+    "mode": "workflow",
+    "identifier": "2037036284312559617",
+    "required": [
+      {
+        "arg": "--file '2:image=<起始帧图片>'",
+        "label": "起始帧图片",
+        "hint": "作为视频起始帧的图片。支持 @upload: 或 URL。"
+      }
+    ],
+    "optional": [
+      {
+        "arg": "--node '1:prompt=<动作描述>'",
+        "label": "动作描述提示词",
+        "default": "空",
+        "hint": "英文描述画面中的运动。例：'camera slowly panning right, gentle waves, cinematic lighting'"
+      },
+      {
+        "arg": "--node '1:duration=<秒>'",
+        "label": "视频时长",
+        "default": "5",
+        "hint": "范围1-10秒"
+      },
+      {
+        "arg": "--node '1:seed=<数字>'",
+        "label": "随机种子",
+        "default": "随机",
+        "hint": "固定种子可复现结果"
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "图生视频",
+      "command": "runninghub run 2037036284312559617 --type workflow --file '2:image=./scene.png' --node '1:prompt=ocean waves gently rolling, cinematic lighting, 4K'",
+      "description": "基于图片生成动态视频"
+    },
+    {
+      "title": "仅图片",
+      "command": "runninghub run 2037036284312559617 --type workflow --file '2:image=./photo.jpg'",
+      "description": "不提供动作描述，使用默认运动"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "起始帧图片",
+      "type": "image",
+      "required": true,
+      "nodeId": "2",
+      "fieldName": "image"
+    },
+    {
+      "label": "动作描述",
+      "type": "text",
+      "required": false,
+      "nodeId": "1",
+      "fieldName": "prompt"
+    },
+    {
+      "label": "视频时长",
+      "type": "int",
+      "required": false,
+      "nodeId": "1",
+      "fieldName": "duration"
+    },
+    {
+      "label": "随机种子",
+      "type": "int",
+      "required": false,
+      "nodeId": "1",
+      "fieldName": "seed"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "生成视频",
+      "type": "video",
+      "count": 1,
+      "description": "Seedance 2.0 生成的图生视频结果"
+    }
+  ],
+  "tips": [
+    "动作描述用英文效果更稳定",
+    "如果不提供动作描述，画面运动较为随机"
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "template_name": "首尾帧过渡 (First2Last Wan)",
+  "runninghub_id": "1967569328524664834",
+  "type": "workflow",
+  "group_name": "首尾帧过渡",
+  "tags": [
+    "workflow",
+    "verified",
+    "首尾帧过渡"
+  ],
+  "workflow_type": "txt2img",
+  "prompt_template": "绝色国风女剑仙，激烈打斗动作，凌空飞跃",
+  "overall_score": 10.0,
+  "tested_at": "2026-06-15T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "workflowId": "1967569328524664834",
+    "nodeInfoList": [
+      {
+        "nodeId": "27",
+        "fieldName": "text",
+        "fieldValue": "绝色国风女剑仙，激烈打斗动作，凌空飞跃",
+        "fieldType": "string",
+        "description": "正向提示词",
+        "required": true,
+        "llmHint": "用中文详细描述场景、角色、动作、风格。例：\"绝色国风女剑仙，激烈打斗动作，凌空飞跃...\"",
+        "example": "绝色国风女剑仙，激烈打斗动作，凌空飞跃，飘逸红色汉服，长剑萦绕发光剑气，黑发随风狂舞，冷艳锋利五官，山间迷雾战场，发光粒子特效，赛璐璐上色，二次元画风，超高精细细节，鲜亮饱和色彩，电影运镜"
+      },
+      {
+        "nodeId": "36",
+        "fieldName": "image",
+        "fieldValue": "@upload:./first_frame.png",
+        "fieldType": "image",
+        "description": "首帧图片",
+        "required": true,
+        "llmHint": "起始帧图片路径，使用 @upload: 上传。",
+        "example": "@upload:./first_frame.png"
+      },
+      {
+        "nodeId": "37",
+        "fieldName": "image",
+        "fieldValue": "@upload:./last_frame.png",
+        "fieldType": "image",
+        "description": "尾帧图片",
+        "required": true,
+        "llmHint": "结束帧图片路径，使用 @upload: 上传。",
+        "example": "@upload:./last_frame.png"
+      }
+    ]
+  },
+  "description": "基于 Wan 模型的首尾帧过渡视频生成：提供起始帧和结束帧图片，自动生成中间过渡动画",
+  "outputType": "video",
+  "outputCount": "1",
+  "quality": "verified",
+  "call_guide": {
+    "method": "runninghub run <ID> --type workflow --file '36:image=<首帧>' --file '37:image=<尾帧>' --node '27:text=<提示词>'",
+    "mode": "workflow",
+    "identifier": "1967569328524664834",
+    "required": [
+      {
+        "arg": "--file '36:image=<首帧图片路径>'",
+        "label": "首帧图片",
+        "hint": "视频的第一帧图片，作为画面起始。支持 @upload: 上传或 URL。"
+      },
+      {
+        "arg": "--file '37:image=<尾帧图片路径>'",
+        "label": "尾帧图片",
+        "hint": "视频的最后一帧图片，画面将过渡到这个结果。"
+      },
+      {
+        "arg": "--node '27:text=<提示词>'",
+        "label": "正向提示词",
+        "hint": "描述过渡动画的画面内容，中文/英文均可。例如：'国风女剑仙挥剑，水墨特效，慢动作'"
+      }
+    ],
+    "optional": []
+  },
+  "examples": [
+    {
+      "title": "基本使用",
+      "command": "runninghub run 1967569328524664834 --type workflow --file '36:image=./start.png' --file '37:image=./end.png' --node '27:text=国风女剑仙打斗场景，剑气纵横，水墨特效，慢动作'",
+      "description": "从首帧过渡到尾帧，中间生成连贯视频"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "首帧图片",
+      "type": "image",
+      "required": true,
+      "nodeId": "36",
+      "fieldName": "image"
+    },
+    {
+      "label": "尾帧图片",
+      "type": "image",
+      "required": true,
+      "nodeId": "37",
+      "fieldName": "image"
+    },
+    {
+      "label": "正向提示词",
+      "type": "text",
+      "required": true,
+      "nodeId": "27",
+      "fieldName": "text"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "过渡视频",
+      "type": "video",
+      "count": 1,
+      "description": "首尾帧过渡生成的连贯视频"
+    }
+  ],
+  "tips": [
+    "首帧和尾帧建议使用同一风格/人物的图片，过渡更自然",
+    "提示词描述的是过渡过程和画面氛围，不是具体动作指令"
+  ]
+}

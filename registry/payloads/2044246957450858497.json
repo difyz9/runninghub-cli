@@ -1,0 +1,90 @@
+{
+  "template_name": "ACE/Suno V5.5 音乐生成",
+  "runninghub_id": "2044246957450858497",
+  "type": "workflow",
+  "group_name": "音乐生成",
+  "tags": [
+    "workflow",
+    "verified",
+    "音乐生成"
+  ],
+  "workflow_type": "music",
+  "prompt_template": "温柔的钢琴曲，治愈系，80BPM，C大调",
+  "overall_score": 10.0,
+  "tested_at": "2026-06-15T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "workflowId": "2044246957450858497",
+    "nodeInfoList": [
+      {
+        "nodeId": "9",
+        "fieldName": "text",
+        "fieldValue": "温柔的钢琴曲，治愈系，80BPM，C大调",
+        "fieldType": "string",
+        "description": "音乐描述提示词",
+        "required": true,
+        "llmHint": "用中文描述音乐风格、乐器和情绪。例：\"温柔的钢琴曲，治愈系，适合校园回忆场景\"",
+        "example": "温柔的钢琴曲，治愈系，80BPM，C大调"
+      }
+    ]
+  },
+  "description": "基于 ACE Studio / Suno V5.5 的文本生成音乐",
+  "outputType": "audio",
+  "outputCount": "1",
+  "quality": "verified",
+  "call_guide": {
+    "method": "runninghub run <ID> --type workflow --node '9:text=<音乐描述>'",
+    "mode": "workflow",
+    "identifier": "2044246957450858497",
+    "required": [
+      {
+        "arg": "--node '9:text=<音乐描述>'",
+        "label": "音乐描述提示词",
+        "hint": "描述想要的音乐风格、情绪、乐器、节奏等。例：'一首青春校园风格的流行歌曲，男声温暖治愈，钢琴轻快节奏，BPM 90'"
+      }
+    ],
+    "optional": []
+  },
+  "examples": [
+    {
+      "title": "流行歌曲",
+      "command": "runninghub run 2044246957450858497 --type workflow --node '9:text=一首青春校园风格的流行歌曲，男声温暖治愈，钢琴轻快节奏，吉他扫弦，BPM 90'",
+      "description": "生成带人声的流行歌曲"
+    },
+    {
+      "title": "纯音乐",
+      "command": "runninghub run 2044246957450858497 --type workflow --node '9:text=古风纯音乐，琵琶和古笛合奏，意境空灵悠远，节奏舒缓，没有歌词'",
+      "description": "纯器乐音乐生成"
+    },
+    {
+      "title": "配乐",
+      "command": "runninghub run 2044246957450858497 --type workflow --node '9:text=悬疑紧张的电影配乐，低音提琴，不和谐音，渐强节奏，黑暗氛围'",
+      "description": "电影配乐风格"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "音乐描述",
+      "type": "text",
+      "required": true,
+      "nodeId": "9",
+      "fieldName": "text"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "音频文件",
+      "type": "audio",
+      "count": 1,
+      "description": "ACE/Suno V5.5 生成的音乐/音频"
+    }
+  ],
+  "tips": [
+    "描述中建议包含: 风格/情绪/乐器/节奏/BPM",
+    "需要人声时说明'男声'/'女声'/合唱",
+    "纯音乐记得加'没有歌词'"
+  ]
+}

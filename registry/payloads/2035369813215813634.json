@@ -1,0 +1,199 @@
+{
+  "template_name": "LTX2.3图生视频【优化版】",
+  "runninghub_id": "2035369813215813634",
+  "type": "ai-app",
+  "group_name": "img2vid",
+  "tags": ["ai-app", "verified", "img2vid", "ltx"],
+  "workflow_type": "img2vid",
+  "overall_score": 10.0,
+  "tested_at": "2026-07-01T00:00:00",
+
+  "description": "上传图片，由 LTX 2.3 生成动态视频，支持 Qwen 自动生成提示词或用户自定义，可选 8 种运镜方式。",
+
+  "call_guide": {
+    "method": "runninghub run <ID> --type webapp [options]",
+    "mode": "webapp",
+    "identifier": "2035369813215813634",
+    "required": [
+      {
+        "arg": "--file '191:image=<path>'",
+        "label": "输入图片",
+        "hint": "作为视频起始帧。支持 @upload: 自动上传，或直接传 URL。用户未提供时必须询问。"
+      }
+    ],
+    "optional": [
+      {
+        "arg": "--node '58:value=<秒>'",
+        "label": "视频时长",
+        "default": "8",
+        "hint": "1-30 秒。用户有明确时长要求时设置，否则保持默认。"
+      },
+      {
+        "arg": "--node '185:select=<1|2>'",
+        "label": "提示词来源",
+        "default": "2",
+        "options_map": {"1": "用户输入内容", "2": "Qwen 大模型自动生成"},
+        "hint": "默认为 Qwen 自动生成。用户提供了明确的画面描述文本时，设为 1 并在节点 162 填入提示词。"
+      },
+      {
+        "arg": "--node '162:text=<描述>'",
+        "label": "用户提示词",
+        "condition": "当 185:select=1 时生效",
+        "hint": "画面动作/内容描述，如'花瓣纷飞，镜头缓慢推进，夕阳金色光晕'。仅当用户选择自己输入提示词时需提供。"
+      },
+      {
+        "arg": "--node '116:value=<像素>'",
+        "label": "长边尺寸",
+        "default": "1920",
+        "hint": "输出视频长边像素。默认 1920(1080p)。用户有分辨率要求时调整，范围 512-4096。"
+      },
+      {
+        "arg": "--node '193:select=<1-8>'",
+        "label": "运镜方式",
+        "default": "3",
+        "options_map": {"1": "镜头推进", "2": "镜头拉远", "3": "通用", "4": "镜头向左", "5": "镜头向右", "6": "镜头上升", "7": "镜头下降", "8": "固定镜头"},
+        "hint": "根据场景氛围选择运镜。推进->聚焦主体；拉远->展示环境；固定->安静氛围。默认通用。"
+      }
+    ]
+  },
+
+  "examples": [
+    {
+      "title": "快速使用 — Qwen 自动生成提示词",
+      "command": "runninghub run 2035369813215813634 --type webapp --file '191:image=./scene.png'",
+      "description": "只需提供图片，提示词由 Qwen 自动生成，运镜和时长均使用默认值。"
+    },
+    {
+      "title": "自定义提示词 + 用户输入模式",
+      "command": "runninghub run 2035369813215813634 --type webapp --file '191:image=./photo.jpg' --node '185:select=1' --node '162:text=花瓣纷飞，微风拂过发梢，夕阳金色光晕'",
+      "description": "切换到用户输入模式，手动提供画面描述提示词。",
+      "notes": ["--node '185:select=1' 切换到用户输入模式", "--node '162:text=...' 填写具体画面描述"]
+    },
+    {
+      "title": "完整定制 — 时长 + 分辨率 + 运镜",
+      "command": "runninghub run 2035369813215813634 --type webapp --file '191:image=./scene.jpg' --node '185:select=1' --node '162:text=镜头缓慢推进，樱花飘落，夕阳金色光晕' --node '58:value=10' --node '116:value=1080' --node '193:select=1'",
+      "description": "5秒视频，1080p 分辨率，镜头推进运镜，自定义提示词。"
+    }
+  ],
+
+  "inputs": [
+    {"label": "输入图片", "type": "image", "required": true, "nodeId": "191", "fieldName": "image"},
+    {"label": "提示词", "type": "text", "required": false, "nodeId": "162", "fieldName": "text", "depends": {"nodeId": "185", "value": "1"}},
+    {"label": "视频时长", "type": "int", "required": false, "nodeId": "58", "fieldName": "value"},
+    {"label": "长边尺寸", "type": "int", "required": false, "nodeId": "116", "fieldName": "value"},
+    {"label": "提示词来源", "type": "switch", "required": false, "nodeId": "185", "fieldName": "select"},
+    {"label": "运镜方式", "type": "switch", "required": false, "nodeId": "193", "fieldName": "select"}
+  ],
+
+  "outputs": [
+    {"label": "生成视频", "type": "video", "count": 1, "description": "单个 MP4 视频文件"}
+  ],
+
+  "tips": [
+    "如果不确定提示词，保留 185:select=2，让 Qwen 自动根据图片生成",
+    "运镜选择 3(通用) 适合大多数场景，不会产生突兀的镜头运动",
+    "时长不建议超过 15 秒，LTX 2.3 在 5-10 秒效果最佳",
+    "长边尺寸建议用 1920(1080p) 或 1080(720p)，过高分辨率可能增加耗时"
+  ],
+
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "webappId": "2035369813215813634",
+    "nodeInfoList": [
+      {
+        "nodeId": "191",
+        "fieldName": "image",
+        "fieldValue": "@upload:./input.png",
+        "fieldType": "IMAGE",
+        "description": "输入图片（起始帧）",
+        "descriptionEn": "Input image (starting frame)",
+        "required": true,
+        "llmHint": "用户提供的图片路径，使用 @upload: 前缀上传。图片将作为视频的起始帧。如果用户未提供图片则必须询问。",
+        "example": "@upload:./scene.png"
+      },
+      {
+        "nodeId": "58",
+        "fieldName": "value",
+        "fieldValue": "8",
+        "fieldType": "INT",
+        "description": "视频时长（秒）",
+        "descriptionEn": "Duration (seconds)",
+        "required": false,
+        "default": "8",
+        "range": "1-30",
+        "llmHint": "视频生成时长，默认8秒。用户明确要求时长时设置，范围可参考1-30秒。",
+        "example": "5"
+      },
+      {
+        "nodeId": "185",
+        "fieldName": "select",
+        "fieldValue": "2",
+        "fieldType": "SWITCH",
+        "description": "提示词来源选择",
+        "descriptionEn": "Prompt source selection",
+        "required": false,
+        "default": "2",
+        "options": [
+          {"value": "1", "label": "用户输入内容", "labelEn": "User input content", "description": "使用节点162(text)中的用户自定义提示词"},
+          {"value": "2", "label": "Qwen大模型生成", "labelEn": "Qwen LLM generates", "description": "由Qwen大模型根据图片自动生成提示词（默认推荐）"}
+        ],
+        "llmHint": "提示词来源选择。默认为2(Qwen大模型自动生成)。如用户提供了明确提示词则建议设为1(用户输入)。",
+        "example": "1"
+      },
+      {
+        "nodeId": "162",
+        "fieldName": "text",
+        "fieldValue": "",
+        "fieldType": "STRING",
+        "description": "提示词（当 提示词选择=用户输入内容 时生效）",
+        "descriptionEn": "Prompt text (used when Prompt selection = User input)",
+        "required": false,
+        "default": "",
+        "multiline": true,
+        "llmHint": "视频的动作/内容描述提示词。仅当节点185(提示词选择)=1时生效。如用户有明确画面要求（如'镜头缓慢推进，樱花飘落'），在此填入。如未提供则保持为空，使用Qwen自动生成。",
+        "example": "微风拂过花瓣纷飞，镜头缓慢推进，夕阳金色光晕"
+      },
+      {
+        "nodeId": "116",
+        "fieldName": "value",
+        "fieldValue": "1920",
+        "fieldType": "INT",
+        "description": "长边尺寸（像素）",
+        "descriptionEn": "Long edge size (pixels)",
+        "required": false,
+        "default": "1920",
+        "range": "512-4096",
+        "llmHint": "输出视频的长边像素尺寸。默认1920（1080p）。用户有明确分辨率要求时设置，范围512-4096。",
+        "example": "1080"
+      },
+      {
+        "nodeId": "193",
+        "fieldName": "select",
+        "fieldValue": "3",
+        "fieldType": "SWITCH",
+        "description": "运镜选择",
+        "descriptionEn": "Camera movement",
+        "required": false,
+        "default": "3",
+        "options": [
+          {"value": "1", "label": "镜头推进", "labelEn": "Camera push-in", "description": "镜头从远到近推进"},
+          {"value": "2", "label": "镜头拉远", "labelEn": "Camera pull back", "description": "镜头从近到远拉远"},
+          {"value": "3", "label": "通用", "labelEn": "General", "description": "通用运镜，无特定方向（默认推荐）"},
+          {"value": "4", "label": "镜头向左运动", "labelEn": "Camera moves left", "description": "镜头向左平移"},
+          {"value": "5", "label": "镜头向右运动", "labelEn": "Camera moves right", "description": "镜头向右平移"},
+          {"value": "6", "label": "镜头上升", "labelEn": "Camera rises", "description": "镜头从下到上抬起"},
+          {"value": "7", "label": "镜头下降", "labelEn": "Camera moves down", "description": "镜头从上到下下降"},
+          {"value": "8", "label": "固定镜头", "labelEn": "Fixed lens", "description": "镜头固定不动"}
+        ],
+        "llmHint": "运镜/镜头运动方式选择。默认为3(通用)。根据用户描述的场景氛围选择最合适的运镜方式。例如：推进适合聚焦主体，拉远适合展示环境，固定镜头适合安静氛围。",
+        "example": "1"
+      }
+    ]
+  },
+  "outputType": "video",
+  "outputCount": "1",
+  "quality": "verified"
+}

@@ -1,0 +1,41 @@
+{
+  "name": "rh.webapp.txt2img.krea2_photoreal.v1",
+  "version": "1.0.0",
+  "description": "Krea2 photorealistic 4K text-to-image webapp. Uses a single prompt to generate a high-resolution realistic image.",
+  "resource": {
+    "id": "2082295063975120897",
+    "type": "webapp"
+  },
+  "runtime": {
+    "defaultInstanceType": "default",
+    "defaultTimeout": 1800,
+    "defaultPollInterval": 15
+  },
+  "inputs": {
+    "required": [
+      {
+        "name": "prompt_text",
+        "type": "string",
+        "description": "Primary photorealistic generation prompt"
+      }
+    ],
+    "optional": []
+  },
+  "mapping": [
+    {
+      "param": "prompt_text",
+      "nodeId": "64",
+      "fieldName": "text",
+      "valueMode": "literal"
+    }
+  ],
+  "outputs": {
+    "minFiles": 1,
+    "expectedSuffixes": [".png"]
+  },
+  "verification": {
+    "lastTaskId": "2089145026981613570",
+    "lastStatus": "SUCCESS",
+    "lastOutputDir": "outputs/test_2082295063975120897_default"
+  }
+}

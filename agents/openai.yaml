@@ -1,0 +1,6 @@
+interface:
+  display_name: "RunningHub"
+  short_description: "Discover and run RunningHub media workflows"
+  default_prompt: "Use $runninghub to discover a suitable RunningHub workflow, validate its node payload, and run it."
+policy:
+  allow_implicit_invocation: true

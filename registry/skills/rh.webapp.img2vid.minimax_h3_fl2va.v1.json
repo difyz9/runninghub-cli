@@ -1,0 +1,54 @@
+{
+  "name": "rh.webapp.img2vid.minimax_h3_fl2va.v1",
+  "version": "1.0.0",
+  "description": "MiniMax H3 FL2VA image-to-video webapp. Uses one reference image and a prompt to generate a short video.",
+  "resource": {
+    "id": "2084535715072929793",
+    "type": "webapp"
+  },
+  "runtime": {
+    "defaultInstanceType": "default",
+    "defaultTimeout": 1800,
+    "defaultPollInterval": 15
+  },
+  "inputs": {
+    "required": [
+      {
+        "name": "reference_image_path",
+        "type": "image",
+        "description": "Local input image path"
+      }
+    ],
+    "optional": [
+      {
+        "name": "prompt_text",
+        "type": "string",
+        "default": "保持人物主体一致，生成6秒轻微动作视频，镜头平稳推进，光线自然，画面清晰。",
+        "description": "Prompt describing motion and style"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "param": "reference_image_path",
+      "nodeId": "4",
+      "fieldName": "image",
+      "valueMode": "upload"
+    },
+    {
+      "param": "prompt_text",
+      "nodeId": "7",
+      "fieldName": "prompt",
+      "valueMode": "literal"
+    }
+  ],
+  "outputs": {
+    "minFiles": 1,
+    "expectedSuffixes": [".mp4"]
+  },
+  "verification": {
+    "lastTaskId": "2088963231501746178",
+    "lastStatus": "SUCCESS",
+    "lastOutputDir": "outputs/test_2084535715072929793_default"
+  }
+}

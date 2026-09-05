@@ -1,0 +1,53 @@
+{
+  "name": "rh.webapp.img2vid.minimax_h3_fl2va_oss.v1",
+  "version": "1.0.0",
+  "description": "MiniMax H3 FL2VA open-source edition image-to-video webapp. Uses one reference image and a motion prompt to generate a short video.",
+  "resource": {
+    "id": "2089409319493263361",
+    "type": "webapp"
+  },
+  "runtime": {
+    "defaultInstanceType": "default",
+    "defaultTimeout": 1800,
+    "defaultPollInterval": 15
+  },
+  "inputs": {
+    "required": [
+      {
+        "name": "reference_image_path",
+        "type": "image",
+        "description": "Local input image path"
+      }
+    ],
+    "optional": [
+      {
+        "name": "prompt_text",
+        "type": "string",
+        "default": "保持人物主体一致，生成5秒轻微动作视频，镜头平稳，光线自然，画面清晰。",
+        "description": "Prompt describing motion and style"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "param": "reference_image_path",
+      "nodeId": "4",
+      "fieldName": "image",
+      "valueMode": "upload"
+    },
+    {
+      "param": "prompt_text",
+      "nodeId": "7",
+      "fieldName": "prompt",
+      "valueMode": "literal"
+    }
+  ],
+  "outputs": {
+    "minFiles": 1,
+    "expectedSuffixes": [".mp4"]
+  },
+  "verification": {
+    "lastStatus": "SUCCESS",
+    "lastOutputDir": "outputs/zimage_daily_video"
+  }
+}

@@ -1,0 +1,609 @@
+# 短视频画面风格·调色关键词合集
+# 来源：用户提供，剪映/PR/AI绘图均可直接使用
+# 用途：DSPy优化器根据工作流类型自动混入提示词
+
+# 风格标签体系
+# 每种风格包含：
+#   keywords: 中文描述（用于T2V/视频工作流，叙事段落）
+#   tags: 英文标签（用于T2I/文生图，逗号分隔）
+#   genre: 风格归类
+#   mood: 情绪基调
+#   color_palette: 主色调
+#   lighting: 光照特征
+#   texture: 质感关键词
+#   best_for: 适合场景
+
+styles:
+
+  # ════════════════════════════════════════
+  # 一、人像日常（穿搭/美妆/自拍/vlog）
+  # ════════════════════════════════════════
+
+  korean_creamy_soft:
+    name: "韩系奶油柔光"
+    genre: "人像日常"
+    keywords: "韩系奶油柔光风格，低对比度通透白皙皮肤，粉米色奶油色调，柔光虚化背景，高光柔和面部磨皮，干净浅色背景，低饱和度带细腻胶片颗粒感"
+    tags: "Korean creamy soft style, low contrast porcelain skin, pink beige cream tone, soft glow bokeh, smooth matte skin, clean pale background, low saturation, fine film grain, dreamy柔和光晕"
+    mood: "温柔甜美"
+    color_palette: "粉米色，奶油白"
+    lighting: "柔光漫射，浅高光"
+    texture: "细腻胶片颗粒，磨皮柔和"
+    best_for: ["穿搭", "美妆", "自拍", "vlog"]
+
+  japanese_fresh:
+    name: "日系清新治愈"
+    genre: "人像日常"
+    keywords: "日系清新治愈风格，淡青冷调自然光线，整体曝光偏亮，浅白过曝高光处理，低饱和度柔和阴影，画面通透干净，青草蓝天生活化柔光氛围"
+    tags: "Japanese fresh healing style, pale blue cool tone, natural light, overexposed highlight, low saturation, soft shadow, clean transparent, blue sky green grass, natural soft glow"
+    mood: "清新治愈"
+    color_palette: "淡青，冷白，浅蓝"
+    lighting: "自然光，高曝光，过曝高光"
+    texture: "通透干净，柔和"
+    best_for: ["日系写真", "治愈vlog", "生活记录"]
+
+  hk_90s_retro:
+    name: "90s港风复古"
+    genre: "人像日常"
+    keywords: "经典90年代港风复古风格，红橙撞色霓虹灯影，暗调氛围压低曝光，四周暗角明显，胶片颗粒质感丰富，柔焦处理轻微色偏，高对比阴影层次，复古暖棕色调街头氛围感"
+    tags: "90s Hong Kong retro style, red orange contrast, neon moody, dark tone vignette, film grain, soft focus, color shift, high contrast shadow, vintage warm brown, street atmosphere"
+    mood: "复古摩登"
+    color_palette: "红橙，暖棕，暗红"
+    lighting: "暗调霓虹，高对比阴影"
+    texture: "胶片颗粒，柔焦，暗角"
+    best_for: ["街头人像", "复古写真", "港风穿搭"]
+
+  fuji_film:
+    name: "富士胶片复古"
+    genre: "人像日常"
+    keywords: "富士胶片复古风格，暖黄底色温润，细腻颗粒质感，轻微褪色做旧效果，锐化较低画面柔和，暗角烘托氛围，肤色柔和自然偏暖，复古日常感柔和光影过渡"
+    tags: "Fujifilm vintage style, warm yellow base, fine grain, faded texture, low sharpness, vignette, soft skin tone, warm retro daily, soft light shadow transition"
+    mood: "温暖复古"
+    color_palette: "暖黄，暖橙，褪色棕"
+    lighting: "柔和自然光"
+    texture: "细腻颗粒，暗角，褪色质感"
+    best_for: ["胶片风写真", "日常记录", "复古vlog"]
+
+  kodak_gold200:
+    name: "柯达金200胶片"
+    genre: "人像日常"
+    keywords: "柯达金200胶片风格，橙黄暖调浓郁，肤色饱和温暖，轻微绿色偏移增加层次，颗粒质感细腻真实，复古街头生活化随拍感，画面温暖有故事性"
+    tags: "Kodak Gold 200 film style, warm orange yellow, rich skin tone, slight green tint, grain texture, vintage street, casual daily snapshot, warm storytelling"
+    mood: "温暖随性"
+    color_palette: "橙黄，暖金，轻微绿调"
+    lighting: "自然暖光"
+    texture: "颗粒质感，暖调浓郁"
+    best_for: ["街头随拍", "生活记录", "复古旅行"]
+
+  ins_minimal_cold:
+    name: "INS极简冷白"
+    genre: "人像日常"
+    keywords: "INS极简冷淡风格，大面积留白构图，冷白光效清冷高级，莫兰迪低饱和灰调，整体低对比度，纯色背景干净利落，高级冷淡质感画面极简干净"
+    tags: "INS minimal cold white style, large negative space, cold white light, Morandi low saturation gray tone, low contrast, clean solid background, high-end冷淡质感, minimal and clean"
+    mood: "冷淡高级"
+    color_palette: "冷白，莫兰迪灰，米白"
+    lighting: "冷白光，均匀柔和"
+    texture: "干净利落，纯色质感"
+    best_for: ["穿搭展示", "静物", "高级感自拍"]
+
+  y2k_kitsch:
+    name: "Y2K千禧辣妹"
+    genre: "人像日常"
+    keywords: "Y2K千禧辣妹风格，高饱和粉紫撞色，闪光灯直打光斑明显，高锐化画面清晰，轻微噪点增加复古感，塑料质感亮面反光，高亮度霓虹闪片元素，低像素复古滤镜千禧年数码感"
+    tags: "Y2K kitsch style, high saturation pink purple, flash glare, high sharpness, slight noise, plastic texture glossy, high brightness neon sequin, low pixel retro filter, digital vintage"
+    mood: "活泼前卫"
+    color_palette: "粉紫，荧光色，霓虹"
+    lighting: "闪光灯，高亮度，直打光"
+    texture: "噪点，塑料质感，闪光光斑"
+    best_for: ["变装", "舞蹈", "辣妹穿搭", "千禧风"]
+
+  # ════════════════════════════════════════
+  # 二、美食&市井探店
+  # ════════════════════════════════════════
+
+  food_warm_hearth:
+    name: "烟火暖调美食"
+    genre: "美食探店"
+    keywords: "烟火气暖调美食风格，暖橙色高光提亮食物色泽，微距特写突出细节纹理，暖黄柔光包裹食材，提高饱和度颜色浓郁诱人，柔和漫射光线无硬阴影，市井烟火气息真实温暖"
+    tags: "food warm hearth style, warm orange highlight, macro close-up, warm yellow soft light, high saturation rich color, soft diffused light, street food atmosphere, warm appetizing"
+    mood: "温暖食欲"
+    color_palette: "暖橙，金黄，焦糖色"
+    lighting: "暖黄柔光，漫射光"
+    texture: "微距特写，油润光泽"
+    best_for: ["美食特写", "探店vlog", "烹饪展示"]
+
+  food_documentary:
+    name: "纪实市井风"
+    genre: "美食探店"
+    keywords: "纪实市井风格，原生自然光无影棚感，无重度滤镜真实还原，轻微画面抖动增加临场感，中性色调不偏色，低饱和度不过分浓郁，真实街头氛围感人间烟火"
+    tags: "documentary street style, natural light, no heavy filter, slight camera shake, neutral tone, low saturation, authentic street atmosphere, realistic food"
+    mood: "真实质朴"
+    color_palette: "中性色，自然色温"
+    lighting: "自然光，环境光"
+    texture: "原生质感，画面微抖"
+    best_for: ["探店测评", "街头美食", "纪实vlog"]
+
+  food_dark_elegant:
+    name: "暗调高级西餐"
+    genre: "美食探店"
+    keywords: "暗调高级餐厅风格，低亮度布景深邃，局部轮廓光勾勒食物轮廓，黑色桌面布景突出主体，低饱和度高级质感，高对比光影戏剧性，甜品咖啡高级精致质感"
+    tags: "dark elegant fine dining style, low brightness, rim light contour, black background, low saturation, high contrast dramatic lighting, dessert coffee premium texture"
+    mood: "高级精致"
+    color_palette: "暗黑，点缀色，金属色"
+    lighting: "局部轮廓光，低亮度，高对比"
+    texture: "精致细腻，反光质感"
+    best_for: ["西餐", "甜品", "咖啡", "精致料理"]
+
+  # ════════════════════════════════════════
+  # 三、旅拍风景/航拍
+  # ════════════════════════════════════════
+
+  travel_clear_sky:
+    name: "清透蓝天通透"
+    genre: "旅拍风景"
+    keywords: "清透蓝天风格，整体曝光偏高画面明亮，高饱和蓝绿色彩鲜艳，画面干净透亮无雾霾感，柔光户外光线均匀，海边山野场景通用通透大气"
+    tags: "clear sky vibrant style, high exposure, high saturation blue green, clean transparent, low haze, soft outdoor light, seascape mountain通用, bright and airy"
+    mood: "清新明朗"
+    color_palette: "湛蓝，翠绿，白色"
+    lighting: "高曝光，柔光户外"
+    texture: "通透，干净，无雾感"
+    best_for: ["旅行vlog", "航拍", "风景大片"]
+
+  cinematic_widescreen:
+    name: "电影感宽屏大片"
+    genre: "旅拍风景"
+    keywords: "史诗级电影感宽屏大片，2.35:1超宽画幅比例，强明暗对比光影张力，浅景深虚化突出主体，慢镜头营造氛围感，侧逆光勾勒轮廓金色光晕，浓郁色彩饱和度饱满，航拍大远景壮观氛围"
+    tags: "cinematic widescreen epic, 2.35:1 aspect ratio, strong chiaroscuro, shallow depth of field, slow motion, side backlight golden rim, rich color saturation, aerial drone shot majestic"
+    mood: "史诗庄严"
+    color_palette: "浓郁暖色，金色，深蓝"
+    lighting: "侧逆光，强明暗对比"
+    texture: "浅景深，电影质感"
+    best_for: ["航拍", "风光大片", "旅行电影"]
+
+  retro_road_film:
+    name: "复古公路胶片"
+    genre: "旅拍风景"
+    keywords: "复古公路旅行胶片风格，颗粒感明显暗角浓郁，褪色黄调怀旧复古，低对比度柔和过渡，黄昏暖金色柔光洒在公路，旷野公路一望无际，复古旅行质感满满故事感"
+    tags: "retro road trip film style, grain vignette, faded yellow tone, low contrast, golden hour soft light, open road wilderness, vintage travel, nostalgic storytelling"
+    mood: "怀旧自由"
+    color_palette: "褪色黄，暖金，土棕"
+    lighting: "黄昏柔光，黄金时刻"
+    texture: "颗粒，暗角，褪色质感"
+    best_for: ["公路旅行", "旷野风景", "复古旅行vlog"]
+
+  # ════════════════════════════════════════
+  # 四、国风/新中式（汉服/茶室/园林）
+  # ════════════════════════════════════════
+
+  ink_wash_guofeng:
+    name: "水墨淡染国风"
+    genre: "国风新中式"
+    keywords: "水墨淡染中国风风格，低饱和度青灰色调如水墨宣纸，朦胧柔光薄雾笼罩，大面积留白构图极具东方意境，淡墨晕染过渡自然，整体低对比度素雅清冷，亭台楼阁烟雨江南意境悠远"
+    tags: "ink wash Chinese painting style, low saturation blue gray, hazy soft glow mist, large negative space, ink wash gradient, low contrast elegant cool, oriental poetic charm, traditional aesthetic"
+    mood: "素雅清冷"
+    color_palette: "墨灰，青灰，留白"
+    lighting: "朦胧柔光，薄雾散射"
+    texture: "水墨晕染，纸纹质感"
+    best_for: ["汉服写真", "茶室", "园林", "古风视频"]
+
+  green_mountain:
+    name: "青绿山水新中式"
+    genre: "国风新中式"
+    keywords: "青绿山水新中式风格，青绿色为主色调典雅高级，柔和漫光均匀通透，低饱和度素雅不张扬，水雾氤氲气氛朦胧，亭台楼阁园林古风韵味，淡雅高级宋朝美学意境"
+    tags: "blue green landscape neo-Chinese style, cyan green dominant, soft diffused light, low saturation elegant, misty atmosphere, garden classical, Song dynasty aesthetic, refined elegant"
+    mood: "雅致高级"
+    color_palette: "青绿，石青色，黛色"
+    lighting: "柔和漫光，通透水雾"
+    texture: "朦胧，水雾，温润"
+    best_for: ["新中式写真", "园林航拍", "茶文化视频"]
+
+  dunhuang_chic:
+    name: "敦煌国潮"
+    genre: "国风新中式"
+    keywords: "敦煌国潮复古华丽风格，鎏金暖棕底色富丽堂皇，红土配色浓郁厚重，高饱和度复古壁画质感，厚重光影层次分明，飞天飘带传统纹样精美，国潮复古大气磅礴"
+    tags: "Dunhuang Chinese chic style, gold warm brown opulent, terracotta red heavy, high saturation mural texture, rich dramatic lighting, flying celestial ribbons traditional pattern, retro Chinese bold"
+    mood: "华丽大气"
+    color_palette: "鎏金，红土色，石绿，宝蓝"
+    lighting: "厚重光影，戏剧性光效"
+    texture: "壁画质感，金箔纹理"
+    best_for: ["敦煌风写真", "国潮变装", "古风大片"]
+
+  # ════════════════════════════════════════
+  # 五、潮流卡点（舞蹈/机车/数码/变装）
+  # ════════════════════════════════════════
+
+  cyberpunk:
+    name: "赛博朋克"
+    genre: "潮流卡点"
+    keywords: "赛博朋克霓虹都市风格，蓝紫霓虹灯光撞色强烈，暗调夜景高对比度层次，雨天湿漉漉地面反射灯光，全息光斑科技感十足，冷青阴影搭配暖橙高光，城市夜景未来科幻氛围"
+    tags: "cyberpunk neon city style, blue purple neon contrast, dark night high contrast, rainy wet ground reflection, holographic light spots, cool cyan shadow warm orange highlight, futuristic sci-fi urban"
+    mood: "酷炫未来"
+    color_palette: "蓝紫，霓虹粉，冷青"
+    lighting: "霓虹灯，暗调高对比"
+    texture: "雨天反光，全息光斑，金属"
+    best_for: ["变装", "舞蹈", "城市夜景", "数码"]
+
+  industrial_cold:
+    name: "机能冷调工业"
+    genre: "潮流卡点"
+    keywords: "机能冷调工业风格，冷青蓝光硬朗金属感，硬光直打轮廓分明，高对比度黑白层次锐利，金属灰底色工业质感，高锐化细节清晰锋利，机车数码测评硬核氛围"
+    tags: "industrial cold techwear style, cool cyan blue light, hard direct lighting, high contrast, metallic gray base, high sharpness, techwear gear digital review, industrial rugged"
+    mood: "硬朗冷酷"
+    color_palette: "冷青，金属灰，黑"
+    lighting: "硬光，高对比，冷光"
+    texture: "金属磨砂，锐利清晰"
+    best_for: ["机车", "数码测评", "机能穿搭", "变装"]
+
+  vhs_vintage:
+    name: "VHS复古录像带"
+    genre: "潮流卡点"
+    keywords: "VHS复古录像带风格，色彩偏移不均匀剥落感，扫描线条横纹干扰，画面模糊噪点浓密，四周暗角明显，复古老电视质感回忆杀，颗粒粗糙年代感十足"
+    tags: "VHS retro tape style, color shift chromatic aberration, scan lines interference, blurry noise dense, vignette edge dark, retro TV texture nostalgic, rough grain lo-fi"
+    mood: "怀旧复古"
+    color_palette: "褪色，偏移色，紫边"
+    lighting: "过曝不均匀"
+    texture: "噪点，扫描线，模糊"
+    best_for: ["复古变装", "回忆向", "卡点视频"]
+
+  american_comic:
+    name: "美式漫画风"
+    genre: "潮流卡点"
+    keywords: "美式漫画波普风格，粗黑轮廓线描边明显，高饱和撞色大胆鲜明，高对比色块分明无渐变过渡，漫画网点质感半调印刷效果，潮流趣味变装活泼动感"
+    tags: "American comic pop style, thick black outline, high saturation bold contrast, high contrast color block, halftone dot texture, comic print effect, trendy playful fun"
+    mood: "活力趣味"
+    color_palette: "高饱和撞色，红黄蓝原色"
+    lighting: "平面均匀，无渐变"
+    texture: "网点，轮廓线，色块"
+    best_for: ["趣味变装", "创意卡点", "动画风"]
+
+  # ════════════════════════════════════════
+  # 六、情绪氛围感文案短片
+  # ════════════════════════════════════════
+
+  dark_melancholy:
+    name: "暗调忧郁冷调"
+    genre: "情绪氛围"
+    keywords: "暗调忧郁伤感风格，整体亮度压暗氛围沉重，冷蓝灰底色清冷孤寂，微弱局部光照亮主体或局部，低饱和度克制压抑，暗沉阴影大面积笼罩，深夜独处伤感氛围感"
+    tags: "dark melancholy cold tone, low brightness heavy mood, cool blue gray base, dim localized light, low saturation restrained, deep dark shadow, late night solitude, sentimental atmosphere"
+    mood: "忧郁伤感"
+    color_palette: "冷蓝灰，暗灰，黑色"
+    lighting: "微弱局部光，低亮度"
+    texture: "暗沉，朦胧，阴影浓郁"
+    best_for: ["伤感文案", "深夜独处", "失落情绪"]
+
+  golden_hour_warm:
+    name: "黄昏橘调治愈"
+    genre: "情绪氛围"
+    keywords: "黄昏橘调治愈温柔风格，日落暖金色橘光铺满画面，朦胧光斑镜头光晕梦幻唯美，低对比度过渡柔和似梦境，柔和光晕包裹主体温暖治愈，温柔治愈系时光缓慢流淌"
+    tags: "golden hour orange healing style, sunset warm golden orange, hazy lens flare dreamy, low contrast soft transition, warm glow enveloping, gentle healing, time slowing down"
+    mood: "温暖治愈"
+    color_palette: "暖橘，金色，橙黄"
+    lighting: "日落逆光，光晕，朦胧光斑"
+    texture: "柔光，光晕，梦幻"
+    best_for: ["治愈文案", "黄昏氛围", "温柔情感"]
+
+  bw_film_noir:
+    name: "黑白电影质感"
+    genre: "情绪氛围"
+    keywords: "黑白电影质感高级叙事风格，单灰度画面去除色彩干扰，强化光影层次明暗过渡丰富，高对比度戏剧性强烈，高级故事感画面厚重，颗粒感轻微不做作，经典黑白文艺气息"
+    tags: "black and white film noir quality, grayscale color removal, enhanced light shadow contrast, high contrast dramatic, cinematic storytelling, fine grain texture, classic artistic mood"
+    mood: "深沉文艺"
+    color_palette: "黑白灰"
+    lighting: "强明暗层次，戏剧性光影"
+    texture: "颗粒，灰度过渡丰富"
+    best_for: ["故事性文案", "人物独白", "文艺短片"]
+
+  # ════════════════════════════════════════
+  # 七、电商好物（美妆/家居/数码/母婴）
+  # ════════════════════════════════════════
+
+  luxury_white:
+    name: "轻奢纯白高级"
+    genre: "电商好物"
+    keywords: "轻奢纯白高级风格，纯白背景干净无暇，柔和漫反射光线包围产品，低饱和度色彩克制优雅，均匀柔光无硬阴影，护肤品化妆品质感通透高级"
+    tags: "luxury pure white premium style, clean white background, soft diffused reflection, low saturation elegant, even soft light no hard shadow, skincare cosmetic clean premium"
+    mood: "高级简约"
+    color_palette: "纯白，米白，浅灰金"
+    lighting: "柔和漫反光，均匀柔光"
+    texture: "无阴影，通透"
+    best_for: ["护肤品", "饰品", "家居好物"]
+
+  macaron_pastel:
+    name: "马卡龙母婴柔和"
+    genre: "电商好物"
+    keywords: "马卡龙母婴柔和可爱风格，浅粉浅蓝马卡龙色系温馨甜美，低对比度整体柔和，柔光弱化阴影边缘模糊，低饱和度马卡龙色系干净温柔，画面温暖惹人喜爱"
+    tags: "macaron pastel baby柔和 style, light pink light blue macaron, low contrast soft, diffused shadow gentle, low saturation pastel clean, warm lovely adorable"
+    mood: "温馨可爱"
+    color_palette: "浅粉，浅蓝，奶油色，淡紫"
+    lighting: "柔光弱化阴影"
+    texture: "柔和，干净，无棱角"
+    best_for: ["母婴产品", "儿童用品", "零食"]
+
+  industrial_tech:
+    name: "工业科技冷灰"
+    genre: "电商好物"
+    keywords: "工业科技冷灰金属风格，冷金属灰底色冷酷专业，硬朗冷白光照射材质纹理清晰，清晰材质高光精准反射，低饱和度克制不花哨，数码机械产品科技感十足"
+    tags: "industrial tech cool gray style, cold metallic gray, hard cool white light, clear material highlight, low saturation minimal, digital mechanical tech product"
+    mood: "专业冷静"
+    color_palette: "金属灰，冷灰，黑"
+    lighting: "硬朗冷白光，高光精准"
+    texture: "金属拉丝，磨砂，高光反射"
+    best_for: ["数码产品", "机械", "科技测评"]
+
+  # ════════════════════════════════════════
+  # 八、手绘/图文动画（口播/知识/语录配图）
+  # ════════════════════════════════════════
+
+  flat_minimal:
+    name: "扁平简约卡通"
+    genre: "手绘图文"
+    keywords: "扁平简约卡通风格，纯色块干净利落，圆润线条可爱友好，低饱和度马卡龙色系舒适，无复杂阴影保持平面感，画面干净简约适合科普知识讲解"
+    tags: "flat minimal cartoon style, solid color block, rounded smooth line, low saturation macaron pastel, no complex shadow, clean graphic, educational illustration"
+    mood: "简约友好"
+    color_palette: "马卡龙色系，纯色"
+    lighting: "均匀平面光，无阴影"
+    texture: "平滑，无纹理，矢量感"
+    best_for: ["口播动画", "知识科普", "语录配图"]
+
+  clay_soft:
+    name: "黏土软陶风"
+    genre: "手绘图文"
+    keywords: "黏土软陶立体可爱风格，哑光磨砂质感无高光反射，柔和漫阴影柔和立体感，低饱和度彩色温暖惹人喜爱，立体感强但不过分真实，适合可爱零食宠物画面"
+    tags: "clay stop motion style, matte frosted texture, soft diffused shadow, low saturation warm cute, 3D but not realistic, adorable food pet illustration"
+    mood: "可爱治愈"
+    color_palette: "低饱和暖色，柔色"
+    lighting: "柔和漫阴影，哑光"
+    texture: "磨砂，黏土指纹感"
+    best_for: ["零食动画", "宠物图文", "可爱插画"]
+
+  shinkai_painterly:
+    name: "新海诚治愈插画"
+    genre: "手绘图文"
+    keywords: "新海诚风格治愈插画，细腻丁达尔光斑光线穿透画面，通透蓝天色彩干净明快，柔和渐变色彩过渡自然，画面高通透光影华丽唯美，治愈系文案背景梦幻浪漫"
+    tags: "Makoto Shinkai style, delicate god rays volumetric light, transparent blue sky, soft color gradient, high clarity light shadow, dreamy romantic, healing illustration background"
+    mood: "唯美治愈"
+    color_palette: "湛蓝，透明白，暖金"
+    lighting: "丁达尔光，逆光通透"
+    texture: "光斑，渐变，通透"
+    best_for: ["治愈语录配图", "风景插画", "浪漫背景"]
+
+  sketch_pencil:
+    name: "素描速写"
+    genre: "手绘图文"
+    keywords: "手绘素描速写风格，黑白单色线条简约文艺，排线纹理手绘质感丰富，低饱和度无色彩干扰，走心情感语录配图氛围感强，一笔一画真实手绘温度"
+    tags: "sketch pencil drawing style, black white monochrome line, crosshatch texture hand-drawn, low saturation grayscale, emotional quote illustration, authentic hand drawing warmth"
+    mood: "文艺走心"
+    color_palette: "黑白灰"
+    lighting: "单一光源方向"
+    texture: "铅笔线条，排线，纸纹"
+    best_for: ["情感语录", "手绘效果", "文艺配图"]
+
+# ════════════════════════════════════════
+# 九、影视风格（导演美学/电影镜头语言）
+# ════════════════════════════════════════
+
+  wes_anderson:
+    name: "韦斯·安德森"
+    genre: "影视风格"
+    keywords: "韦斯·安德森标志性对称构图，甜粉薄荷马卡龙低饱和调色，画面扁平化无景深，居中居中再居中，俯拍和正机位切换，精致布景像舞台剧，画面每一帧都可以做壁纸"
+    tags: "Wes Anderson style, symmetrical composition center frame, pastel color palette pink mint, flat depth minimal, meticulous set design diorama, deadpan quirky whimsical, pastel retro, billowing smoke, slow motion walking sequence"
+    mood: "复古古怪"
+    color_palette: "粉彩，薄荷绿，芥末黄，暖棕"
+    lighting: "均匀柔光，扁平化无硬影"
+    texture: "精致布景，柔光，无颗粒"
+    best_for: ["创意短视频", "文艺短片", "趣味vlog", "品牌广告"]
+    camera: "正机位，俯拍，轨道横向移动，慢镜推轨"
+
+  wong_kar_wai:
+    name: "王家卫式"
+    genre: "影视风格"
+    keywords: "王家卫式霓虹迷离情绪，色彩浓郁饱和高对比，拖影与运动模糊强调时光流逝，手持镜头微微晃动，绿色暖红大胆撞色，负片空间的孤独美学，下雨的夜街和霓虹倒影，抽帧和慢门拖影"
+    tags: "Wong Kar-wai style, neon drenched saturated colors, motion blur trailing frames, handheld camera intimate, green red bold contrast, vaporwave melancholy, rainy neon street reflections, step printed frames slow shutter drag, nostalgic longing, 1960s Hong Kong aesthetic"
+    mood: "迷离伤感"
+    color_palette: "翡翠绿，暖红，霓虹粉，墨蓝"
+    lighting: "霓虹灯混合光源，暗部深黑"
+    texture: "胶片颗粒，拖影，慢快门模糊"
+    best_for: ["情绪短片", "城市夜景", "爱情叙事", "文艺电影仿拍"]
+    camera: "手持，慢门抽帧，扛肩近景，28mm广角"
+
+  fincher_dark:
+    name: "大卫·芬奇暗调"
+    genre: "影视风格"
+    keywords: "大卫·芬奇式暗调冷峻质感，青绿/暗绿调色贯穿始终，画面锐利无比细节分明，室内场景低照度单光源，深黑阴影几乎无中间调，强对比但不丢失暗部，数字电影极度干净的画质"
+    tags: "David Fincher style, dark teal green tint, razor sharp details extreme resolution, low key lighting single source, deep black shadows crushed, high contrast clean digital, obsessive composition, clinical cold atmosphere, seven zodiac social network aesthetic"
+    mood: "冷峻悬疑"
+    color_palette: "暗青绿，深灰，墨黑，铁锈色"
+    lighting: "低照度侧光，单一主光源，暗部深黑"
+    texture: "极锐利，数字干净，无噪点"
+    best_for: ["悬疑短片", "都市剧情", "科技品牌广告", "冷感叙事"]
+    camera: "精密构图，缓慢推轨，50mm等效，水平线严格"
+
+  zhang_yimou:
+    name: "张艺谋式史诗"
+    genre: "影视风格"
+    keywords: "张艺谋式东方色彩美学，高饱和正红色块大胆撞色，对称构图帝王般庄严，宏伟全景山川壮丽，群体方阵整齐划一，色彩作为叙事语言，色调浓烈戏剧张力充斥画面"
+    tags: "Zhang Yimou epic style, saturated bold red dominant, symmetrical majestic wide composition, large scale crowd formations, color as narrative language, warrior mass choreography, dramatic contrasting colors, Hero House of Flying Daggers aesthetic, wuxia grandeur"
+    mood: "恢弘悲壮"
+    color_palette: "大红，金黄，翠绿，深黑"
+    lighting: "强对比自然光，侧逆光描边，大光比"
+    texture: "丝绸纹理，粗糙布料，沙尘质感"
+    best_for: ["史诗航拍", "古风大片", "武术动作", "品牌大片"]
+    camera: "广角大全，俯拍方阵，轨道横移，慢动作武打"
+
+  villeneuve_epic:
+    name: "维伦纽瓦式极简"
+    genre: "影视风格"
+    keywords: "丹尼斯·维伦纽瓦式极简宏大美学，画面空旷地平线极低，人物在画面中渺小孤独，低饱和度冷清压抑，干净到极致的工业几何构图，长镜头缓慢揭开世界，声音留白和沉默的力量，沙丘降临银翼杀手2049视觉语言"
+    tags: "Denis Villeneuve style, minimalist monumental scale, vast empty landscapes low horizon line, solitary figure dwarfed by environment, desaturated cool muted, clean geometric industrial, slow unfolding long takes, silence and weight, Dune Blade Runner 2049 aesthetic, overwhelming sense of scale"
+    mood: "崇高孤寂"
+    color_palette: "沙漠黄灰，冷钢蓝，暗灰白"
+    lighting: "巨大柔和天光，朦胧尘雾光，大环境小光源"
+    texture: "空旷，极简，巨大阴影，几何"
+    best_for: ["科幻短片", "史诗风光", "大气品牌广告", "建筑记录"]
+    camera: "超广角深焦，缓慢推拉，极低地平线，长镜头"
+
+  ghibli_whimsy:
+    name: "吉卜力温暖"
+    genre: "影视风格"
+    keywords: "吉卜力式温暖治愈想象力，大自然充满灵性和生命力，茂密的绿色植物笔触可见，光线柔和穿过树叶形成光斑，美食热气腾腾画面诱人，云彩蓬松柔软像棉花糖，小镇日常充满人情味"
+    tags: "Studio Ghibli style, warm whimsical detailed backgrounds, lush greenery hand painted feel, soft light filtering through leaves, steam rising from food appetizing, fluffy clouds cotton candy sky, magical realism daily life, My Neighbor Totoro Spirited Away Howl's Moving Castle aesthetic"
+    mood: "温暖治愈"
+    color_palette: "翠绿，暖黄，天空蓝，奶油白"
+    lighting: "柔光透过树叶，夏日阳光斑驳，暖色漫射"
+    texture: "手绘质感，植物细腻笔触，云朵蓬松"
+    best_for: ["治愈系动画", "美食短片", "自然旅拍", "童话风格"]
+    camera: "平视中景，跟拍移动，俯拍餐桌，缓慢摇镜头"
+
+  film_noir:
+    name: "黑色电影"
+    genre: "影视风格"
+    keywords: "经典黑色电影高对比光影，黑白灰阶丰富暗部浓重，百叶窗条纹阴影投射，雨夜湿漉漉的街道倒映霓虹，侦探风衣帽子剪影，烟雾缭绕烟雾在低角度光源中可见，蛇蝎美人红唇在黑白中突出"
+    tags: "film noir classic style, high contrast chiaroscuro lighting, venetian blind shadows, rainy wet street reflections, detective trenchcoat silhouette, smoke curling in low key light, femme fatale red lip standout, black white rich grayscale, dramatic shadow play, 1940s crime aesthetic"
+    mood: "悬疑怀旧"
+    color_palette: "黑白灰，极点缀色（红唇/霓虹）"
+    lighting: "高对比单光源，百叶窗条纹光，暗部深黑"
+    texture: "胶片颗粒，烟雾，雾霾，磨砂"
+    best_for: ["侦探剧情", "悬疑短片", "复古广告", "黑白文艺"]
+    camera: "低角度，广角变形，斜线构图，推轨跟拍"
+
+  nolan_imax:
+    name: "诺兰IMAX级"
+    genre: "影视风格"
+    keywords: "克里斯托弗·诺兰式IMAX宏大片幅，大量使用65mm胶片拍摄，画面极度清晰宽广，叙事交叉剪辑时空交织，暗调现实感非科幻感的科幻，巨大建筑和城市全景，时间主题视觉隐喻，逆光剪影和透镜耀斑"
+    tags: "Christopher Nolan IMAX style, massive 65mm film frame, extreme clarity wide composition, non-linear time narrative visual, grounded dark realism, monumental architecture aerial, lens flare practical effect, Inception Interstellar Tenet aesthetic, IMAX ratio tall frame"
+    mood: "宏大严肃"
+    color_palette: "钢蓝灰，冷银，暗金，深黑"
+    lighting: "自然主义暗调，逆光，透镜耀斑"
+    texture: "胶片颗粒（65mm），锐利，干净"
+    best_for: ["科幻短片", "史诗大片", "城市航拍", "时间主题"]
+    camera: "IMAX画幅，广角深焦，逆光剪影，360°旋转"
+
+  malick_nature:
+    name: "泰伦斯·马利克式"
+    genre: "影视风格"
+    keywords: "泰伦斯·马利克式神性自然美学，黄金时段逆光柔软如画，人物沉浸在自然光中，大量自然光线穿过树林水面，摄影机自由漂浮追逐人物，旁白内心独白意识流，自然世界作为神性的映照，生命之美画面流动如诗"
+    tags: "Terrence Malick style, golden hour god rays, characters immersed in natural light, camera floating freely following movement, nature as divine reflection, voiceover stream of consciousness, intimate close-ups, grass wheat field wind, contemplative beauty, Tree of Life Days of Heaven aesthetic"
+    mood: "诗性沉思"
+    color_palette: "金黄，麦色，翠绿，淡蓝"
+    lighting: "黄金时段逆光，柔光漫射，自然光为主"
+    texture: "朦胧柔光，自然粗糙感，呼吸感"
+    best_for: ["诗意自然", "治愈风光", "哲学短片", "婚礼/亲子记录"]
+    camera: "手持自由漂浮，近景追脸，自然光，180°快门开角"
+
+  ridley_scott:
+    name: "雷德利·斯科特科幻"
+    genre: "影视风格"
+    keywords: "雷德利·斯科特式史诗科幻工业质感，大量烟雾和尘埃充满环境，暗金色青铜色厚重底色，蒸汽和雾气中透着光束，巨大压抑的建筑空间，复古未来主义机械质感，光效透过格栅和遮蔽物投下条纹阴影，异形银翼杀手末日美学"
+    tags: "Ridley Scott sci-fi style, smoke haze filled atmosphere, dark gold bronze industrial, steam light beams volumetric, oppressive monumental architecture, retro-futuristic mechanical, shaft light through grille shadow stripes, Alien Blade Runner Gladiator aesthetic, world-weary grandeur"
+    mood: "沉重史诗"
+    color_palette: "暗金，青铜，烟灰，铁锈棕"
+    lighting: "烟雾中光束，工业单光源，硬光阴影条纹"
+    texture: "金属磨损，烟尘颗粒，蒸汽湿润"
+    best_for: ["科幻场景", "废土末日", "工业质感", "史诗广告"]
+    camera: "广角深焦，俯拍大全，缓慢推轨，低角度仰视"
+
+  satoshi_kon:
+    name: "今敏迷幻现实"
+    genre: "影视风格"
+    keywords: "今敏式超现实迷幻转场，高对比和特立独行的色彩，现实与幻想的无缝剪辑切换，极度精细的背景细节，城市在画面中扭曲变形，角色面部特写夸张情绪化，跳切和动作匹配转场推动叙事"
+    tags: "Satoshi Kon surreal mind-bending style, high contrast bold color palette, seamless reality fantasy transition, hyper detailed background art, cityscape warping morphing, extreme expressive close-ups, match cut transition editing, Perfect Blue Paprika Millennium Actress aesthetic, psychological intensity"
+    mood: "迷幻紧张"
+    color_palette: "高饱和撞色，红蓝互补，荧光粉"
+    lighting: "戏剧性强对比，非现实光源，高反差"
+    texture: "精细线条，平面色块，无颗粒"
+    best_for: ["意识流短片", "惊悚氛围", "实验动画", "超现实品牌"]
+    camera: "跳切，匹配转场，广角畸变，快速剪辑"
+
+  kurosawa_epic:
+    name: "黑泽明史诗"
+    genre: "影视风格"
+    keywords: "黑泽明式动态狂风暴雨美学，大量使用狂风沙尘和暴雨营造戏剧张力，人物剪影在巨大天空背景下，长焦压缩空间中的决斗慢镜，多机位覆盖同一动作，三船敏郎式的豪迈表演，自然元素（火/风/雨/烟）作为角色参与"
+    tags: "Akira Kurosawa epic style, dynamic weather wind rain dust dramatic, silhouettes against massive sky, telephoto compressed duel slow motion, multi-camera action coverage, Toshiro Mifune bold performance, nature as character, Seven Samurai Ran Throne of Blood aesthetic, elements as drama"
+    mood: "悲壮豪迈"
+    color_palette: "土黄，墨青，暗红，灰白"
+    lighting: "大光比自然光，逆光剪影，强侧光"
+    texture: "沙尘颗粒，雨丝，风动草木"
+    best_for: ["古装动作", "战争史诗", "武侠短片", "自然力量"]
+    camera: "长焦压缩，广角仰视，多机位，狂风特效"
+
+  cuaron_long_take:
+    name: "阿方索·卡隆长镜头"
+    genre: "影视风格"
+    keywords: "阿方索·卡隆式沉浸式长镜头，一个镜头讲完一个场景的极致调度，摄影机在空间中自由穿梭无痕迹，深焦前后景同时清晰，冷暖对比色细腻过渡，自然光+环境光无缝衔接，人物在画框中精准走位"
+    tags: "Alfonso Cuaron long take master shot style, immersive continuous shot, camera seamlessly moving through space, deep focus foreground background both clear, warm cool color contrast subtle, natural environmental light seamless, precise blocking choreography, Children of Men Gravity Roma aesthetic, invisible editing"
+    mood: "沉浸真实"
+    color_palette: "暖黄冷蓝自然对比，中性肤色"
+    lighting: "自然环境光，长镜头内光线变化"
+    texture: "自然柔和，呼吸感，真实质感"
+    best_for: ["叙事长镜头", "沉浸式体验", "都市生活", "现实主义"]
+    camera: "斯坦尼康长镜头，深焦，环绕走位，无剪辑"
+
+  synthwave_retrowave:
+    name: "合成波/复古未来"
+    genre: "影视风格"
+    keywords: "合成波美学80年代复古未来，紫粉霓虹和深蓝地平线撞色，太阳网格线电子质感，低速快门拖影发光条纹，棕榈树剪影在日落霓虹中，像素栅格和磁带模拟失真，复古跑车和健身房蒙太奇，迈阿密之夜致敬"
+    tags: "synthwave retrowave 80s style, purple pink neon deep blue horizon, sun grid line electronic, slow shutter glow streak, palm tree silhouette neon sunset, VHS distortion chrome, Miami night retro car, Kavinsky Drive aesthetic, neon vaporwave outrun"
+    mood: "复古迷幻"
+    color_palette: "紫粉，霓虹蓝，深紫，荧光橙"
+    lighting: "霓虹线性光源，地平线光晕，低速快门拖影"
+    texture: "VHS噪点，扫描线，发光边缘，像素化"
+    best_for: ["复古科幻", "卡点视频", "夜店视觉", "游戏风格"]
+    camera: "固定构图，推拉变焦，低速快门，负片闪烁"
+
+  aronofsky_intense:
+    name: "达伦·阿伦诺夫斯基式"
+    genre: "影视风格"
+    keywords: "达伦·阿伦诺夫斯基式心理压迫美学，特写贴脸镜头极度近迫，手持DV晃动的真实恐惧，微距鱼眼变形镜头扭曲空间，快速剪接闪切闪回，色彩单一突出主题色（红/蓝），画面极度聚焦物理细节和身体疼痛"
+    tags: "Darren Aronofsky intense psychological style, extreme close-up face filling frame, shaky DV raw intensity, fisheye distorted space, rapid flash cutting montage, single color thematic (red blue), body horror physical detail, Requiem for a Dream Black Swan Mother aesthetic, emotional assault"
+    mood: "压迫张力"
+    color_palette: "暗红，漂白蓝，病态白，黄绿"
+    lighting: "高对比硬光，局部光斑，荧光灯管"
+    texture: "噪点，粗糙胶片，柔焦过曝"
+    best_for: ["心理惊悚", "实验短片", "焦躁情绪", "动作蒙太奇"]
+    camera: "特写贴脸，鱼眼变形，Snorricam绑拍，跳切"
+
+universal_enhancers:
+  - text: "胶片颗粒"
+    tags: "film grain"
+    for: ["复古", "文艺", "纪实"]
+  - text: "柔焦"
+    tags: "soft focus, dreamy blur"
+    for: ["人像", "氛围", "治愈"]
+  - text: "暗角"
+    tags: "vignette"
+    for: ["复古", "电影感", "暗调"]
+  - text: "丁达尔光"
+    tags: "god rays, volumetric lighting"
+    for: ["治愈", "风景", "室内"]
+  - text: "棱镜色散光斑"
+    tags: "prismatic dispersion, chromatic flare"
+    for: ["潮流", "情绪", "Vlog"]
+  - text: "镜像对称"
+    tags: "mirror reflection symmetry"
+    for: ["卡点", "创意", "艺术"]
+  - text: "低锐化"
+    tags: "low sharpness, soft detail"
+    for: ["复古", "胶片", "柔光"]
+  - text: "高锐化"
+    tags: "high sharpness, crisp detail, ultra HD"
+    for: ["电商", "数码", "美食特写"]
+  - text: "莫兰迪低饱和"
+    tags: "Morandi palette, low saturation muted"
+    for: ["INS风", "高级感", "冷淡风"]
+  - text: "褪色复古"
+    tags: "faded vintage, washed out retro"
+    for: ["胶片", "港风", "复古"]
+  - text: "柔光漫射"
+    tags: "soft diffused light, wrap lighting"
+    for: ["人像", "美食", "治愈"]
+  - text: "侧逆光"
+    tags: "side backlight, rim light, golden rim"
+    for: ["电影感", "人像", "风光"]
+  - text: "轮廓光"
+    tags: "rim light, edge light, silhouette"
+    for: ["暗调", "人像", "电商"]
+  - text: "雾面朦胧"
+    tags: "misty haze, atmospheric fog, dream haze"
+    for: ["氛围", "国风", "治愈"]
+  - text: "高通透"
+    tags: "high clarity, crystal clear, transparent light"
+    for: ["旅拍", "美食", "新中式"]

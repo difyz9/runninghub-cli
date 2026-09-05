@@ -1,0 +1,89 @@
+{
+  "name": "rh.webapp.firstlast.minimax_h3_fl2va.v1",
+  "version": "1.0.0",
+  "description": "MiniMax H3 FL2VA first-last frame video generation webapp. Uses start/end images with ratio, duration, and prompt.",
+  "resource": {
+    "id": "2086547118222827522",
+    "type": "webapp"
+  },
+  "runtime": {
+    "defaultInstanceType": "default",
+    "defaultTimeout": 1800,
+    "defaultPollInterval": 15
+  },
+  "inputs": {
+    "required": [
+      {
+        "name": "first_frame_image_path",
+        "type": "image",
+        "description": "Local path for first frame image"
+      },
+      {
+        "name": "last_frame_image_path",
+        "type": "image",
+        "description": "Local path for last frame image"
+      }
+    ],
+    "optional": [
+      {
+        "name": "aspect_ratio",
+        "type": "string",
+        "default": "16:9",
+        "description": "Video aspect ratio: auto, 21:9, 16:9, 4:3, 1:1, 3:4, 9:16"
+      },
+      {
+        "name": "duration_seconds",
+        "type": "float",
+        "default": 6,
+        "description": "Video duration in seconds (4-15)"
+      },
+      {
+        "name": "prompt_text",
+        "type": "string",
+        "default": "保持人物一致性，以图1作为首帧、图2作为尾帧，生成6秒自然过渡视频，动作平滑，镜头稳定，光线统一。",
+        "description": "Prompt for first-last frame transition behavior"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "param": "first_frame_image_path",
+      "nodeId": "4",
+      "fieldName": "image",
+      "valueMode": "upload"
+    },
+    {
+      "param": "last_frame_image_path",
+      "nodeId": "6",
+      "fieldName": "image",
+      "valueMode": "upload"
+    },
+    {
+      "param": "aspect_ratio",
+      "nodeId": "7",
+      "fieldName": "aspect_ratio",
+      "valueMode": "literal"
+    },
+    {
+      "param": "duration_seconds",
+      "nodeId": "7",
+      "fieldName": "duration_seconds",
+      "valueMode": "literal"
+    },
+    {
+      "param": "prompt_text",
+      "nodeId": "8",
+      "fieldName": "prompt",
+      "valueMode": "literal"
+    }
+  ],
+  "outputs": {
+    "minFiles": 1,
+    "expectedSuffixes": [".mp4"]
+  },
+  "verification": {
+    "lastTaskId": "2088959945843367938",
+    "lastStatus": "SUCCESS",
+    "lastOutputDir": "outputs/test_2086547118222827522_default"
+  }
+}

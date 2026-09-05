@@ -10,7 +10,7 @@ if [[ "${1:-}" == "--doctor-env" && -z "${2:-}" ]]; then
 fi
 
 python -m pip install --upgrade pip
-python -m pip install "runninghub-sdk>=1.1.5" "typer>=0.9.0"
+python -m pip install "runninghub-sdk>=1.1.9" "typer>=0.9.0"
 python -m pip install -e .
 
 echo "runninghub-cli is installed."

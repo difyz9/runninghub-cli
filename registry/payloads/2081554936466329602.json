@@ -1,0 +1,96 @@
+{
+  "template_name": "艺术人像摄影-Zimage_4K如梦似幻",
+  "runninghub_id": "2081554936466329602",
+  "type": "ai-app",
+  "group_name": "portrait",
+  "tags": [
+    "ai-app",
+    "verified",
+    "portrait",
+    "txt2img",
+    "three_view"
+  ],
+  "workflow_type": "txt2img",
+  "prompt_template": "游戏角色人物三视图设定图，同一角色的正面、侧面、背面三个视角并排展示，全身立绘，纯白背景，角色原画设计风格，线条清晰，统一配色，三视图角色卡",
+  "overall_score": 10.0,
+  "tested_at": "2026-08-25T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "webappId": "2081554936466329602",
+    "nodeInfoList": [
+      {
+        "nodeId": "53",
+        "fieldName": "text",
+        "fieldValue": "伦勃朗光结合暗夜朦光，营造斑驳弥散、迷离抽象的朦胧光影。色彩呈现完美配色，高反差对比，基调暗朦且泛着微光。 画面带有强烈的胶片颗粒感、高噪点与分层模糊晕染效果。视觉上融合对焦模糊、动态模糊、人影与场景重叠，以及强透视构图。 采用独特视角，大面积负空间留白，背景极简。细节处点缀局部创意英文信息。 女子以慵懒姿态倚靠，存在透明重叠，未来消散为花瓣的朦胧形态。罐中鲜花也随之呈现盛开、枯萎、重生的叠加状态。 整体风格为弱印象风、情绪写意大片，充满情景叙事感，呈现大师杰作，高级艺术，电影质感",
+        "fieldType": "STRING",
+        "description": "文本提示词",
+        "required": true,
+        "llmHint": "用中文描述画面内容。这是单文本输入节点，完整提示词会整体替换默认艺术人像风格。要生成三视图请在提示词中明确写出'三视图''正面/侧面/背面''并排展示''白底/纯色背景'。",
+        "example": "游戏角色人物三视图设定图，同一角色正面、侧面、背面三视角并排展示，全身立绘，纯白背景，统一配色",
+        "multiline": true
+      }
+    ]
+  },
+  "description": "Z-image 4K 艺术人像摄影 AI 应用，单文本提示词输入。默认是伦勃朗光电影质感艺术人像风格，但通过提示词可改造成三视图角色设定图等其它用途（已验证三视图可用）。输出 1080x1384 预览 + 3240x4152 4K 两张图。",
+  "outputType": "image",
+  "outputCount": "1",
+  "quality": "verified",
+  "call_guide": {
+    "method": "runninghub run <ID> --type webapp --node '53:text=<提示词>'",
+    "mode": "webapp",
+    "identifier": "2081554936466329602",
+    "required": [
+      {
+        "arg": "--node '53:text=<提示词>'",
+        "label": "文本提示词",
+        "hint": "完整提示词，会整体替换默认艺术人像风格。支持中文，建议结构：主体描述 + 视角布局 + 背景 + 风格。"
+      }
+    ],
+    "optional": [],
+    "three_view_prompt": {
+      "label": "人物三视图专用提示词模板",
+      "hint": "已验证可用。要点：明确写'三视图'、'正面/侧面/背面'、'并排展示'、'白底/纯色背景'。",
+      "template": "游戏角色人物三视图设定图，同一角色的正面、侧面、背面三个视角并排展示，全身立绘，纯白背景，角色原画设计风格，线条清晰，统一配色，三视图角色卡"
+    }
+  },
+  "examples": [
+    {
+      "title": "人物三视图（已验证）",
+      "command": "runninghub run 2081554936466329602 --type webapp --node '53:text=游戏角色人物三视图设定图，同一角色的正面、侧面、背面三个视角并排展示，全身立绘，纯白背景，角色原画设计风格，线条清晰，统一配色，三视图角色卡'",
+      "description": "生成正面/侧面/背面三视角并排的角色设定图，实测成功，输出三格全身立绘"
+    },
+    {
+      "title": "默认艺术人像风格",
+      "command": "runninghub run 2081554936466329602 --type webapp --node '53:text=伦勃朗光结合暗夜朦光，女子慵懒倚靠，鲜花盛开枯萎重生叠加，电影质感艺术人像'",
+      "description": "使用应用默认的 4K 艺术人像摄影风格"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "文本提示词",
+      "type": "text",
+      "required": true,
+      "nodeId": "53",
+      "fieldName": "text"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "生成图片",
+      "type": "image",
+      "count": 1,
+      "description": "1080x1384 图片。接口实际返回预览+4K 两张（内容相同），下载时只保留一张，跳过 4K 大图"
+    }
+  ],
+  "tips": [
+    "单文本节点 (53.text)，提示词整体替换默认风格",
+    "三视图要点：必须明确写'三视图 / 正面 / 侧面 / 背面 / 并排 / 白底'，否则模型倾向输出单张艺术人像",
+    "输出竖版 3:4，三格全身立绘自动横排",
+    "实测三视图人物一致性良好，中间为侧面（较窄），两侧为正面/背面",
+    "中文提示词友好，比英文工作流更省事",
+    "接口返回预览+4K 两张内容相同的图，独立脚本已配置 downloadPolicy=keep_smallest，只下载一张小图，跳过 22MB 的 4K"
+  ]
+}

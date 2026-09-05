@@ -1,0 +1,54 @@
+{
+  "name": "rh.webapp.storyboard.auto12.v1",
+  "version": "1.0.0",
+  "description": "Auto storyboard webapp. Uses one reference image and a storyboard prompt to generate a 12-shot storyboard image set.",
+  "resource": {
+    "id": "2084512072087465985",
+    "type": "webapp"
+  },
+  "runtime": {
+    "defaultInstanceType": "default",
+    "defaultTimeout": 1800,
+    "defaultPollInterval": 15
+  },
+  "inputs": {
+    "required": [
+      {
+        "name": "reference_image_path",
+        "type": "image",
+        "description": "Local reference image path"
+      }
+    ],
+    "optional": [
+      {
+        "name": "storyboard_prompt",
+        "type": "string",
+        "default": "参考这张图片，帮我生成12张分镜图片，内容是人物日常生活场景，镜头连续、构图丰富、适合短剧分镜。",
+        "description": "Storyboard generation prompt"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "param": "reference_image_path",
+      "nodeId": "22",
+      "fieldName": "image",
+      "valueMode": "upload"
+    },
+    {
+      "param": "storyboard_prompt",
+      "nodeId": "24",
+      "fieldName": "text",
+      "valueMode": "literal"
+    }
+  ],
+  "outputs": {
+    "minFiles": 12,
+    "expectedSuffixes": [".png"]
+  },
+  "verification": {
+    "lastTaskId": "2088954056063275009",
+    "lastStatus": "SUCCESS",
+    "lastOutputDir": "outputs/test_2084512072087465985_default"
+  }
+}

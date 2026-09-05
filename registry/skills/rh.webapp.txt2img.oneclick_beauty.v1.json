@@ -1,0 +1,43 @@
+{
+  "name": "rh.webapp.txt2img.oneclick_beauty.v1",
+  "version": "1.0.0",
+  "description": "One-click beauty image generation webapp. Uses a single prompt to generate a beautified portrait-style image.",
+  "resource": {
+    "id": "2060288081298804738",
+    "type": "webapp"
+  },
+  "runtime": {
+    "defaultInstanceType": "default",
+    "defaultTimeout": 1800,
+    "defaultPollInterval": 15
+  },
+  "inputs": {
+    "required": [
+      {
+        "name": "prompt_text",
+        "type": "string",
+        "description": "Primary image generation prompt"
+      }
+    ],
+    "optional": []
+  },
+  "mapping": [
+    {
+      "param": "prompt_text",
+      "nodeId": "23",
+      "fieldName": "prompt",
+      "valueMode": "literal"
+    }
+  ],
+  "outputs": {
+    "minFiles": 1,
+    "expectedSuffixes": [
+      ".png"
+    ]
+  },
+  "verification": {
+    "lastTaskId": "2090234009207668737",
+    "lastStatus": "SUCCESS",
+    "lastOutputDir": "outputs/rh.webapp.txt2img.oneclick_beauty.v1_outputs_20260820_082636"
+  }
+}

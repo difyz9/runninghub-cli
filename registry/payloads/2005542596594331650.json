@@ -1,0 +1,84 @@
+{
+  "template_name": "一键提取衣服 + 分离人物 + 衣服提取器",
+  "runninghub_id": "2005542596594331650",
+  "type": "ai-app",
+  "group_name": "clothes_extract",
+  "tags": [
+    "ai-app",
+    "verified",
+    "clothes_extract"
+  ],
+  "workflow_type": "img2img",
+  "prompt_template": "",
+  "overall_score": 10.0,
+  "tested_at": "2026-06-15T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "webappId": "2005542596594331650",
+    "nodeInfoList": [
+      {
+        "nodeId": "78",
+        "fieldName": "image",
+        "fieldValue": "@upload:./person.png",
+        "fieldType": "image",
+        "description": "输入人物图片",
+        "required": true,
+        "llmHint": "用户提供的人物全身图片路径，使用 @upload: 前缀上传。",
+        "example": "@upload:./person.png"
+      }
+    ]
+  },
+  "description": "输入人物图片，自动提取衣服、分离人物、衣服提取",
+  "outputType": "image",
+  "outputCount": "3",
+  "quality": "verified",
+  "call_guide": {
+    "method": "runninghub run <ID> --type webapp --file '78:image=<人物图片>'",
+    "mode": "webapp",
+    "identifier": "2005542596594331650",
+    "required": [
+      {
+        "arg": "--file '78:image=<人物图片路径>'",
+        "label": "输入人物图片",
+        "hint": "包含人物的全身/半身照片。支持 @upload: 上传或 URL。"
+      }
+    ],
+    "optional": []
+  },
+  "examples": [
+    {
+      "title": "提取衣服",
+      "command": "runninghub run 2005542596594331650 --type webapp --file '78:image=./person.jpg'",
+      "description": "上传人物照片，自动提取衣服、分离人物"
+    },
+    {
+      "title": "批量处理",
+      "command": "runninghub run 2005542596594331650 --type webapp --file '78:image=@upload:./model.png'",
+      "description": "用 @upload 显式上传"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "人物图片",
+      "type": "image",
+      "required": true,
+      "nodeId": "78",
+      "fieldName": "image"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "提取结果",
+      "type": "image",
+      "count": 3,
+      "description": "人物、衣服、背景 分离后的多张图片"
+    }
+  ],
+  "tips": [
+    "建议使用背景简单、人物轮廓清晰的照片",
+    "全身照效果比半身照好"
+  ]
+}

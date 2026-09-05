@@ -14,7 +14,7 @@ If `runninghub` is not available, clone this GitHub project and install it local
 ```bash
 mkdir -p ~/tools
 cd ~/tools
-git clone https://github.com/difyz9/runninghub-cli.git
+git clone https://gitee.com/difyz/runninghub-cli.git
 cd runninghub-cli
 ./scripts/bootstrap.sh
 ```

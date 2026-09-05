@@ -12,3 +12,8 @@ build/
 runninghub_outputs/
 .DS_Store
 
+
+outputs/
+*.mp4
+*.jpg
+*.png

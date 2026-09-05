@@ -1,0 +1,77 @@
+{
+  "name": "rh.webapp.image_edit.tryon.v1",
+  "version": "1.0.0",
+  "description": "AI image editing and virtual try-on webapp. Uses a source image and a garment image, then applies prompt-guided editing.",
+  "resource": {
+    "id": "2086630550139392001",
+    "type": "webapp"
+  },
+  "runtime": {
+    "defaultInstanceType": "default",
+    "defaultTimeout": 1800,
+    "defaultPollInterval": 15
+  },
+  "inputs": {
+    "required": [
+      {
+        "name": "source_image_path",
+        "type": "image",
+        "description": "Local source portrait/image path"
+      },
+      {
+        "name": "garment_image_path",
+        "type": "image",
+        "description": "Local garment reference image path"
+      }
+    ],
+    "optional": [
+      {
+        "name": "prompt_text",
+        "type": "string",
+        "default": "保持人物一致性，图1的模特穿着图2的服装，保持图1的人物外貌、发型的一致性不发生变化，且保持图像的清晰度",
+        "description": "Prompt for try-on consistency and quality"
+      },
+      {
+        "name": "max_edge",
+        "type": "int",
+        "default": 1280,
+        "description": "Longest edge size for output"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "param": "source_image_path",
+      "nodeId": "570",
+      "fieldName": "image",
+      "valueMode": "upload"
+    },
+    {
+      "param": "garment_image_path",
+      "nodeId": "548",
+      "fieldName": "image",
+      "valueMode": "upload"
+    },
+    {
+      "param": "prompt_text",
+      "nodeId": "558",
+      "fieldName": "text",
+      "valueMode": "literal"
+    },
+    {
+      "param": "max_edge",
+      "nodeId": "539",
+      "fieldName": "value",
+      "valueMode": "literal"
+    }
+  ],
+  "outputs": {
+    "minFiles": 1,
+    "expectedSuffixes": [".png", ".zip"]
+  },
+  "verification": {
+    "lastTaskId": "2088928412357062657",
+    "lastStatus": "SUCCESS",
+    "lastOutputDir": "outputs/test_2086630550139392001_default"
+  }
+}

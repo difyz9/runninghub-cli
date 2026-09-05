@@ -1,0 +1,65 @@
+{
+  "name": "rh.webapp.music.minimax_music3.v1",
+  "version": "1.0.0",
+  "description": "MiniMax Music3 text-to-song webapp. Uses style metadata and lyric text to generate an MP3 song.",
+  "resource": {
+    "id": "2088378137674604546",
+    "type": "webapp"
+  },
+  "runtime": {
+    "defaultInstanceType": "default",
+    "defaultTimeout": 1800,
+    "defaultPollInterval": 15
+  },
+  "inputs": {
+    "required": [
+      {
+        "name": "style_text",
+        "type": "string",
+        "description": "Song style and arrangement metadata text"
+      },
+      {
+        "name": "lyrics_text",
+        "type": "string",
+        "description": "Song lyric body text"
+      }
+    ],
+    "optional": [
+      {
+        "name": "reserved_text",
+        "type": "string",
+        "default": "这里不用输入任何提示词，不需要修改",
+        "description": "Reserved text node that normally remains unchanged"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "param": "style_text",
+      "nodeId": "52",
+      "fieldName": "text",
+      "valueMode": "literal"
+    },
+    {
+      "param": "lyrics_text",
+      "nodeId": "53",
+      "fieldName": "text",
+      "valueMode": "literal"
+    },
+    {
+      "param": "reserved_text",
+      "nodeId": "888",
+      "fieldName": "text",
+      "valueMode": "literal"
+    }
+  ],
+  "outputs": {
+    "minFiles": 1,
+    "expectedSuffixes": [".mp3", ".zip"]
+  },
+  "verification": {
+    "lastTaskId": "2088984448552103938",
+    "lastStatus": "SUCCESS",
+    "lastOutputDir": "outputs/test_2088378137674604546_default"
+  }
+}

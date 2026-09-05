@@ -1,0 +1,116 @@
+{
+  "version": "1.0.0",
+  "updatedAt": "2026-08-16",
+  "skills": [
+    {
+      "name": "rh.webapp.motion_transfer.wan22.v1",
+      "definition": "registry/skills/rh.webapp.motion_transfer.wan22.v1.json",
+      "status": "verified",
+      "owner": "media-pipeline",
+      "tags": ["motion-transfer", "wan2.2", "webapp", "video"],
+      "resource": {
+        "id": "2087776618822594562",
+        "type": "webapp"
+      }
+    },
+    {
+      "name": "rh.webapp.image_edit.tryon.v1",
+      "definition": "registry/skills/rh.webapp.image_edit.tryon.v1.json",
+      "status": "verified",
+      "owner": "media-pipeline",
+      "tags": ["image-edit", "tryon", "webapp", "image"],
+      "resource": {
+        "id": "2086630550139392001",
+        "type": "webapp"
+      }
+    },
+    {
+      "name": "rh.webapp.storyboard.auto12.v1",
+      "definition": "registry/skills/rh.webapp.storyboard.auto12.v1.json",
+      "status": "verified",
+      "owner": "media-pipeline",
+      "tags": ["storyboard", "auto", "webapp", "image"],
+      "resource": {
+        "id": "2084512072087465985",
+        "type": "webapp"
+      }
+    },
+    {
+      "name": "rh.webapp.firstlast.minimax_h3_fl2va.v1",
+      "definition": "registry/skills/rh.webapp.firstlast.minimax_h3_fl2va.v1.json",
+      "status": "verified",
+      "owner": "media-pipeline",
+      "tags": ["firstlast", "minimax", "fl2va", "webapp", "video"],
+      "resource": {
+        "id": "2086547118222827522",
+        "type": "webapp"
+      }
+    },
+    {
+      "name": "rh.webapp.img2vid.minimax_h3_fl2va.v1",
+      "definition": "registry/skills/rh.webapp.img2vid.minimax_h3_fl2va.v1.json",
+      "status": "verified",
+      "owner": "media-pipeline",
+      "tags": ["img2vid", "minimax", "fl2va", "webapp", "video"],
+      "resource": {
+        "id": "2084535715072929793",
+        "type": "webapp"
+      }
+    },
+    {
+      "name": "rh.webapp.music.minimax_music3.v1",
+      "definition": "registry/skills/rh.webapp.music.minimax_music3.v1.json",
+      "status": "verified",
+      "owner": "media-pipeline",
+      "tags": ["music", "song", "minimax", "webapp", "audio"],
+      "resource": {
+        "id": "2088378137674604546",
+        "type": "webapp"
+      }
+    },
+    {
+      "name": "rh.webapp.txt2img.krea2_photoreal.v1",
+      "definition": "registry/skills/rh.webapp.txt2img.krea2_photoreal.v1.json",
+      "status": "verified",
+      "owner": "media-pipeline",
+      "tags": ["txt2img", "krea2", "photoreal", "webapp", "image"],
+      "resource": {
+        "id": "2082295063975120897",
+        "type": "webapp"
+      }
+    },
+    {
+      "name": "rh.webapp.txt2img.zimage_art_portrait.v1",
+      "definition": "registry/skills/rh.webapp.txt2img.zimage_art_portrait.v1.json",
+      "status": "verified",
+      "owner": "media-pipeline",
+      "tags": ["txt2img", "zimage", "portrait", "three-view", "webapp", "image"],
+      "resource": {
+        "id": "2081554936466329602",
+        "type": "webapp"
+      }
+    },
+    {
+      "name": "rh.webapp.img2vid.minimax_h3_fl2va_oss.v1",
+      "definition": "registry/skills/rh.webapp.img2vid.minimax_h3_fl2va_oss.v1.json",
+      "status": "verified",
+      "owner": "media-pipeline",
+      "tags": ["img2vid", "minimax", "fl2va", "webapp", "video"],
+      "resource": {
+        "id": "2089409319493263361",
+        "type": "webapp"
+      }
+    },
+    {
+      "name": "rh.webapp.txt2vid.minimax_h3.v1",
+      "definition": "registry/skills/rh.webapp.txt2vid.minimax_h3.v1.json",
+      "status": "verified",
+      "owner": "media-pipeline",
+      "tags": ["txt2vid", "minimax", "h3", "webapp", "video", "text-to-video"],
+      "resource": {
+        "id": "2084968440439336962",
+        "type": "webapp"
+      }
+    }
+  ]
+}

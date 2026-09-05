@@ -1,0 +1,148 @@
+{
+  "template_name": "LTXV 视频生成",
+  "runninghub_id": "2052272204712300545",
+  "type": "workflow",
+  "group_name": "其他",
+  "tags": [
+    "workflow",
+    "verified",
+    "其他"
+  ],
+  "workflow_type": "img2vid",
+  "prompt_template": "动作：镜头推进\n台词：古装戏，男人对话后互相拥抱",
+  "overall_score": 10.0,
+  "tested_at": "2026-06-15T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "workflowId": "2052272204712300545",
+    "nodeInfoList": [
+      {
+        "nodeId": "269",
+        "fieldName": "image",
+        "fieldValue": "@upload:./frame1.png",
+        "fieldType": "image",
+        "description": "图片输入 1",
+        "required": false,
+        "llmHint": "可选参考图片，使用 @upload: 上传。",
+        "example": "@upload:./frame1.png"
+      },
+      {
+        "nodeId": "325",
+        "fieldName": "value",
+        "fieldValue": "动作：镜头推进\n台词：古装戏，男人对话后互相拥抱",
+        "fieldType": "string",
+        "description": "动作/台词描述",
+        "required": false,
+        "llmHint": "描述镜头运动和台词内容。格式：\"动作：xxx\\n台词：xxx\"",
+        "example": "动作：镜头推进\n台词：古装戏，男人对话后互相拥抱"
+      },
+      {
+        "nodeId": "332",
+        "fieldName": "image",
+        "fieldType": "image",
+        "description": "图片输入 2",
+        "required": false,
+        "llmHint": "可选参考图片，使用 @upload: 上传。",
+        "example": "@upload:./frame2.png"
+      },
+      {
+        "nodeId": "342",
+        "fieldName": "image",
+        "fieldType": "image",
+        "description": "图片输入 3",
+        "required": false,
+        "llmHint": "可选参考图片，使用 @upload: 上传。",
+        "example": "@upload:./frame3.png"
+      }
+    ]
+  },
+  "description": "基于 LTX Studio 模型的视频生成工作流，支持多图输入",
+  "outputType": "video",
+  "outputCount": "1",
+  "quality": "verified",
+  "call_guide": {
+    "method": "runninghub run <ID> --type workflow [--file '269:image=<图片1>'] [--file '332:image=<图片2>'] [--file '342:image=<图片3>'] [--node '325:value=<描述>']",
+    "mode": "workflow",
+    "identifier": "2052272204712300545",
+    "required": [],
+    "optional": [
+      {
+        "arg": "--file '269:image=<图片路径>'",
+        "label": "图片输入 1",
+        "hint": "参考图片1，控制画面主体/风格"
+      },
+      {
+        "arg": "--file '332:image=<图片路径>'",
+        "label": "图片输入 2",
+        "hint": "参考图片2，控制画面主体/风格"
+      },
+      {
+        "arg": "--file '342:image=<图片路径>'",
+        "label": "图片输入 3",
+        "hint": "参考图片3，控制画面主体/风格"
+      },
+      {
+        "arg": "--node '325:value=<描述>'",
+        "label": "动作/台词描述",
+        "hint": "描述画面动作或角色台词。例：'角色说：你好，欢迎来到未来城市，镜头缓缓推进'"
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "图生视频",
+      "command": "runninghub run 2052272204712300545 --type workflow --file '269:image=./character.png' --node '325:value=角色缓缓转身，背景是赛博朋克城市'",
+      "description": "参考角色图生成动视频"
+    },
+    {
+      "title": "多参考图",
+      "command": "runninghub run 2052272204712300545 --type workflow --file '269:image=./bg.jpg' --file '332:image=./character.png' --file '342:image=./prop.png' --node '325:value=角色拿起道具，镜头拉远'",
+      "description": "使用多张参考图控制画面"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "图片输入 1",
+      "type": "image",
+      "required": false,
+      "nodeId": "269",
+      "fieldName": "image"
+    },
+    {
+      "label": "图片输入 2",
+      "type": "image",
+      "required": false,
+      "nodeId": "332",
+      "fieldName": "image"
+    },
+    {
+      "label": "图片输入 3",
+      "type": "image",
+      "required": false,
+      "nodeId": "342",
+      "fieldName": "image"
+    },
+    {
+      "label": "动作描述",
+      "type": "text",
+      "required": false,
+      "nodeId": "325",
+      "fieldName": "value"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "生成视频",
+      "type": "video",
+      "count": 1,
+      "description": "LTXV 生成的视频结果"
+    }
+  ],
+  "tips": [
+    "图片输入都是可选的，可以只提供部分参考",
+    "动作描述支持中文"
+  ]
+}

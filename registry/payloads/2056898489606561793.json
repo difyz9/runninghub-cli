@@ -1,0 +1,106 @@
+{
+  "template_name": "连续性人物分镜生成",
+  "runninghub_id": "2056898489606561793",
+  "type": "workflow",
+  "group_name": "分镜生成",
+  "tags": [
+    "workflow",
+    "verified",
+    "分镜生成"
+  ],
+  "workflow_type": "storyboard",
+  "prompt_template": "生成六段关于连续性的人物在水塘边的分镜",
+  "overall_score": 10.0,
+  "tested_at": "2026-06-15T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "workflowId": "2056898489606561793",
+    "nodeInfoList": [
+      {
+        "nodeId": "366",
+        "fieldName": "prompt",
+        "fieldValue": "生成六段关于连续性的人物在水塘边的分镜",
+        "fieldType": "string",
+        "description": "分镜描述提示词",
+        "required": true,
+        "llmHint": "用中文描述分镜需求。例：\"生成六段关于连续性的人物在水塘边的分镜\"",
+        "example": "生成六段关于连续性的人物在水塘边的分镜"
+      },
+      {
+        "nodeId": "342",
+        "fieldName": "image",
+        "fieldType": "image",
+        "description": "参考图片",
+        "required": false,
+        "llmHint": "可选。如有参考图用 @upload: 上传。",
+        "example": "@upload:./reference.png"
+      }
+    ]
+  },
+  "description": "生成6段连续性人物分镜图片，支持参考图保持角色形象一致性，适合故事板/剧本可视化",
+  "outputType": "image",
+  "outputCount": "6",
+  "quality": "verified",
+  "call_guide": {
+    "method": "runninghub run <ID> --type workflow --node '366:prompt=<分镜描述>' [--file '342:image=<参考图片>']",
+    "mode": "workflow",
+    "identifier": "2056898489606561793",
+    "required": [
+      {
+        "arg": "--node '366:prompt=<分镜描述>'",
+        "label": "分镜描述提示词",
+        "hint": "描述分镜画面的内容、构图、风格。例：'一个古风女子在水塘边低头照影，水面倒影清晰，水墨淡彩风格'"
+      }
+    ],
+    "optional": [
+      {
+        "arg": "--file '342:image=<参考图片路径>'",
+        "label": "参考图片",
+        "hint": "可选的人物/场景参考图，帮助保持角色一致性"
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "生成分镜",
+      "command": "runninghub run 2056898489606561793 --type workflow --node '366:prompt=一个古风美女在水塘边低头照影，水面倒影，柳枝垂落，水墨淡彩风格'",
+      "description": "文本生成连续性分镜图"
+    },
+    {
+      "title": "带角色参考",
+      "command": "runninghub run 2056898489606561793 --type workflow --file '342:image=./character.jpg' --node '366:prompt=同一人物在水塘边散步，手持团扇，表情温柔'",
+      "description": "以参考图保持角色一致性"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "分镜描述",
+      "type": "text",
+      "required": true,
+      "nodeId": "366",
+      "fieldName": "prompt"
+    },
+    {
+      "label": "参考图片",
+      "type": "image",
+      "required": false,
+      "nodeId": "342",
+      "fieldName": "image"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "分镜图片",
+      "type": "image",
+      "count": 1,
+      "description": "生成的分镜画面图片"
+    }
+  ],
+  "tips": [
+    "提示词中建议包含角色位置、动作、环境、风格四个要素",
+    "提供参考图可以保持角色形象的连续性"
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "template_name": "Wan I2V 舞蹈生成",
+  "runninghub_id": "1972733308360675329",
+  "type": "workflow",
+  "group_name": "图生视频",
+  "tags": [
+    "workflow",
+    "verified",
+    "图生视频"
+  ],
+  "workflow_type": "img2vid",
+  "prompt_template": "一个女孩正在跳现代舞，动作流畅",
+  "overall_score": 10.0,
+  "tested_at": "2026-06-15T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "workflowId": "1972733308360675329",
+    "nodeInfoList": [
+      {
+        "nodeId": "73",
+        "fieldName": "positive",
+        "fieldValue": "一个女孩正在跳现代舞，动作流畅",
+        "fieldType": "string",
+        "description": "正向提示词",
+        "required": true,
+        "llmHint": "用中文描述舞蹈动作和场景。例：\"一个女孩正在跳现代舞，动作流畅\"",
+        "example": "一个女孩正在跳现代舞，动作流畅"
+      },
+      {
+        "nodeId": "341",
+        "fieldName": "image",
+        "fieldValue": "@upload:./pose.png",
+        "fieldType": "image",
+        "description": "参考图片",
+        "required": true,
+        "llmHint": "用户提供的参考图片，使用 @upload: 前缀上传。",
+        "example": "@upload:./pose.png"
+      }
+    ]
+  },
+  "description": "基于 Wan 模型的图片驱动舞蹈视频生成",
+  "outputType": "video",
+  "outputCount": "1",
+  "quality": "verified",
+  "call_guide": {
+    "method": "runninghub run <ID> --type workflow --file '341:image=<参考图片>' --node '73:positive=<英文提示词>'",
+    "mode": "workflow",
+    "identifier": "1972733308360675329",
+    "required": [
+      {
+        "arg": "--file '341:image=<参考图片路径>'",
+        "label": "参考图片",
+        "hint": "提供人物/场景参考图。支持 @upload: 或 URL。"
+      },
+      {
+        "arg": "--node '73:positive=<英文提示词>'",
+        "label": "正向提示词",
+        "hint": "英文描述舞蹈动作和画面。例：'a girl in hanfu dancing gracefully, cherry blossoms falling, cinematic, 4K'"
+      }
+    ],
+    "optional": []
+  },
+  "examples": [
+    {
+      "title": "舞蹈视频",
+      "command": "runninghub run 1972733308360675329 --type workflow --file '341:image=./pose.jpg' --node '73:positive=a young woman in traditional Chinese dress dancing in a courtyard, slow graceful movements, soft lighting, cinematic, 4K'",
+      "description": "参考人物图片生成舞蹈视频"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "参考图片",
+      "type": "image",
+      "required": true,
+      "nodeId": "341",
+      "fieldName": "image"
+    },
+    {
+      "label": "正向提示词",
+      "type": "text",
+      "required": true,
+      "nodeId": "73",
+      "fieldName": "positive"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "舞蹈视频",
+      "type": "video",
+      "count": 1,
+      "description": "由 Wan I2V 生成的舞蹈/动作视频"
+    }
+  ],
+  "tips": [
+    "参考人物图建议用全身/半身清晰照片",
+    "提示词描述动作和氛围，参考图决定人物外观"
+  ]
+}

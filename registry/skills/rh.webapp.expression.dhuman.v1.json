@@ -1,0 +1,91 @@
+{
+  "name": "rh.webapp.expression.dhuman.v1",
+  "version": "1.0.0",
+  "description": "Digital human facial expression control video webapp. Uses a portrait image to generate a video with a selected expression.",
+  "resource": {
+    "id": "2081607154108289025",
+    "type": "webapp"
+  },
+  "runtime": {
+    "defaultInstanceType": "standard",
+    "defaultTimeout": 1800,
+    "defaultPollInterval": 15
+  },
+  "inputs": {
+    "required": [
+      {
+        "name": "image_path",
+        "type": "image",
+        "description": "Local portrait image for the digital human"
+      }
+    ],
+    "optional": [
+      {
+        "name": "expression",
+        "type": "string",
+        "default": "2.哈哈大笑",
+        "description": "Expression instruction: 1.放声大哭, 2.哈哈大笑, 3.害羞微笑, 4.低声哭泣, 5.惊讶错愕, 6.恐惧害怕, 7.紧张局促, 8.爆发怒吼, 9.疲惫困顿, 10.无奈叹气, or custom expression"
+      },
+      {
+        "name": "intensity",
+        "type": "float",
+        "default": 30,
+        "description": "Expression intensity"
+      },
+      {
+        "name": "duration_seconds",
+        "type": "int",
+        "default": 8,
+        "description": "Output video duration in seconds"
+      },
+      {
+        "name": "max_edge",
+        "type": "int",
+        "default": 1024,
+        "description": "Maximum output image edge"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "param": "image_path",
+      "nodeId": "167",
+      "fieldName": "image",
+      "valueMode": "upload"
+    },
+    {
+      "param": "expression",
+      "nodeId": "390",
+      "fieldName": "text",
+      "valueMode": "literal"
+    },
+    {
+      "param": "intensity",
+      "nodeId": "285",
+      "fieldName": "value",
+      "valueMode": "literal"
+    },
+    {
+      "param": "duration_seconds",
+      "nodeId": "291",
+      "fieldName": "value",
+      "valueMode": "literal"
+    },
+    {
+      "param": "max_edge",
+      "nodeId": "292",
+      "fieldName": "value",
+      "valueMode": "literal"
+    }
+  ],
+  "outputs": {
+    "minFiles": 1,
+    "expectedSuffixes": [".mp4"]
+  },
+  "verification": {
+    "lastTaskId": "2091673296256065537",
+    "lastStatus": "SUCCESS",
+    "lastInstanceType": "standard",
+    "lastOutputDir": "outputs/test_2081607154108289025_standard"
+  }
+}

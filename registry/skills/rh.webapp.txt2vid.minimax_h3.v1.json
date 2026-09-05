@@ -1,0 +1,80 @@
+{
+  "name": "rh.webapp.txt2vid.minimax_h3.v1",
+  "version": "1.0.0",
+  "description": "MiniMax H3 加速版 图文一键生视频（文生视频模式）。纯文本提示词生成视频，不传首尾帧图。支持分辨率、时长、画面比例调节。",
+  "resource": {
+    "id": "2084968440439336962",
+    "type": "webapp"
+  },
+  "runtime": {
+    "defaultInstanceType": "default",
+    "defaultTimeout": 1500,
+    "defaultPollInterval": 15
+  },
+  "inputs": {
+    "required": [
+      {
+        "name": "prompt_text",
+        "type": "string",
+        "description": "文生视频提示词。建议写清镜头运动、主体、动作、光线、色彩风格与质感，中文效果最好。"
+      }
+    ],
+    "optional": [
+      {
+        "name": "aspect_ratio",
+        "type": "string",
+        "default": "16:9 (Widescreen)",
+        "description": "画面比例。可选：1:1 (Square)、2:3 (Portrait Photo)、3:2 (Photo)、3:4 (Portrait Standard)、4:3 (Standard)、9:16 (Portrait Widescreen)、16:9 (Widescreen)、21:9 (Ultrawide)。横屏视频推荐 16:9 (Widescreen)。"
+      },
+      {
+        "name": "resolution",
+        "type": "string",
+        "default": "2",
+        "description": "分辨率档位：2=720P（默认，质量更高），1=480P。"
+      },
+      {
+        "name": "duration",
+        "type": "string",
+        "default": "6",
+        "description": "时长档位 1-11，分别对应 5 到 15 秒。例如 1=5s、6=10s（默认）、11=15s。"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "param": "prompt_text",
+      "nodeId": "134",
+      "fieldName": "prompt",
+      "valueMode": "literal"
+    },
+    {
+      "param": "aspect_ratio",
+      "nodeId": "115",
+      "fieldName": "aspect_ratio",
+      "valueMode": "literal"
+    },
+    {
+      "param": "resolution",
+      "nodeId": "225",
+      "fieldName": "select",
+      "valueMode": "literal"
+    },
+    {
+      "param": "duration",
+      "nodeId": "205",
+      "fieldName": "select",
+      "valueMode": "literal"
+    }
+  ],
+  "outputs": {
+    "minFiles": 1,
+    "expectedSuffixes": [".mp4"],
+    "downloadPolicy": "all"
+  },
+  "verification": {
+    "lastTaskId": "2095139728839110657",
+    "lastStatus": "SUCCESS",
+    "lastOutputDir": "runninghub_outputs/2084968440439336962/2095139728839110657",
+    "verifiedAt": "2026-09-02"
+  }
+}

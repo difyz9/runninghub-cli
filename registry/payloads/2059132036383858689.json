@@ -1,0 +1,133 @@
+{
+  "template_name": "LTX Director 视频生成",
+  "runninghub_id": "2059132036383858689",
+  "type": "workflow",
+  "group_name": "video_direct",
+  "tags": [
+    "workflow",
+    "verified",
+    "video_direct"
+  ],
+  "workflow_type": "txt2vid",
+  "prompt_template": "A cinematic shot of a futuristic city at night",
+  "overall_score": 10.0,
+  "tested_at": "2026-06-15T00:00:00",
+  "api_params": {
+    "apiKey": "your-runninghub-api-key",
+    "webhookUrl": "",
+    "instanceType": "default",
+    "accessPassword": "",
+    "workflowId": "2059132036383858689",
+    "nodeInfoList": [
+      {
+        "nodeId": "46",
+        "fieldName": "global_prompt",
+        "fieldValue": "A cinematic shot of a futuristic city at night",
+        "fieldType": "string",
+        "description": "全局场景提示词",
+        "required": true,
+        "llmHint": "用英文描述整个视频场景。例：\"A cinematic shot of a futuristic city at night, with neon lights reflecting on wet streets\"",
+        "example": "A cinematic shot of a futuristic city at night, with neon lights reflecting on wet streets"
+      },
+      {
+        "nodeId": "46",
+        "fieldName": "duration_seconds",
+        "fieldValue": 10,
+        "fieldType": "string",
+        "description": "视频时长（秒）",
+        "required": false,
+        "default": "10",
+        "llmHint": "默认10秒。",
+        "example": "10"
+      },
+      {
+        "nodeId": "46",
+        "fieldName": "frame_rate",
+        "fieldValue": 24,
+        "fieldType": "string",
+        "description": "帧率",
+        "required": false,
+        "default": "24",
+        "llmHint": "默认24fps。",
+        "example": "24"
+      }
+    ]
+  },
+  "description": "基于 LTX Director 模型的文本驱动视频生成",
+  "outputType": "video",
+  "outputCount": "1",
+  "quality": "verified",
+  "call_guide": {
+    "method": "runninghub run <ID> --type workflow --node '46:global_prompt=<场景提示词>' [--node '46:duration_seconds=<秒>'] [--node '46:frame_rate=<帧率>']",
+    "mode": "workflow",
+    "identifier": "2059132036383858689",
+    "required": [
+      {
+        "arg": "--node '46:global_prompt=<场景提示词>'",
+        "label": "全局场景提示词",
+        "hint": "描述整个视频的场景、画面、镜头语言。例：'A cinematic shot of a medieval knight walking through a misty forest, dolly zoom effect, dramatic lighting'"
+      }
+    ],
+    "optional": [
+      {
+        "arg": "--node '46:duration_seconds=<秒>'",
+        "label": "视频时长",
+        "default": "5",
+        "hint": "视频长度，单位秒"
+      },
+      {
+        "arg": "--node '46:frame_rate=<帧率>'",
+        "label": "帧率",
+        "default": "24",
+        "hint": "视频帧率，如24、30"
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "导演模式",
+      "command": "runninghub run 2059132036383858689 --type workflow --node '46:global_prompt=A cinematic shot of a knight walking through misty forest, dramatic lighting, volumetric fog, epic slow motion'",
+      "description": "LTX Director 用导演视角生成视频"
+    },
+    {
+      "title": "指定参数",
+      "command": "runninghub run 2059132036383858689 --type workflow --node '46:global_prompt=A beautiful dancer performing on stage, spotlight, slow graceful movements, cinematic' --node '46:duration_seconds=10' --node '46:frame_rate=30'",
+      "description": "10秒30fps高清视频"
+    }
+  ],
+  "inputs": [
+    {
+      "label": "场景提示词",
+      "type": "text",
+      "required": true,
+      "nodeId": "46",
+      "fieldName": "global_prompt"
+    },
+    {
+      "label": "视频时长",
+      "type": "string",
+      "required": false,
+      "nodeId": "46",
+      "fieldName": "duration_seconds"
+    },
+    {
+      "label": "帧率",
+      "type": "string",
+      "required": false,
+      "nodeId": "46",
+      "fieldName": "frame_rate"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "生成视频",
+      "type": "video",
+      "count": 1,
+      "description": "LTX Director 生成的视频"
+    }
+  ],
+  "tips": [
+    "提示词建议包含镜头运动描述（推/拉/摇/移）",
+    "帧率越高视频越流畅但生成时间增加"
+  ]
+}
