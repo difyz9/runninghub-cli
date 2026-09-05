@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """使用 RunningHub SDK 批量提交文生图任务（2并发）"""
 
+import os
 import time
 
 from runninghub_sdk import NodeModifier, RunningHubClient, TaskStatus
 
-API_KEY = "e21352d73fd845c7b59ae8ba8009e3d8"
+API_KEY = os.environ.get("RUNNINGHUB_API_KEY", "")
+if not API_KEY:
+    raise SystemExit("请先设置环境变量 RUNNINGHUB_API_KEY")
 APP_ID = "2065150199546335234"
 TASK_FILE = "/Users/apple/Documents/电子书合集/EPUB/task_ids.txt"
 

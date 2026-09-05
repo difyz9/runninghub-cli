@@ -2,10 +2,13 @@
 """批量提交文生图任务 - 使用shell=True调用runhub CLI"""
 
 import json
+import os
 import subprocess
 import time
 
-API_KEY = "e21352d73fd845c7b59ae8ba8009e3d8"
+API_KEY = os.environ.get("RUNNINGHUB_API_KEY", "")
+if not API_KEY:
+    raise SystemExit("请先设置环境变量 RUNNINGHUB_API_KEY")
 APP_ID = "2065150199546335234"
 TASK_FILE = "/Users/apple/Documents/电子书合集/EPUB/task_ids.txt"
 

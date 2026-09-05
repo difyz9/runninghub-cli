@@ -1,764 +1,638 @@
 # RunningHub CLI
 
-**一体化项目** — SDK + CLI + 工作流编排脚本 + Hermes Agent Skill
+**一体化 AI 媒体生成工具链** — SDK 封装 + 命令行 + 流水线编排 + Agent Skill
 
-`runninghub-cli` is a unified toolkit built on top of [`runninghub-sdk`](https://pypi.org/project/runninghub-sdk/). It provides:
+`runninghub-cli` 基于 [runninghub-sdk](https://pypi.org/project/runninghub-sdk/) 构建，把 RunningHub 平台上的 **ComfyUI 工作流** 和 **AI 应用** 变成可复用、可注册、可被 AI Agent 直接调用的本地工具。
 
-- **SDK CLI** — `runninghub` / `runhub` commands for submitting, polling, downloading workflows & AI Apps
-- **Workflow Scripts** — `python -m scripts.runner`, `python -m scripts.pipeline` etc. for media generation pipelines
-- **Skill Integration** — Hermes Agent skill definitions in `skills/`
-- **Workflow Registry** — verified `registry/workflows.yaml` + `registry/payloads/*.json` and integration test reports in `registry/`
+## 它能做什么
 
-## Features
+| 你想做的事 | 用什么 |
+|-----------|--------|
+| 跑一个文生图 / 图生视频 / 音乐生成任务 | `runninghub run` |
+| 在 RunningHub 市集里搜索新工作流并自动测试 | `runninghub discover search / test` |
+| 用首帧+尾帧生成过渡视频 | `python -m scripts.first2last` |
+| 把一句话创意变成完整分镜图 | `python -m scripts.storyboard` |
+| 一条命令跑完 文生图→图生视频→转场→合并 | `python -m scripts.pipeline` |
+| 本地合并视频片段（含交叉淡化） | `python -m scripts.merge` |
+| 用业务参数（而非裸节点 ID）调用接口 | `python -m scripts.skill_runner --skill ...` |
+| 生成高质量提示词并自动调色 | `runninghub prompt` |
+| 让 Codex / Claude / Hermes 帮你调用 | `skills/SKILL.md` Agent Skill |
+| 把工作流登记成可复用模版 | `runninghub config add` |
 
-- ✅ **Submit, poll, download** — end-to-end workflow/webapp execution
-- ✅ **Auto-upload media** — `@upload:` prefix in fieldValue uploads files automatically
-- ✅ **Task debugging** — detailed failure analysis with `task-detail`
-- ✅ **Marketplace discovery** — search, inspect, auto-test portal templates & AI Apps (`discover` subcommand)
-- ✅ **Hermes Skill export** — auto-generate `SKILL.md` from tested workflows (`discover export`)
-- ✅ **Agent-friendly JSON** — all commands return structured JSON on stdout
-- ✅ **Self-update** — git tag-based update mechanism
-- ✅ **Smart inspect output** — automatically filters internal plumbing nodes, shows only user-customizable parameters
-
-## Project Structure
+## 三层架构
 
 ```
-runninghub-cli/
-├── src/runninghub_cli/       ← Python SDK（pip install -e .）
-│   ├── main.py                 runninghub CLI 入口
-│   ├── service.py              RunningHub API 封装
-│   └── discover.py             工作流发现 & 市场搜索
-├── scripts/                  ← 业务编排脚本（python -m scripts.*）
-│   ├── runner.py               通用运行器
-│   ├── pipeline.py             端到端流水线（txt2img → img2vid → 过渡 → 合并）
-│   ├── storyboard.py           分镜生成
-│   ├── first2last.py           首尾帧过渡
-│   ├── merge.py                视频合并
-│   └── base.py                 共享工具
-├── skills/                   ← Hermes Agent skill 定义
-│   ├── SKILL.md
-│   └── runninghub-cli.md
-├── registry/                 ← 流程注册表
-│   ├── workflows.yaml           工作流/AI App YAML 索引
-│   ├── payloads/*.json          节点参数定义 (按 ID) + 质量分级
-│   └── cases/                  集成测试报告
-├── references/               ← 12个工作流参考文档
-├── agents/                   ← AI agent 配置文件
-├── tests/                    ← 单元测试
-├── docs/                     ← 文档
-├── examples/                 ← 示例
-├── pyproject.toml            ← 统一配置（v0.2.0）
-├── AGENTS.md                 ← Codex / Claude 指导
-├── CLAUDE.md                 ← Claude 项目上下文
-├── README.md
-└── README.zh-CN.md
+┌─────────────────────────────────────────────────────┐
+│  Agent 层   skills/SKILL.md · agents/openai.yaml    │  ← AI 助手的说明书
+├─────────────────────────────────────────────────────┤
+│  CLI 层     runninghub 命令 · scripts/ 编排脚本      │  ← 人类和脚本都直接用
+├─────────────────────────────────────────────────────┤
+│  注册表层   registry/payloads · skills · styles      │  ← 参数契约（数据，非代码）
+└─────────────────────────────────────────────────────┘
 ```
 
-## Installation
+**核心设计**：RunningHub 的所有工作流和 AI 应用都用同一个契约调用——
 
-### From Git (Recommended)
+```
+workflow_id（或 webapp_id） + node_info_list = [ {nodeId, fieldName, fieldValue}, ... ]
+```
+
+节点 ID 和字段名因工作流而异，全部沉淀在 `registry/payloads/*.json` 里。**新增工作流不需要改代码，只需添加 JSON 模版**。
+
+---
+
+## 目录
+
+- [安装](#安装)
+- [认证](#认证)
+- [快速开始](#快速开始)
+- [runninghub CLI 命令参考](#runninghub-cli-命令参考)
+- [参数传递（Node Overrides）](#参数传递node-overrides)
+- [任务执行细节](#任务执行细节)
+- [提示词质量引擎](#提示词质量引擎)
+- [编排脚本 scripts/](#编排脚本-scripts)
+- [注册表 registry/](#注册表-registry)
+- [新增一个工作流](#新增一个工作流)
+- [Agent 集成](#agent-集成)
+- [便携工具 tools/](#便携工具-tools)
+- [项目结构](#项目结构)
+- [环境变量总表](#环境变量总表)
+- [开发与测试](#开发与测试)
+- [故障排查](#故障排查)
+
+---
+
+## 安装
+
+### 方式一：Git + bootstrap（推荐）
 
 ```bash
-git clone https://gitee.com/difyz/runninghub-cli.git
+git clone https://github.com/difyz9/runninghub-cli.git
 cd runninghub-cli
 ./scripts/bootstrap.sh
 ```
 
-If your API key is in another `.env` file, bootstrap and verify in one go:
+如果 API Key 在别的 `.env` 文件里，可以一步完成安装+验证：
 
 ```bash
 ./scripts/bootstrap.sh --doctor-env /absolute/path/to/.env
 ```
 
-### Manual Install
+### 方式二：手动安装
 
 ```bash
-cd runninghub-cli
 pip install "runninghub-sdk>=1.1.9" "typer>=0.9.0"
 pip install -e .
 ```
 
-After installation, both commands are available:
+安装后两个等价命令可用：
 
 ```bash
 runninghub --help
 runhub --help
 ```
 
-### Run Without Installing
+### 方式三：不安装直接用
 
 ```bash
 pip install "runninghub-sdk>=1.1.9" "typer>=0.9.0"
 PYTHONPATH=src python -m runninghub_cli.main doctor
 ```
 
----
-
-## Auth
-
-```bash
-export RUNNINGHUB_API_KEY=your_api_key
-```
-
-Or pass it explicitly:
-
-```bash
-runninghub doctor --api-key your_api_key
-```
-
-You can also load a `.env` file:
-
-```bash
-runninghub doctor --env-file /path/to/.env
-```
+系统要求：Python ≥ 3.10。可选依赖：`ffmpeg`（视频合并）、`openai`（DeepSeek 提示词生成）。
 
 ---
 
-## Command Reference
+## 认证
 
-### Global Options
+### API Key（执行任务用）
 
 ```bash
-runninghub --version
-# {"ok": true, "version": "0.2.2"}
+export RUNNINGHUB_API_KEY=你的key    # 建议写入 .env，项目会自动加载
+runninghub doctor                     # 验证 key + 查询余额和队列
 ```
 
-### Core Commands
+也可以每次传 `--api-key`，或用 `--env-file` 指定任意 `.env` 文件。
 
-| Command | Purpose |
-|---------|---------|
-| [`doctor`](#doctor) | Check SDK, API key, and queue access |
-| [`detect`](#detect) | Detect whether an ID is a workflow or webapp |
-| [`inspect`](#inspect) | Inspect node structure (plumbing auto-filtered) |
-| [`submit`](#submit) | Submit a task, return task_id immediately |
-| [`status`](#status) | Query task status |
-| [`wait-download`](#wait-download) | Wait for completion and download outputs |
-| [`run`](#run) | Submit, wait, and download in one command |
-| [`task-detail`](#task-detail) | Fetch detailed failure analysis |
-| [`upload`](#upload) | Upload image/video/audio/file to RunningHub |
-| [`self-update`](#self-update) | Update CLI to the latest git tag |
+### 手机号登录（用户级命令用）
 
-### Discover Commands (Marketplace + Auto-test + Export)
+`history`、`call-log` 等查询个人任务记录的命令需要 access_token：
 
-| Command | Purpose |
-|---------|---------|
-| [`discover search`](#discover-search) | Search the marketplace (table by default, `--format json` for agents) |
-| [`discover inspect`](#discover-inspect) | Deep-inspect a marketplace item structure |
-| [`discover test`](#discover-test) | Auto-test: detect type → build inputs → submit → wait → verify |
-| [`discover export`](#discover-export) | Test and export as a Hermes Agent `SKILL.md` |
+```bash
+runninghub login -u 手机号 -p 密码    # 凭证保存在 ~/.runninghub/auth.json
+runninghub logout                    # 清除本地凭证
+```
 
 ---
 
-## Command Details
+## 快速开始
 
-### doctor
-
-Check SDK connectivity, API key validity, and queue availability.
+### 场景 1：跑一个已注册的工作流
 
 ```bash
+# 1. 检查环境（API key、余额、并发队列）
 runninghub doctor
-runninghub doctor --api-key your_key
-runninghub doctor --env-file /path/to/.env
+
+# 2. 列出注册表里所有可用资源
+runninghub config list
+
+# 3. 查看某个工作流的参数详情和调用指南
+runninghub config guide 2037071836214730753
+
+# 4. 一条命令：提交 → 等待 → 下载
+runninghub run 2037071836214730753 --type workflow \
+  --node 57:text="a cinematic sunset over the ocean, 8K"
+
+# 输出文件自动下载到 ./runninghub_outputs/
 ```
 
-**Options:**
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `--api-key` | string | `RUNNINGHUB_API_KEY` env | API Key |
-| `--env-file` | path | — | Load `.env` file |
-
----
-
-### detect
-
-Detect whether an ID is a workflow or AI App (webapp).
+### 场景 2：从市集发现新工作流
 
 ```bash
-runninghub detect 2038921358817632258
+# 搜索市集（工作流 + AI 应用）
+runninghub discover search --keyword "图生视频" --type both
+
+# 查看结构
+runninghub discover inspect 1972733308360675329
+
+# 自动测试：生成测试参数 → 提交 → 等待 → 验证产物
+runninghub discover test 1972733308360675329 --prompt "一个女孩跳舞"
+
+# 测试通过后导出为 Agent Skill
+runninghub discover export 1972733308360675329 --name "舞蹈生成" --output-dir ./skills
 ```
 
-**Output:**
+### 场景 3：跑一条端到端流水线
+
+准备 `scenes.json`：
+
 ```json
 {
-  "id": "2038921358817632258",
-  "type": "webapp",
-  "name": "角色三视图klein9b",
-  "node_count": 1
-}
-```
-
-**Options:**
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `identifier` | string (arg) | **required** | Workflow or AI App ID |
-| `--api-key` | string | env var | API Key |
-| `--env-file` | path | — | Load `.env` file |
-
----
-
-### inspect
-
-View node structure of a workflow or AI App. **Automatically filters internal ComfyUI plumbing nodes** (CLIPLoader, VAEEncode, KSamplerSelect, etc.) to show only user-customizable parameters.
-
-```bash
-# Default (compact mode): key nodes only
-runninghub inspect 2013908081847046145
-
-# Specify type
-runninghub inspect 2038921358817632258 --type webapp
-
-# Verbose mode: show all nodes (including plumbing)
-runninghub inspect 2013908081847046145 --verbose
-# or -v
-```
-
-**Output structure (compact mode):**
-```json
-{
-  "id": "2013908081847046145",
-  "type": "workflow",
-  "node_count": 44,
-  "plumbing_count": 37,
-  "key_nodes": [
-    {
-      "nodeId": "115",
-      "classType": "LoadImage",
-      "label": "图片输入",
-      "fields": ["image"],
-      "params": {"image": "xxx.png"}
-    }
+  "title": "我的视频项目",
+  "scenes": [
+    { "prompt": "cinematic sunset over the ocean", "duration": 5 },
+    { "prompt": "a mountain landscape at dawn", "duration": 8,
+      "image": "可选的已有图片路径" }
   ]
 }
 ```
 
-Each `key_nodes` entry contains:
-- `nodeId` — used when constructing node_overrides
-- `classType` — ComfyUI node type
-- `label` — Chinese label (Image Input, Text Prompt, etc.)
-- `fields` — all overridable field names
-- `params` — current actual values
+执行（文生图 → 图生视频 → 转场 → 合并，全自动）：
 
-**Options:**
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `identifier` | string (arg) | **required** | Workflow or AI App ID |
-| `--type` / `-t` | string | `auto` | `auto` \| `workflow` \| `webapp` \| `ai-app` |
-| `--verbose` / `-v` | bool | `false` | Show full node info (including plumbing) |
-| `--api-key` | string | env var | API Key |
-| `--env-file` | path | — | Load `.env` file |
+```bash
+export RUNNINGHUB_API_KEY=...
+python -m scripts.pipeline --config scenes.json
+```
 
 ---
 
-### submit
+## runninghub CLI 命令参考
 
-Submit a task to RunningHub and **return immediately** with `task_id` (no waiting).
+所有命令输出结构化 JSON 到 stdout：成功 `{"ok": true, "data": {...}}`，失败 `{"ok": false, "error_type": "...", "error": "..."}` 且退出码非 0。人读的表格输出见 `config`/`discover` 的部分子命令。
+
+### 基础命令
+
+| 命令 | 用途 |
+|------|------|
+| `runninghub --version` | 显示版本 |
+| `runninghub doctor` | 检查 SDK、API key、账户额度、队列可用性 |
+| `runninghub detect <ID>` | 判断 ID 是 workflow 还是 AI App |
+| `runninghub inspect <ID>` | 查看节点结构。默认精简模式（过滤内部管道节点，只显示用户可调参数），`-v` 显示全部；`--type workflow\|webapp\|ai-app` 可强制指定 |
+
+### 任务命令
+
+| 命令 | 用途 |
+|------|------|
+| `runninghub submit <ID>` | 提交任务，立即返回 `task_id`（适合长任务/并发编排） |
+| `runninghub status <task_id>` | 查询任务状态 |
+| `runninghub task-detail <task_id>` | 失败分析利器：状态、输出、webhook 详情、失败原因 |
+| `runninghub wait-download <ID> <task_id>` | 等待完成并下载产物，可设 `--output-dir/--poll-interval/--timeout` |
+| `runninghub run <ID>` | **一键执行**：submit + wait + download |
+| `runninghub upload <file>` | 上传本地文件到 RunningHub 存储，`--kind image\|video\|audio\|file` |
+
+任务命令通用参数：`--type workflow|webapp|ai-app`、`--node-overrides/-n`（JSON 或文件路径）、`--node`（`nodeId:fieldName=value` 简写，可重复）、`--file`（`nodeId:fieldName=本地路径`，自动上传）、`--instance-type`、`--access-password`、`--personal-queue`。
 
 ```bash
-runninghub submit 2037071836214730753 \
-  --type workflow \
-  --node-overrides '[
-    {"nodeId": "57", "fieldName": "text", "fieldValue": "a cinematic sunset"}
-  ]'
+# 最常用：run + node 简写
+runninghub run 2004066004755988481 --type workflow \
+  --node 6:text="一只猫在追蝴蝶" --node 6:ratio="16:9"
 
-# Load from JSON file
-runninghub submit <id> --type workflow --node-overrides overrides.json
+# AI App + 图片自动上传
+runninghub run 2005542596594331650 --type webapp \
+  --file 78:image=./model.jpg
 
-# Encrypted AI App
-runninghub submit <id> --type webapp --access-password "mypassword" \
-  --node-overrides overrides.json
+# 长任务分步走
+task_id=$(runninghub submit 2052272204712300545 -n overrides.json --type workflow | jq -r .data.taskId)
+runninghub wait-download 2052272204712300545 "$task_id" --output-dir ./out
 ```
 
-**Options:**
+### 账号命令
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `identifier` | string (arg) | **required** | Workflow or AI App ID |
-| `--type` / `-t` | string | `workflow` | `workflow` \| `webapp` \| `ai-app` |
-| `--node-overrides` / `-n` | string | — | JSON array or JSON file path; `fieldValue` supports `@upload:PATH` |
-| `--instance-type` | string | `default` | RunningHub instance type |
-| `--personal-queue` | bool | `false` | Use personal queue (workflows only) |
-| `--access-password` | string | — | Access password for encrypted AI Apps/webapps |
-| `--api-key` | string | env var | API Key |
-| `--env-file` | path | — | Load `.env` file |
+| 命令 | 用途 |
+|------|------|
+| `runninghub login` / `logout` | 手机号登录 / 清除凭证（`~/.runninghub/auth.json`） |
+| `runninghub account` | 剩余额度、当前任务数 |
+| `runninghub queue-status` | 运行中/排队中任务数、并发上限 |
+| `runninghub history` | 任务历史，支持 `--status`/`--task-type`/分页 |
+| `runninghub call-log <task_id>` | 单任务调用日志（请求参数、响应、费用） |
+| `runninghub self-update` | 按 git tag 更新自身：`--dry-run` 预览、`--tag vX.Y.Z` 指定版本 |
+
+### discover 子命令（市集发现）
+
+| 命令 | 用途 |
+|------|------|
+| `runninghub discover search -k <关键词>` | 搜索市集工作流和 AI App，`--type workflow\|webapp\|both`，`--sort RECOMMEND\|NEWEST\|POPULAR`，`-f table\|json` |
+| `runninghub discover inspect <ID>` | 检查市集资源结构 |
+| `runninghub discover test <ID>` | 自动化测试：inspect → 智能生成测试输入 → 提交 → 等待 → 验证 |
+| `runninghub discover export <ID>` | 测试通过后导出为 `SKILL.md`（可装载进 Hermes），`--no-test` 跳过测试直接导出 |
+
+### config 子命令（注册表管理）
+
+| 命令 | 用途 |
+|------|------|
+| `runninghub config list` | 表格列出全部注册模版，`-g txt2img` 按分组过滤、`-q verified` 按质量过滤 |
+| `runninghub config ls-verified` | 只列已验证可用的（`-o json` 可机读） |
+| `runninghub config groups` | 按分组树形概览（文生图/图生视频/音乐…） |
+| `runninghub config guide <ID>` | 📖 调用指南：必填/可选参数、示例命令、小贴士 |
+| `runninghub config payload <ID>` | 查看完整 payload JSON |
+| `runninghub config quality <ID> --set verified` | 查看/设置质量等级 |
+| `runninghub config defaults` | 查看/设置任务类型默认工作流 |
+| `runninghub config add <ID>` | **自动注册新工作流**：inspect 远端结构 → 生成 payload 模版 |
+| `runninghub config remove <ID>` | 删除模版（`-f` 免确认） |
+
+质量等级：✅ verified（联调通过）/ 🧪 experimental（可用未充分验证）/ ⚠️ unstable / ❌ broken。
+
+### prompt / opik 子命令（提示词质量）
+
+```bash
+# 生成高质量提示词：自动选调色风格 + 质量自检
+runninghub prompt --scene "古风美女樱花树下" --workflow txt2img
+# → {"prompt": "...", "style": "水墨淡染国风", "quality_score": 92, "verified": true}
+
+# 用 DeepSeek LLM 扩写（需 DEEPSEEK_API_KEY）
+runninghub prompt -c "赛博朋克城市夜景" --llm --detail
+
+# 查看全部调色风格 / 按类别
+runninghub prompt --list-styles
+runninghub prompt --list-genres
+
+# 查询运行记录（本地 JSONL 轨迹，零依赖零服务器）
+runninghub opik stats
+runninghub opik search --name "文生图" --limit 20
+```
 
 ---
 
-### status
+## 参数传递（Node Overrides）
 
-Query current status of a task.
-
-```bash
-runninghub status task_abc123
-```
-
-**Output:**
-```json
-{
-  "task_id": "task_abc123",
-  "status": "SUCCESS",
-  "client_id": "...",
-  "prompt_tips": ""
-}
-```
-
-**Options:**
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `task_id` | string (arg) | **required** | Task ID |
-| `--api-key` | string | env var | API Key |
-| `--env-file` | path | — | Load `.env` file |
-
----
-
-### task-detail
-
-Fetch detailed task execution info including status, outputs, failure reason, and webhook callback data. **The go-to command for debugging failures.**
+三种等价写法：
 
 ```bash
-runninghub task-detail task_abc123
+# 1. inline JSON（或指向 .json 文件的路径）
+runninghub run <ID> -n '[{"nodeId":"43","fieldName":"text","fieldValue":"hello"}]'
+
+# 2. node 简写（可重复）
+runninghub run <ID> --node 43:text="hello" --node 51:steps=30
+
+# 3. file 简写 —— 本地文件自动上传后填入节点
+runninghub run <ID> --file 167:image=./model.jpg
 ```
 
-**Output:**
-```json
-{
-  "task_id": "task_abc123",
-  "status": "FAILED",
-  "error_code": "805",
-  "error_message": "工作流运行失败",
-  "failed_reason": {"node_id": "99", "exception_message": "bad prompt"},
-  "outputs": [{"node_id": "99", "file_url": "https://..."}],
-  "webhook_detail": {...}
-}
-```
-
-**Options:**
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `task_id` | string (arg) | **required** | Task ID |
-| `--api-key` | string | env var | API Key |
-| `--env-file` | path | — | Load `.env` file |
-
----
-
-### wait-download
-
-Wait for a task to complete and download its output files.
-
-```bash
-# Basic usage
-runninghub wait-download <workflow_id> <task_id>
-
-# Custom output directory and timeout
-runninghub wait-download <id> <task_id> \
-  --output-dir ./outputs \
-  --poll-interval 10 \
-  --timeout 600
-```
-
-**Options:**
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `identifier` | string (arg) | **required** | Workflow or AI App ID |
-| `task_id` | string (arg) | **required** | Task ID |
-| `--output-dir` | path | `./runninghub_outputs/<id>/` | Output directory |
-| `--poll-interval` | float | `15` | Polling interval (seconds) |
-| `--timeout` | float | `1800` | Timeout (seconds) |
-| `--api-key` | string | env var | API Key |
-| `--env-file` | path | — | Load `.env` file |
-
----
-
-### run
-
-**Most commonly used command** — submit, wait, and download in one step.
-
-```bash
-# Basic usage
-runninghub run 2037071836214730753 \
-  --type workflow \
-  --node-overrides '[
-    {"nodeId": "57", "fieldName": "text", "fieldValue": "a cinematic sunset"}
-  ]'
-
-# With auto media upload
-runninghub run <id> --type webapp \
-  --node-overrides '[
-    {"nodeId": "167", "fieldName": "image", "fieldValue": "@upload:./model.jpg"}
-  ]'
-
-# Full options
-runninghub run <id> --type workflow \
-  --node-overrides overrides.json \
-  --output-dir ./outputs \
-  --poll-interval 10 \
-  --timeout 600 \
-  --personal-queue
-```
-
-**Options:**
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `identifier` | string (arg) | **required** | Workflow or AI App ID |
-| `--type` / `-t` | string | `workflow` | `workflow` \| `webapp` \| `ai-app` |
-| `--node-overrides` / `-n` | string | — | JSON array or JSON file path; `fieldValue` supports `@upload:PATH` |
-| `--output-dir` | path | `./runninghub_outputs/<id>/` | Output directory |
-| `--poll-interval` | float | `15` | Polling interval (seconds) |
-| `--timeout` | float | `1800` | Timeout (seconds) |
-| `--instance-type` | string | `default` | RunningHub instance type |
-| `--personal-queue` | bool | `false` | Use personal queue (workflows only) |
-| `--access-password` | string | — | Access password for encrypted AI Apps/webapps |
-| `--api-key` | string | env var | API Key |
-| `--env-file` | path | — | Load `.env` file |
-
----
-
-### upload
-
-Upload a local media file to RunningHub storage. Images use `upload_image()`, other types use `upload_file()`.
-
-```bash
-runninghub upload ./input.png --kind image
-runninghub upload ./input.mp4 --kind video
-runninghub upload ./input.wav --kind audio
-runninghub upload ./input.bin --kind file
-```
-
-**Output:**
-```json
-{
-  "kind": "image",
-  "fileName": "226dd3950e....jpg",
-  "downloadUrl": "https://..."
-}
-```
-
-**Options:**
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `file` | path (arg) | **required** | Local file path |
-| `--kind` / `-k` | string | `file` | `image` \| `video` \| `audio` \| `file` |
-| `--api-key` | string | env var | API Key |
-| `--env-file` | path | — | Load `.env` file |
-
----
-
-### self-update
-
-Git tag-based update mechanism — fetches the latest tag from the remote and reinstalls the editable checkout.
-
-```bash
-# Dry-run: show target tag without updating
-runninghub self-update --dry-run
-
-# Update to the latest tag
-runninghub self-update
-
-# Install a specific tag
-runninghub self-update --tag v0.2.0
-
-# Use a custom repository URL
-runninghub self-update --repo-url https://gitee.com/difyz/runninghub-cli.git
-```
-
-**Options:**
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `--repo-dir` | path | auto-detected | Local git checkout root |
-| `--repo-url` | string | `https://gitee.com/difyz/runninghub-cli.git` | Repository URL for tag discovery |
-| `--tag` | string | latest remote tag | Specific tag to install |
-| `--remote` | string | `origin` | Git remote name |
-| `--dry-run` | bool | `false` | Show target tag without changing files |
-
----
-
-### discover search
-
-Search the RunningHub marketplace for workflows and AI Apps.
-
-```bash
-# Search workflows (table output, human-readable)
-runninghub discover search --keyword "LTX" --type workflow --size 10
-
-# Search AI Apps
-runninghub discover search --keyword "video" --type webapp --size 10
-
-# Search both
-runninghub discover search --keyword "anime" --type both --size 5
-
-# JSON output for agents/scripts
-runninghub discover search --keyword "style transfer" --type workflow \
-  --size 3 --format json
-```
-
-**Options:**
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `--keyword` / `-k` | string | `""` | Search keyword |
-| `--type` / `-t` | string | `workflow` | `workflow` \| `webapp` \| `both` |
-| `--page` / `-p` | int | `1` | Page number |
-| `--size` / `-s` | int | `20` | Results per page |
-| `--sort` | string | `RECOMMEND` | `RECOMMEND` \| `NEWEST` \| `POPULAR` |
-| `--format` / `-f` | string | `table` | `table` \| `json` |
-| `--api-key` | string | env var | API Key |
-| `--env-file` | path | — | Load `.env` file |
-
----
-
-### discover inspect
-
-Deep-inspect any marketplace workflow or AI App to see its node structure. Auto-detects type.
-
-```bash
-runninghub discover inspect 2037071836214730753
-```
-
-**Options:**
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `identifier` | string (arg) | **required** | Workflow or AI App ID |
-| `--api-key` | string | env var | API Key |
-| `--env-file` | path | — | Load `.env` file |
-
----
-
-### discover test
-
-Auto-test a marketplace item: detect type → inspect → generate inputs → submit → poll → verify.
-
-```bash
-# With a custom test prompt
-runninghub discover test <id> --prompt "a cinematic sunset" --timeout 600
-
-# Auto-generate default prompt
-runninghub discover test <id> --timeout 300
-```
-
-**Output** (multi-line JSON for progress tracking):
-```json
-{"ok": true, "phase": "detect", "type": "workflow"}
-{"ok": true, "phase": "generate", "overrides": [...]}
-{"ok": true, "phase": "result", "test": {"ok": true, "taskId": "...", "duration": 45.2, ...}}
-```
-
-**Options:**
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `identifier` | string (arg) | **required** | Workflow or AI App ID |
-| `--type` / `-t` | string | `auto` | `workflow` \| `webapp` \| `auto` |
-| `--prompt` / `-p` | string | `""` | Test prompt text |
-| `--timeout` | float | `300` | Max wait (seconds) |
-| `--poll-interval` | float | `5` | Poll interval (seconds) |
-| `--api-key` | string | env var | API Key |
-| `--env-file` | path | — | Load `.env` file |
-
----
-
-### discover export
-
-Test a workflow and generate a standalone `SKILL.md` file for `~/.hermes/skills/`.
-
-```bash
-# Full pipeline: test → export (recommended)
-runninghub discover export 2037071836214730753 \
-  --name my_awesome_skill \
-  --description "Generates awesome videos from text prompts" \
-  --prompt "test prompt" \
-  --timeout 600 \
-  --output-dir ./exported-skills
-
-# Export without testing (for known-good workflows)
-runninghub discover export <id> --no-test --output-dir ./skills
-```
-
-The generated `SKILL.md` contains:
-- YAML frontmatter (`name`, `runninghubId`, `runninghubType`)
-- Parameter descriptions
-- Verified request payload (if tested successfully)
-- Ready-to-run `runninghub-cli` command
-- Node mapping details
-
-**Options:**
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `identifier` | string (arg) | **required** | Workflow or AI App ID |
-| `--type` / `-t` | string | `auto` | `workflow` \| `webapp` \| `auto` |
-| `--name` / `-n` | string | auto-inferred | Skill name |
-| `--description` / `-d` | string | `""` | Skill description |
-| `--output-dir` / `-o` | path | `./exported-skills` | Output directory |
-| `--no-test` | bool | `false` | Skip test run before export |
-| `--prompt` / `-p` | string | `""` | Test prompt (when `--no-test` is not set) |
-| `--timeout` | float | `300` | Test timeout (seconds) |
-| `--api-key` | string | env var | API Key |
-| `--env-file` | path | — | Load `.env` file |
-
----
-
-## Quickstart: Core Workflow
-
-```bash
-# 1. Check environment
-runninghub doctor
-
-# 2. Detect ID type
-runninghub detect <workflow_or_webapp_id>
-
-# 3. Inspect node structure (compact by default)
-runninghub inspect <id>
-
-# 4. Create an overrides.json file
-```
+**媒体自动上传**：`fieldValue` 以 `@upload:` 开头（或用 `--file`）时，本地文件自动上传到 RunningHub 并替换为返回的 `fileName`，类型按扩展名自动推断：
 
 ```json
-[
-  {"nodeId":"43","fieldName":"text","fieldValue":"A cinematic coffee shop scene"}
-]
+[{"nodeId": "167", "fieldName": "image", "fieldValue": "@upload:./model.jpg"}]
 ```
 
-For local media inputs, use `@upload:`:
+**如何知道该填哪个节点？** 三条路：
 
-```json
-[
-  {"nodeId":"167","fieldName":"image","fieldValue":"@upload:./model.jpg"},
-  {"nodeId":"52","fieldName":"video","fieldValue":"@upload:./dance.mp4"}
-]
-```
+1. `runninghub config guide <ID>` — 已注册模版的中文参数说明
+2. `runninghub inspect <ID>` — 实时查看远端结构（推荐用于新工作流）
+3. 直接读 `registry/payloads/<ID>.json` — 含 `llmHint`（给 LLM 的参数填写指导）
+
+---
+
+## 任务执行细节
+
+### 并发限制
+
+默认最大并发 **2**。提交前建议检查：
 
 ```bash
-# 5. Run everything in one step
-runninghub run <id> --type webapp --node-overrides overrides.json
+runninghub queue-status
+# {"concurrent_limit": 2, "running_count": 0, "queued_count": 0}
 ```
 
-For long-running tasks, do it step by step:
+### 实例规格
+
+| `--instance-type` | 显存 | 适用 |
+|---|---|---|
+| `default`（默认） | 24GB | 常规模型 |
+| `plus` | 48GB | 大模型 / 高分辨率长视频 |
 
 ```bash
-runninghub submit <id> --type workflow --node-overrides overrides.json
-runninghub status <task_id>
-runninghub task-detail <task_id>
-runninghub wait-download <id> <task_id>
+runninghub run <ID> --type webapp --instance-type plus -n overrides.json
 ```
 
-For encrypted AI Apps:
+### 访问密码
+
+加密 AI App 需要传创建者设置的密码：
 
 ```bash
-export APP_ACCESS_PASSWORD='<app_password>'
-runninghub run <id> --type webapp --access-password "$APP_ACCESS_PASSWORD" \
-  --node-overrides overrides.json
+runninghub run <ID> --type webapp --access-password <密码> -n overrides.json
 ```
 
-Useful maintenance commands:
+### 失败排查
 
 ```bash
-runninghub upload ./input.png --kind image
-runninghub self-update --dry-run
-runninghub self-update
+runninghub status <task_id>            # 基础状态
+runninghub task-detail <task_id>       # 完整诊断：失败原因、webhook 详情
+runninghub call-log <task_id>          # 调用日志：请求/响应/费用
 ```
 
 ---
 
-## Task Failure Handling
+## 提示词质量引擎
 
-If a workflow or webapp fails, inspect the JSON error first. `run` and `wait-download` include `task_id`, `failed_reason`, and best-effort `task_detail`. If you only have a task ID:
+提示词生成不是简单拼接，而是四步流水线（`scripts/prompt_quality.py`）：
+
+1. **风格选择**（`scripts/style_selector.py`）— 从 `registry/color_grading_styles.yaml` 的几十种专业调色风格中按场景语义匹配（水墨国风、黄金时刻、日系清新……）
+2. **LLM 扩写**（可选）— DeepSeek 把短描述扩写为专业级 prompt
+3. **质量自检** — 评分 + 常见问题自动修复（缺画质词、风格冲突等）
+4. **Opik 轨迹记录**（`scripts/opik_tracker.py`）— 每次生成写入 `~/.runninghub/opik_traces/`（本地 JSONL，零依赖），供 `runninghub opik` 查询
+
+支持 `txt2img / txt2vid / img2vid / music` 四类工作流的提示词。
+
+---
+
+## 编排脚本 scripts/
+
+除 `runninghub` CLI 外，`scripts/` 提供更高层的业务编排。所有脚本走同一模式：解析参数 → 构造 `node_info_list` → 提交 → 轮询 → 下载，输出到 `./outputs/` 下的时间戳目录。
+
+### 脚本总览
+
+| 命令 | 用途 |
+|------|------|
+| `python -m scripts.runner --list` | 列出注册表所有工作流/AI App |
+| `python -m scripts.runner --info <ID>` | 查看节点详情 + LLM 引导提示 |
+| `python -m scripts.runner --exec --mode workflow --id <ID> --nodes '<JSON>'` | 执行任意工作流（`--mode ai-app` 跑 AI 应用；`--nodes-file` 从文件读参数；`--dry-run` 只验证参数；`--no-download` 只跑不下载；`--output-dir` / `--poll-interval` / `--timeout` 可调） |
+| `python -m scripts.runner --check` | 验证凭证 + 余额 |
+| `python -m scripts.skill_runner --skill <名称> --param key=value` | **按业务参数调用**（无需裸节点 ID） |
+| `python -m scripts.pipeline --config scenes.json` | 端到端：文生图 → 图生视频 → 首尾帧转场 → 合并 |
+| `python -m scripts.storyboard --idea "探险故事"` | DeepSeek 生成分镜 prompt → RunningHub 出图 |
+| `python -m scripts.first2last -f a.png -l b.png` | 首尾帧过渡视频（wan22 / dasiwa / fusionx 三引擎） |
+| `python -m scripts.merge -i clip1.mp4 clip2.mp4 -o out.mp4` | 本地 ffmpeg 合并，`--transition crossfade` 交叉淡化 |
+| `python -m scripts.storyboard_standalone --idea "..."` | 分镜生成单文件版（无项目内依赖） |
+
+### skill_runner：业务参数调用
+
+`registry/skills/*.json` 把「裸节点 ID」抽象成「业务参数 + 映射」：
 
 ```bash
-runninghub task-detail <task_id>
+python -m scripts.skill_runner --list
+python -m scripts.skill_runner \
+  --skill rh.webapp.txt2img.krea2_photoreal.v1 \
+  --param prompt_text="cinematic portrait, realistic skin texture" \
+  --output-dir ./outputs
+# --dry-run 只打印解析后的配置
 ```
 
-Use the returned `status`, `error_code`, `error_message`, `failed_reason`, `outputs`, and `webhook_detail` to locate the problem.
+已注册 10 个 skill（全部 verified，索引见 `registry/skills_index.json`）：
 
-**Retry strategy:**
-1. Fix the smallest necessary part of the payload based on the error
-2. If the same workflow keeps failing, strip the payload to essential fields only
-3. If content is suspected, make the prompt more conservative
-4. Stop after 3 retries and report the latest failure details
+| Skill | 功能 |
+|-------|------|
+| `rh.webapp.txt2img.krea2_photoreal.v1` | Krea2 写实 4K 文生图 |
+| `rh.webapp.txt2img.zimage_art_portrait.v1` | Z-Image 4K 艺术人像 / 三视图 |
+| `rh.webapp.txt2vid.minimax_h3.v1` | MiniMax H3 图文生视频 |
+| `rh.webapp.img2vid.minimax_h3_fl2va.v1` | MiniMax H3 FL2VA 图生视频 |
+| `rh.webapp.img2vid.minimax_h3_fl2va_oss.v1` | 同上（OSS 版） |
+| `rh.webapp.firstlast.minimax_h3_fl2va.v1` | MiniMax 首尾帧过渡 |
+| `rh.webapp.motion_transfer.wan22.v1` | Wan2.2 动作迁移（图+视频） |
+| `rh.webapp.music.minimax_music3.v1` | MiniMax Music3 音乐生成 |
+| `rh.webapp.storyboard.auto12.v1` | 自动 12 分镜 |
+| `rh.webapp.image_edit.tryon.v1` | AI 试穿 |
 
----
+另有数字人系列（`dhuman.minimax_h3` / `expression.dhuman` / `infinitetalk.lipsync` / `minimax_h3.audio_lipsync` 等）以 standalone 单文件脚本形式提供，见下一节。
 
-## Node Overrides
+### standalone_skills：单文件可移植脚本
 
-Node overrides use the standard RunningHub SDK format:
-
-```json
-[
-  {"nodeId": "43", "fieldName": "text", "fieldValue": "A cinematic coffee shop scene"}
-]
-```
-
-You can pass overrides as an inline JSON string or as a file path:
+`scripts/standalone_skills/*.py` 由 `tools/build_standalone_skill_scripts.py` 从 skill 定义自动生成，**只依赖 `runninghub-sdk`**，可单独拷走使用：
 
 ```bash
-# Inline JSON
-runninghub run <id> --node-overrides '[{"nodeId":"43","fieldName":"text","fieldValue":"hello"}]'
+pip install runninghub-sdk
+python scripts/standalone_skills/rh.webapp.txt2img.krea2_photoreal.v1.py \
+  --prompt_text "cinematic portrait"
 
-# File path
-runninghub run <id> --node-overrides overrides.json
+# 数字人口播
+python scripts/standalone_skills/rh.webapp.dhuman.minimax_h3.v1.py \
+  --image_path portrait.png --prompt_text "A friendly presenter speaking"
+
+# 口型同步（InfiniTalk，默认 plus 实例）
+python scripts/standalone_skills/rh.webapp.infinitetalk.lipsync.v1.py \
+  --image_path portrait.png --audio_path speech.mp3
 ```
 
-**Auto media upload:** `fieldValue` prefixed with `@upload:` is automatically uploaded and replaced with the RunningHub `fileName`:
+### MV 生产线（演示级）
 
-```json
-[
-  {"nodeId":"167","fieldName":"image","fieldValue":"@upload:./model.jpg"}
-]
+`scripts/mv_plan.py`（8 场景计划）+ `scripts/build_mv.sh`（Ken Burns 动态片段 + 音乐合成）组成一条校园 MV 演示流水线，可参考改造成自己的 MV 项目。
+
+### 其他
+
+- `scripts/base.py` — 共享工具（env 加载、输出目录、日志）
+- `scripts/bootstrap.sh` — 一键安装
+- `scripts/submit_images.py` / `submit_sdk.py` — 批量提交历史演示（读 `RUNNINGHUB_API_KEY`）
+
+---
+
+## 注册表 registry
+
+机器可读的参数契约仓库——**加接口只加数据，不改代码**。
+
+```
+registry/
+├── payloads/<ID>.json         ← 19 个工作流/AI App 模版
+│     template_name / type / group_name / quality
+│     api_params.nodeInfoList  ← 节点 schema（nodeId/fieldName/llmHint/example）
+│     call_guide               ← 人类可读调用指南
+├── skills/<skill>.json        ← 10 个业务参数 skill 定义（skill_runner 用）
+├── skills_index.json          ← skill 索引
+├── workflows.yaml             ← 任务类型默认映射 + tiktok 场景映射
+└── color_grading_styles.yaml  ← 提示词调色风格库
+```
+
+### 已注册工作流一览（19 个）
+
+| ID | 名称 | 类型 | 质量 |
+|----|------|------|------|
+| `2037071836214730753` | 文生图 (Popular Aesthetics) | workflow | ✅ |
+| `2042408661150076930` | Z-Image 文生图 AI 应用 | ai-app | ✅ |
+| `2081554936466329602` | 艺术人像摄影 Z-Image 4K | ai-app | ✅ |
+| `2059461117663076353` | SeedVR2 图生图 | workflow | ✅ |
+| `2056908627524546561` | Flux 多参考图风格融合 | workflow | ✅ |
+| `2004066004755988481` | 豆包 Seedance 视频生成 | workflow | ✅ |
+| `2084968440439336962` | 加速版 MiniMax H3 图文生视频 | ai-app | ✅ |
+| `1972733308360675329` | Wan I2V 舞蹈生成 | workflow | ✅ |
+| `2035369813215813634` | LTX2.3 图生视频优化版 | ai-app | ✅ |
+| `2069024459431956482` | LTX2.3 动漫数字人特制版 | ai-app | ✅ |
+| `2052272204712300545` | LTXV 视频生成 | workflow | ✅ |
+| `2059132036383858689` | LTX Director 视频生成 | workflow | ✅ |
+| `1967569328524664834` | 首尾帧过渡 (First2Last Wan) | workflow | ✅ |
+| `2056898489606561793` | 连续性人物分镜生成 | workflow | ✅ |
+| `2044246957450858497` | ACE/Suno V5.5 音乐生成 | workflow | ✅ |
+| `2005542596594331650` | 一键提取衣服 + 分离人物 | ai-app | ✅ |
+| `2011275998205054977` | 首尾帧过渡 (Wan 2.2) | workflow | 🧪 |
+| `2037036284312559617` | 图生视频 (Seedance 2.0) | workflow | 🧪 |
+| `1923649885118058498` | Wan I2V 通用视频生成 | workflow | ⚠️ |
+
+### 默认工作流映射（workflows.yaml）
+
+| 任务类型 | 默认 ID | 用途 |
+|---------|---------|------|
+| txt2img | 2037071836214730753 | 文生图 |
+| txt2vid | 2004066004755988481 | 文生视频 |
+| img2vid | 1972733308360675329 | 图生视频 |
+| img2img | 2059461117663076353 | 图生图 |
+| music | 2044246957450858497 | 音乐生成 |
+| storyboard | 2056898489606561793 | 分镜生成 |
+| video_direct | 2059132036383858689 | 视频导演 |
+| style_fusion | 2056908627524546561 | 风格融合 |
+| first2last | 1967569328524664834 | 首尾帧过渡 |
+| clothes_extract | 2005542596594331650 | 衣服提取 |
+| portrait | 2042408661150076930 | 人像生成 |
+
+`pipeline.py` / `storyboard.py` 等脚本按任务类型取默认映射，可用环境变量覆盖（见[环境变量总表](#环境变量总表)）。另有 `tiktok:` 分组（同款复刻/风格迁移/人物替换等场景到 ID 的快捷映射）。
+
+---
+
+## 新增一个工作流
+
+**推荐路径**（一条命令）：
+
+```bash
+# 自动 inspect 远端结构 → 生成 payload 模版 → 写入 registry/payloads/
+runninghub config add <新ID> --group img2vid --name "我的模版" --quality experimental
+
+# 联调通过后升级质量等级
+runninghub config quality <新ID> --set verified
+
+# 之后所有工具（runner / CLI / Agent）都能发现它
+python -m scripts.runner --info <新ID>
+```
+
+**手动路径**：从 Web UI 或历史报告拿到一次成功请求的 `node_info_list`，写入 `registry/payloads/<ID>.json`（可参考现有文件的结构，`llmHint` 写清楚每个参数怎么填）。
+
+详细参考文档在 `references/workflows/*.md`（12 个工作流的逐一分析）。
+
+---
+
+## Agent 集成
+
+本项目天生为 AI Agent 设计：
+
+- **JSON 契约** — 所有命令 stdout 输出 `{"ok": bool, ...}`，失败带 `error_type`
+- **`skills/SKILL.md`** — Hermes / Codex 可直接装载的 skill 定义（含完整调用流程、并发限制、参数规范）
+- **`agents/openai.yaml`** — OpenAI agent 接口声明
+- **`registry/payloads` 的 `llmHint`** — 每个节点字段都有给 LLM 的填写指导
+
+### 推荐的 Agent 工作流
+
+**调用已知工作流**：
+
+1. `runninghub doctor` → 2. `detect <id>` → 3. `inspect <id>` → 4. 构造 overrides → 5. `run` → 6. 失败则 `task-detail` 排查重试
+
+**发现新工作流**：
+
+1. `discover search --keyword "<意图>"` → 2. `discover inspect <id>` 逐个检查 → 3. `discover test <id>` 快速验证 → 4. `discover export` 导出 skill → 5. `cp ./skills/*.md ~/.hermes/skills/` 装载
+
+### 并发注意
+
+Agent 批量提交前必须查 `queue-status`（默认并发 2），队列满时等待而非硬塞。
+
+---
+
+## 便携工具 tools/
+
+| 工具 | 用途 |
+|------|------|
+| `tools/rh_tool.py` | **单文件便携版**：内置已验证接口 profile，拷一个文件到任何项目即可用（`python rh_tool.py run --profile krea2_txt2img --set prompt_text=...`） |
+| `tools/sync_runninghub_interfaces.py` | 把接口清单同步进飞书多维表格（依赖 lark-cli） |
+| `tools/build_standalone_skill_scripts.py` | 从 `registry/skills/*.json` 重新生成 `scripts/standalone_skills/` |
+
+---
+
+## 项目结构
+
+```
+runninghub-cli/
+├── src/runninghub_cli/         ← CLI 包（pip install -e .）
+│   ├── main.py                   命令入口（typer）
+│   ├── service.py                RunningHub API 封装
+│   ├── discover.py               市集搜索 / 自动测试 / skill 导出
+│   ├── overrides.py              node overrides 解析 + @upload: 上传
+│   ├── registry_ops.py           注册表读写
+│   ├── auth_store.py             login 凭证存储
+│   └── commands/                 命令分组：core / task / account / quality / discover
+├── scripts/                    ← 编排脚本 + 共享工具
+├── skills/                     ← Hermes Agent skill 定义
+├── agents/                     ← AI agent 接口声明（openai.yaml）
+├── registry/                   ← 参数契约（payloads / skills / styles / defaults）
+├── references/workflows/       ← 12 个工作流的深度参考文档
+├── examples/                   ← overrides 示例、接口清单
+├── tools/                      ← 便携工具
+├── .github/workflows/ci.yml    ← CI（ruff + pytest，3.10–3.12）
+├── pyproject.toml
+├── AGENTS.md                   ← Codex 项目指导
+└── CLAUDE.md                   ← Claude 项目上下文
 ```
 
 ---
 
-## Workflow Scripts
+## 环境变量总表
 
-Media generation pipelines provided by `scripts/`:
-
-| Command | Purpose |
-|---------|---------|
-| `python -m scripts.runner --list` | List all registered workflows/AI Apps |
-| `python -m scripts.runner --exec --mode workflow --id <ID> --nodes '[...]'` | Execute any workflow |
-| `python -m scripts.skill_runner --skill <SKILL_NAME> --param key=value` | Execute reusable skill by business params (no raw node IDs) |
-| `python -m scripts.pipeline --config scenes.json` | End-to-end: txt2img → img2vid → transitions → merge |
-| `python -m scripts.storyboard --idea "探险故事"` | DeepSeek + RunningHub storyboard generation |
-| `python -m scripts.first2last -f start.png -l end.png` | First+last frame transition video |
-| `python -m scripts.merge -i clip1.mp4 clip2.mp4` | Local video merging |
+| 变量 | 必需 | 用途 |
+|------|------|------|
+| `RUNNINGHUB_API_KEY` | ✅ | API Key（所有执行类命令） |
+| `DEEPSEEK_API_KEY` | 可选 | DeepSeek 提示词生成（storyboard / prompt --llm） |
+| `OPENAI_API_KEY` | 可选 | DeepSeek 不可用时的兜底 |
+| `RUNNINGHUB_POLL_INTERVAL` | 可选 | 轮询间隔（默认 3s，CLI 默认 15s） |
+| `RUNNINGHUB_TIMEOUT` | 可选 | 任务超时（默认 600s，CLI 默认 1800s） |
+| `RUNNINGHUB_TXT2IMG_WORKFLOW_ID` 等 | 可选 | 覆盖默认工作流映射（`_IMG2VID_` / `_FIRST2LAST_` / `_FENJING_` 等，见各脚本 docstring） |
+| `RUNNINGHUB_FIRST2LAST_*` | 可选 | first2last 的首帧/尾帧/引擎等参数默认值 |
 
 ---
 
-## Agent Contract
+## 开发与测试
 
-All commands write JSON to stdout:
+```bash
+pip install -e ".[dev]"
 
-```json
-{"ok": true, "data": {}}
+ruff check src/ scripts/        # lint（line-length 120）
 ```
 
-Failures also return JSON and exit non-zero:
+CI（GitHub Actions）在 Python 3.10/3.11/3.12 上跑 lint。
 
-```json
-{"ok": false, "error_type": "ValidationError", "error": "..."}
+版本升级：
+
+```bash
+runninghub self-update --dry-run   # 预览将更新到的 tag
+runninghub self-update             # 更新到最新 tag 并重装
+# 默认从 gitee 镜像拉取，可指定其它仓库：
+runninghub self-update --repo-url https://github.com/difyz9/runninghub-cli.git
 ```
 
-### Recommended Agent Workflow
+---
 
-#### For known workflows
-1. `runninghub doctor`
-2. `runninghub detect <id>`
-3. `runninghub inspect <id>` (compact mode — key nodes only)
-4. Build `node_overrides`
-5. `runninghub submit` or `runninghub run`
-6. If the task fails, inspect `error_type`, `error`, `task_id`, `failed_reason`, and `task_detail`; if needed run `runninghub task-detail <task_id>`, then retry with a minimal payload change.
+## 故障排查
 
-#### For discovering new workflows
-1. `runninghub discover search --keyword "<user intent>" --type workflow`
-2. `runninghub discover inspect <id>` (for each promising result)
-3. `runninghub discover test <id> --prompt "<test prompt>"` (run a quick test)
-4. `runninghub discover export <id> --name <skill_name> --output-dir ./skills` (export successful ones)
-5. `cp ./skills/*.md ~/.hermes/skills/` (load into Hermes)
+| 症状 | 排查 |
+|------|------|
+| 提交报 key 无效 | `runninghub doctor`；确认 `.env` 或 `--api-key` |
+| 任务一直排队 | `runninghub queue-status`——并发默认 2，等队列空闲 |
+| 任务失败 | `runninghub task-detail <task_id>` 看 `failed_reason`；`call-log` 看原始请求 |
+| 下载产物为空 | 检查任务类型和输出类型是否匹配（`detect` + `inspect`） |
+| 节点参数不生效 | 用 `--dry-run` 验证；对照 `registry/payloads/<ID>.json` 检查 nodeId/fieldName 拼写 |
+| 图片上传失败 | 确认本地路径存在；用 `runninghub upload` 单独测试 |
+
+## License
+
+MIT
